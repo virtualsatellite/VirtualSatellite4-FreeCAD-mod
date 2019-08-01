@@ -43,7 +43,7 @@ env:
   # ---------------------------------------------
   # API Token for access to github
   # ---------------------------------------------
-  - secure: "POYGzbPXLBDe2BsehzJ7QUZ4toQ1Pbi2VdH8ZTSN9zqipLbBVnsMghs7Zf80C+AK1nKbY2DPWHwaWR6LE3MRhA9X3xeyYgJ/53J4JeMw1ORYpavVXJC9t8d+fMVCJhALzjQYz7PmE4ba/MHgr/UnoeNL2v1M/9mUpMbfD490jPUdOQjqpy0/FvM5HhXcQEwexUPsNsR+DffVSSmJ62aXHPM2pgKYaH0pnY5OYwm4t7v7lp8GgQf+b163+rD2LyLIEeLiQ1msXAqaRSBznuu2wqi7N3ZC176i864fRHf8M4RYbWqA0BneCd0keAQJLvpcPBoyE1T0XKYvjz5JdjbuNDX1p4waLo7CnU+UJzuCQ5hnkrDm7YJhwQY007T2kudUTPl0dP0TeoJsDtz30vvBC82equJA5+0xPb1BvvDmdKFkfF7gOGh05qjhAo3TJ8D5CXXFmdPr9VApYv0zqzh0hR5p+5FHkDmKhzJ7xg4jpo04IXa8ztBCjoB4dyLnUDhyTABtA5/uoRuMA4I7nc25mKL6Z9fz8O8HadAInlJFXyodQOrvD68k2Bf9WJWreZMKcLJiOWQC0bbPNa6ABrRpiuzdUdWEpzNjJJYktmPl+JwHAJ4Fa3CHaNFILaLLC9Z3gtrdNT2+PkME8u0sfVWZ1nU4nNO9EGUItcBEFhkCnZE="
+  - secure: "EjN6DgVHJ8urI5vaahXVx0bBkA5pKVnoNJQUM0R7QMj14BNz+zmLamdFTjqjBY0BGxATd+qyTJLy/Eo/lqGzHhU0XNvKlXee8fn3d7k74kupK4kf/j997b8LQarXph3NhK8pr5sTzPpnutvbJ42VraVAkRBI46CKwaQoS/+W1NkZbAmcd19rnn18Mu69RdQRa/qLXfOvbptO9dIOZiz/chEBmuYJcsMy55We6BNcc2U1ubofNhqsVKnEvzukPAGdOxfqt1pWuoMb6FoY/RJhFmBJ7qeqdnPRkDMUJVcwPSET5bi+t+Sla3TWzfvzacprx6TjB5mYIN4Lkjdu6ZS0BD8mBTojFs4waQnGnjlqyBG5TyHDtzNiztYhOK3QROngyuTvebLZ7Nvvy9lpSQdGspAou/u650ZlfBFOptv9r7VQ95wipmwRKZenT8y1yhNpsDXAxEaDK7bS/RyuqJiMsnDpQEFaXxM8SrgFzT3Ne/FGEwbVgeKhJBAlf7okBfHwqaTHA1fCwaqJJ/ADB2GKok+cvLYienWxoGrZD2mmmBFGhY8+F0hoMpIIS2dKHa6CXE3aUOx2g8iJ5xDow3Z7mKQLxqPRvLlne9uL67SUylTrixWKRt20+ZixXeg+NkwnFmKlfrD6jn/7PA8RxxhrgltkAWrRX0C35HBZTDIgMxg="
 
 before_script:
   # --------------------------------------------------
