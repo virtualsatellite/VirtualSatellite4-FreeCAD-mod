@@ -76,9 +76,7 @@ jobs:
       if: branch NOT IN (integration_snapshot, development_snapshot) 
       name: Test - FreeCAD Module Tests
       script:
-      - VIRTUAL_SATELLITE_MODULE=$(pwd)
-      - freecad --module-path $(VIRTUAL_SATELLITE_MODULE) --console --run-test VirtualSatelliteTest
-      #- freecad -M "$(pwd)" -t VirtualSatelliteTest
+      - freecad --module-path "$(pwd)" --console --run-test VirtualSatelliteTest
 
     # -----------------------------------------------------------
     # Deploy Jobs for unsecured Development.
@@ -87,9 +85,12 @@ jobs:
       if: branch = development
       name: Assemble-Deploy - Development
       script:
-      - echo "Version $(VERSION) (Build $(date +"%Y%m%d%H%M%S"d)-$(TRAVIS_BUILD_NUMBER))" > BUILD.txt  
-      - zip -r ../VirtualSatellite4_FreeCAD_mod_Development.zip ../VirtualSatellite4-FreeCAD-mod -x "*/.*"
-      - tar --exclude="*/.*" -czvf ../VirtualSatellite4_FreeCAD_mod_Development.tar.gz ../VirtualSatellite4-FreeCAD-mod 
+      - echo "Version ${VERSION} (Build $(date +"%Y%m%d%H%M%S"d)-${TRAVIS_BUILD_NUMBER})" > BUILD.txt
+      - pushd .
+      - cd ..  
+      - zip -r VirtualSatellite4_FreeCAD_mod_Development.zip VirtualSatellite4-FreeCAD-mod -x "*/.*"
+      - tar --exclude="*/.*" -czvf VirtualSatellite4_FreeCAD_mod_Development.tar.gz VirtualSatellite4-FreeCAD-mod
+      - popd 
       before_deploy:
         # -----------------------------------------------------------
         # Update the development tag beforehand
@@ -130,9 +131,12 @@ jobs:
       if: branch = integration
       name: Assemble-Deploy - Integration
       script:
-      - echo "Version $(VERSION) (Build $(date +"%Y%m%d%H%M%S"i)-$(TRAVIS_BUILD_NUMBER))" > BUILD.txt  
-      - zip -r ../VirtualSatellite4_FreeCAD_mod_Integration_$(VERSION).zip ../VirtualSatellite4-FreeCAD-mod -x "*/.*"
-      - tar --exclude="*/.*" -czvf ../VirtualSatellite4_FreeCAD_mod_Integration_$(VERSION).tar.gz ../VirtualSatellite4-FreeCAD-mod
+      - echo "Version ${VERSION} (Build $(date +"%Y%m%d%H%M%S"i)-${TRAVIS_BUILD_NUMBER})" > BUILD.txt  
+      - pushd .
+      - cd ..
+      - zip -r VirtualSatellite4_FreeCAD_mod_Integration_${VERSION}.zip VirtualSatellite4-FreeCAD-mod -x "*/.*"
+      - tar --exclude="*/.*" -czvf VirtualSatellite4_FreeCAD_mod_Integration_${VERSION}.tar.gz VirtualSatellite4-FreeCAD-mod
+      - popd
       before_deploy:
         # -----------------------------------------------------------
         # Update the development tag beforehand
@@ -172,9 +176,12 @@ jobs:
       if: tag =~ /^Release/
       name: Assemble-Deploy - Release
       script:
-      - echo "Version $(VERSION) (Build $(date +"%Y%m%d%H%M%S"r)-$(TRAVIS_BUILD_NUMBER))" > BUILD.txt  
-      - zip -r ../VirtualSatellite4_FreeCAD_mod_Release_$(VERSION)_$(TRAVIS_BUILD_NUMBER.zip ../VirtualSatellite4-FreeCAD-mod -x "*/.*"
-      - tar --exclude="*/.*" -czvf ../VirtualSatellite4_FreeCAD_mod_Release_$(VERSION)_$(TRAVIS_BUILD_NUMBER).tar.gz ../VirtualSatellite4-FreeCAD-mod
+      - echo "Version ${VERSION} (Build $(date +"%Y%m%d%H%M%S"r)-${TRAVIS_BUILD_NUMBER})" > BUILD.txt
+      - pushd .
+      - cd ..  
+      - zip -r VirtualSatellite4_FreeCAD_mod_Release_${VERSION}_$(TRAVIS_BUILD_NUMBER.zip VirtualSatellite4-FreeCAD-mod -x "*/.*"
+      - tar --exclude="*/.*" -czvf VirtualSatellite4_FreeCAD_mod_Release_${VERSION}_${TRAVIS_BUILD_NUMBER}.tar.gz VirtualSatellite4-FreeCAD-mod
+      - popd
       deploy:
         # -----------------------------------------------------------
         # Now attach the release to the Release Tag.
