@@ -75,7 +75,7 @@ jobs:
       if: branch NOT IN (integration_snapshot, development_snapshot) 
       name: Test - FreeCAD Module Tests
       script:
-      - freecad -t PartDesignGui
+      - freecad --console --run-test 0
       #- freecad -M "$(pwd)" -t VirtualSatelliteTest
 
     # -----------------------------------------------------------
