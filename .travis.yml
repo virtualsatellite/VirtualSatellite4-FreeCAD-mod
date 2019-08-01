@@ -63,6 +63,7 @@ jobs:
     # handed in by known users
     #---------------------------------------------
     - stage: verify
+      if: branch NOT IN (integration_snapshot, development_snapshot) 
       name: Verify - Authors Sanity Check
       script:
       - ./bash/verify_commit_authors.sh known_authors.txt
