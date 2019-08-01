@@ -34,7 +34,7 @@ class VirtualSatelliteWorkbench(Workbench):  # @UndefinedVariable
 
     def __init__(self):
         from module.environment import ICON_WORKBENCH, Environment
-        self.__class__.Icon = Environment().get_icon_path(ICON_WORKBENCH) 
+        self.__class__.Icon = Environment().get_icon_path(ICON_WORKBENCH)
         self.__class__.MenuText = 'Virtual Satellite'
         self.__class__.ToolTip = 'Virtual Satellite 4 Workbench'
 
@@ -48,6 +48,7 @@ class VirtualSatelliteWorkbench(Workbench):  # @UndefinedVariable
     def GetClassName(self):
         # Required method by FreeCAD framework
         return "Gui::PythonWorkbench"
+
 
 # Finally add the Virtual Satellite Workbench to the FreeCAD application
 Gui.addWorkbench(VirtualSatelliteWorkbench())  # @UndefinedVariable

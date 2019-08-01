@@ -33,13 +33,14 @@ from commands.definitions import COMMAND_ID_HELLO_WORLD
 class CmdHelloWorld:
     def Activated(self):
         FreeCAD.Console.PrintMessage("Hello, World!\n")
-        
+
     def IsActive(self):
         return True
-    
+
     def GetResources(self):
         return {'Pixmap': Environment().get_icon_path(ICON_WORKBENCH),
                 'MenuText': 'Hello World',
                 'ToolTip': 'Print Hello World'}
+
 
 FreeCADGui.addCommand(COMMAND_ID_HELLO_WORLD, CmdHelloWorld())  # @UndefinedVariable

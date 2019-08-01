@@ -32,11 +32,13 @@ ICON_WORKBENCH = 'VirtualSatelliteWorkbench.svg'
 PATH_RESOURCE = "Resources"
 PATH_ICONS = "Icons"
 
+
 class Environment:
     '''
-    
+    This class helps to understand the environment where the module is executed in.
+    E.g. knwoing which is the directory of the module and so on
     '''
-    
+
     @classmethod
     def get_module_path(cls):
         '''
