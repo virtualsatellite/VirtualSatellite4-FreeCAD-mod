@@ -22,7 +22,7 @@ addons:
     - freecad
 
 install:
-- python3 -m pip install pep8
+- true 
 
 stages:
 # ------------------------------------
@@ -87,6 +87,7 @@ jobs:
       if: branch NOT IN (integration_snapshot, development_snapshot) 
       name: Test - FreeCAD Module pep8
       script:
+      - python3 -m pip install pep8
       - pep8 . --count --show-source --statistics
 
     # -----------------------------------------------------------
