@@ -23,3 +23,6 @@
 #
 # SPDX-License-Identifier: LGPL-3.0-or-later
 #
+import FreeCAD
+
+FreeCAD.__unit_test__ += ["TestVirtualSatelliteApp"]
