@@ -14,7 +14,7 @@ addons:
   # ---------------------------------------------------------------
   apt:
     sources:
-    - ppa:freecad-maintainers/freecad-stable
+    - sourceline: "ppa:freecad-maintainers/freecad-stable"
     packages:
     - metacity
     - freecad
@@ -76,8 +76,6 @@ jobs:
       - VIRTUAL_SATELLITE_MODULE_PATH=$(pwd)
       - echo "Current module path ${VIRTUAL_SATELLITE_MODULE_PATH}"
       - freecad -M $(pwd) -c -t 0
-      # - freecad --module-path ${VIRTUAL_SATELLITE_MODULE_PATH} --console 
-      # - freecad --module-path "${VIRTUAL_SATELLITE_MODULE_PATH}" --console --run-test VirtualSatelliteTest
 
     - stage: test
       if: branch NOT IN (integration_snapshot, development_snapshot) 
