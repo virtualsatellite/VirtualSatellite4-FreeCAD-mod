@@ -1,6 +1,10 @@
 language: python
 python:
   - "3.6"
+  
+dist: xenial
+services:
+  - xvfb
  
 addons:
   # -----------------------------------------------------------
@@ -34,21 +38,12 @@ stages:
 env:
   global:
   - VERSION=4.9.0
-  # -------------------------------
-  # set the display for UI testing
-  # -------------------------------
-  - DISPLAY=:99.0
   # ---------------------------------------------
   # API Token for access to github
   # ---------------------------------------------
   - secure: "EjN6DgVHJ8urI5vaahXVx0bBkA5pKVnoNJQUM0R7QMj14BNz+zmLamdFTjqjBY0BGxATd+qyTJLy/Eo/lqGzHhU0XNvKlXee8fn3d7k74kupK4kf/j997b8LQarXph3NhK8pr5sTzPpnutvbJ42VraVAkRBI46CKwaQoS/+W1NkZbAmcd19rnn18Mu69RdQRa/qLXfOvbptO9dIOZiz/chEBmuYJcsMy55We6BNcc2U1ubofNhqsVKnEvzukPAGdOxfqt1pWuoMb6FoY/RJhFmBJ7qeqdnPRkDMUJVcwPSET5bi+t+Sla3TWzfvzacprx6TjB5mYIN4Lkjdu6ZS0BD8mBTojFs4waQnGnjlqyBG5TyHDtzNiztYhOK3QROngyuTvebLZ7Nvvy9lpSQdGspAou/u650ZlfBFOptv9r7VQ95wipmwRKZenT8y1yhNpsDXAxEaDK7bS/RyuqJiMsnDpQEFaXxM8SrgFzT3Ne/FGEwbVgeKhJBAlf7okBfHwqaTHA1fCwaqJJ/ADB2GKok+cvLYienWxoGrZD2mmmBFGhY8+F0hoMpIIS2dKHa6CXE3aUOx2g8iJ5xDow3Z7mKQLxqPRvLlne9uL67SUylTrixWKRt20+ZixXeg+NkwnFmKlfrD6jn/7PA8RxxhrgltkAWrRX0C35HBZTDIgMxg="
 
 before_script:
-  # --------------------------------------------------
-  # Start the XVFB Service for ui testing as suggested
-  # by the travis documentation
-  # --------------------------------------------------
-  - sh -e /etc/init.d/xvfb start
   # -----------------------------------
   # Startup the metacity window manager
   # -----------------------------------
