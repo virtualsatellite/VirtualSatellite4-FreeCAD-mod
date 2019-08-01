@@ -78,8 +78,10 @@ jobs:
       script:
       - VIRTUAL_SATELLITE_MODULE_PATH=$(pwd)
       - echo "Current module path ${VIRTUAL_SATELLITE_MODULE_PATH}"
+      - freecad -c -t VirtualSatelliteTest
+      - freecad -t VirtualSatelliteTest
+      - freecad -M $(pwd) -c -t VirtualSatelliteTest
       # - freecad --module-path ${VIRTUAL_SATELLITE_MODULE_PATH} --console 
-      - freecad -M $(pwd) -t VirtualSatelliteTest
       # - freecad --module-path "${VIRTUAL_SATELLITE_MODULE_PATH}" --console --run-test VirtualSatelliteTest
 
     # -----------------------------------------------------------
