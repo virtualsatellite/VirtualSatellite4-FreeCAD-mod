@@ -22,7 +22,7 @@ addons:
     - freecad
 
 install:
-- true
+- python3 -m pip install pep8
 
 stages:
 # ------------------------------------
@@ -71,7 +71,6 @@ jobs:
     # -----------------------------------------------------
     # Build and Test - SpotBugs Jobs
     # -----------------------------------------------------
-    # --- Development and Feature Branches
     - stage: test
       if: branch NOT IN (integration_snapshot, development_snapshot) 
       name: Test - FreeCAD Module Tests
@@ -83,6 +82,12 @@ jobs:
       - freecad -M $(pwd) -c -t VirtualSatelliteTest
       # - freecad --module-path ${VIRTUAL_SATELLITE_MODULE_PATH} --console 
       # - freecad --module-path "${VIRTUAL_SATELLITE_MODULE_PATH}" --console --run-test VirtualSatelliteTest
+
+    - stage: test
+      if: branch NOT IN (integration_snapshot, development_snapshot) 
+      name: Test - FreeCAD Module pep8
+      script:
+      - pep8 . --count --show-source --statistics
 
     # -----------------------------------------------------------
     # Deploy Jobs for unsecured Development.
