@@ -1,0 +1,195 @@
+language: python
+python:
+  - "3.6"
+dist: trusty
+
+jdk:
+- oraclejdk8
+ 
+addons:
+  # -----------------------------------------------------------
+  # Make the sourceforge hosts known, thus ssh connections will
+  # not ask to accept the finger print of the server
+  # -----------------------------------------------------------
+  ssh_known_hosts: frs.sourceforge.net
+  # ---------------------------------------------------------------
+  # Now use APT to install metacity, which is a window manager also 
+  # needed for the SWTBOT UI tests
+  # ---------------------------------------------------------------
+  apt:
+    packages:
+    - metacity
+    - freecad
+
+install:
+- true
+
+stages:
+# ------------------------------------
+# Just one stage, multiple stages 
+# with maven overcomplicate the things
+# ------------------------------------
+- name: verify
+- name: test
+- name: assemble-deploy
+
+env:
+  global:
+  - VERSION=4.9.0
+  # -------------------------------
+  # set the display for UI testing
+  # -------------------------------
+  - DISPLAY=:99.0
+  # ---------------------------------------------
+  # API Token for access to github
+  # ---------------------------------------------
+  - secure: "POYGzbPXLBDe2BsehzJ7QUZ4toQ1Pbi2VdH8ZTSN9zqipLbBVnsMghs7Zf80C+AK1nKbY2DPWHwaWR6LE3MRhA9X3xeyYgJ/53J4JeMw1ORYpavVXJC9t8d+fMVCJhALzjQYz7PmE4ba/MHgr/UnoeNL2v1M/9mUpMbfD490jPUdOQjqpy0/FvM5HhXcQEwexUPsNsR+DffVSSmJ62aXHPM2pgKYaH0pnY5OYwm4t7v7lp8GgQf+b163+rD2LyLIEeLiQ1msXAqaRSBznuu2wqi7N3ZC176i864fRHf8M4RYbWqA0BneCd0keAQJLvpcPBoyE1T0XKYvjz5JdjbuNDX1p4waLo7CnU+UJzuCQ5hnkrDm7YJhwQY007T2kudUTPl0dP0TeoJsDtz30vvBC82equJA5+0xPb1BvvDmdKFkfF7gOGh05qjhAo3TJ8D5CXXFmdPr9VApYv0zqzh0hR5p+5FHkDmKhzJ7xg4jpo04IXa8ztBCjoB4dyLnUDhyTABtA5/uoRuMA4I7nc25mKL6Z9fz8O8HadAInlJFXyodQOrvD68k2Bf9WJWreZMKcLJiOWQC0bbPNa6ABrRpiuzdUdWEpzNjJJYktmPl+JwHAJ4Fa3CHaNFILaLLC9Z3gtrdNT2+PkME8u0sfVWZ1nU4nNO9EGUItcBEFhkCnZE="
+
+before_script:
+  # --------------------------------------------------
+  # Start the XVFB Service for ui testing as suggested
+  # by the travis documentation
+  # --------------------------------------------------
+  - sh -e /etc/init.d/xvfb start
+  # -----------------------------------
+  # Startup the metacity window manager
+  # -----------------------------------
+  - metacity --sm-disable --replace 2> metacity.err &
+  
+jobs:
+  include:
+    # --------------------------------------------
+    # Run a quicksanity check if all commits are
+    # handed in by known users
+    #---------------------------------------------
+    - stage: verify
+      name: Verify - Authors Sanity Check
+      script:
+      - ./bash/verify_commit_authors.sh known_authors.txt
+  
+    # -----------------------------------------------------
+    # Build and Test - SpotBugs Jobs
+    # -----------------------------------------------------
+    # --- Development and Feature Branches
+    - stage: test
+      if: branch NOT IN (integration_snapshot, development_snapshot) 
+      name: Test - FreeCAD Module Tests
+      script:
+      - freecad -M "${workspace_loc:virsat4-freecad-mod/}" -t $(pwd)
+
+    # -----------------------------------------------------------
+    # Deploy Jobs for unsecured Development.
+    #------------------------------------------------------------
+    - stage: assemble-deploy
+      if: branch = development
+      name: Assemble-Deploy - Development
+      script:
+      - echo "Version $(VERSION) (Build $(date +"%Y%m%d%H%M%S"d)-$(TRAVIS_BUILD_NUMBER))" > BUILD.txt  
+      - cd ..
+      - zip -r VirtualSatellite4_FreeCAD_mod_Development.zip VirtualSatellite4-FreeCAD-mod -x "*/.*"
+      - tar --exclude="*/.*" -czvf VirtualSatellite4_FreeCAD_mod_Development.tar.gz VirtualSatellite4-FreeCAD-mod 
+      before_deploy:
+        # -----------------------------------------------------------
+        # Update the development tag beforehand
+        # And send it back to the origin, otherwise travis will 
+        # apparently perform a git fetch before, and overwrite the
+        # moved tag back to the previous state.
+        #------------------------------------------------------------
+        - git tag -f development_snapshot
+        - git remote add github-mtd  https://${GITHUB_API_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git
+        - git push -f github-mtd development_snapshot
+        - git remote remove github-mtd
+      deploy:
+        # -----------------------------------------------------------
+        # Now attach the release to the newly created tag.
+        # release is attached to the tag on the current commit.
+        # -----------------------------------------------------------
+      - provider: releases
+        api_key: $GITHUB_API_TOKEN
+        file_glob: true
+        file:
+        - ../*.zip
+        - ../*.tar.gz
+        skip_cleanup: true
+        name: Virtual Satellite 4 FreeCAD mod Development Build
+        body: Development build on latest commit by Travis CI - $TRAVIS_BRANCH ($TRAVIS_COMMIT) - $(date +'%F %T %Z'). This release is subject to constant change.
+        prerelease: true
+        overwrite: true
+        target_commitish: $TRAVIS_COMMIT
+        on:
+          repo: virtualsatellite/VirtualSatellite4-FreeCAD-mod
+          branch: development
+          
+      
+    # -----------------------------------------------------------
+    # Deploy Jobs for unsecured Integration.
+    #------------------------------------------------------------
+    - stage: assemble-deploy
+      if: branch = integration
+      name: Assemble-Deploy - Integration
+      script:
+      - echo "Version $(VERSION) (Build $(date +"%Y%m%d%H%M%S"i)-$(TRAVIS_BUILD_NUMBER))" > BUILD.txt  
+      - cd ..
+      - zip -r VirtualSatellite4_FreeCAD_mod_Integration_$(VERSION).zip VirtualSatellite4-FreeCAD-mod -x "*/.*"
+      - tar --exclude="*/.*" -czvf VirtualSatellite4_FreeCAD_mod_Integration_$(VERSION).tar.gz VirtualSatellite4-FreeCAD-mod
+      before_deploy:
+        # -----------------------------------------------------------
+        # Update the development tag beforehand
+        # And send it back to the origin, otherwise travis will 
+        # apparently perform a git fetch before, and overwrite the
+        # moved tag back to the previous state.
+        #------------------------------------------------------------
+        - git tag -f integration_snapshot
+        - git remote add github-mtd  https://${GITHUB_API_TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git
+        - git push -f github-mtd integration_snapshot
+        - git remote remove github-mtd
+      deploy:
+        # -----------------------------------------------------------
+        # Now attach the release to the newly created tag.
+        # release is attached to the tag on the current commit.
+        # -----------------------------------------------------------
+      - provider: releases
+        api_key: $GITHUB_API_TOKEN
+        file_glob: true
+        file: 
+        - ../*.zip
+        - ../*.tar.gz
+        skip_cleanup: true
+        name: Virtual Satellite 4 FreeCAD mod Integration Build
+        body: Integration build on latest commit by Travis CI - $TRAVIS_BRANCH ($TRAVIS_COMMIT) - $(date +'%F %T %Z'). This release is subject to constant change.
+        prerelease: true
+        overwrite: true
+        target_commitish: $TRAVIS_COMMIT
+        on:
+          repo: virtualsatellite/VirtualSatellite4-FreeCAD-mod
+          branch: integration
+    
+    # -----------------------------------------------------------
+    # Deploy Jobs for secured Releases.
+    #------------------------------------------------------------
+    - stage: assemble-deploy
+      if: tag =~ /^Release/
+      name: Assemble-Deploy - Release
+      script:
+      - echo "Version $(VERSION) (Build $(date +"%Y%m%d%H%M%S"r)-$(TRAVIS_BUILD_NUMBER))" > BUILD.txt  
+      - cd ..
+      - zip -r VirtualSatellite4_FreeCAD_mod_Release_$(VERSION).zip VirtualSatellite4-FreeCAD-mod -x "*/.*"
+      - tar --exclude="*/.*" -czvf VirtualSatellite4_FreeCAD_mod_Release_$(VERSION).tar.gz VirtualSatellite4-FreeCAD-mod
+      deploy:
+        # -----------------------------------------------------------
+        # Now attach the release to the Release Tag.
+        # -----------------------------------------------------------
+      - provider: releases
+        api_key: $GITHUB_API_TOKEN
+        file_glob: true
+        file: 
+        - ../*.zip
+        - ../*.tar.gz
+        skip_cleanup: true
+        name: Virtual Satellite 4 FreeCAD mod Release Build
+        body: Release build on latest commit by Travis CI - $TRAVIS_BRANCH ($TRAVIS_COMMIT) - $(date +'%F %T %Z'). This is a stable release.
+        prerelease: true
+        on:
+          repo: virtualsatellite/VirtualSatellite4-FreeCAD-mod
+          tags: true
+                    
