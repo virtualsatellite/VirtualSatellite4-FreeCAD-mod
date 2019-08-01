@@ -76,7 +76,9 @@ jobs:
       if: branch NOT IN (integration_snapshot, development_snapshot) 
       name: Test - FreeCAD Module Tests
       script:
-      - freecad --module-path "$(pwd)" --console --run-test VirtualSatelliteTest
+      - VIRTUAL_SATELLITE_MODULE_PATH=$(pwd)
+      - echo "Current module path: ${VIRTUAL_SATELLITE_MODULE_PATH}"
+      - freecad --module-path "${VIRTUAL_SATELLITE_MODULE_PATH}" --console --run-test VirtualSatelliteTest
 
     # -----------------------------------------------------------
     # Deploy Jobs for unsecured Development.
