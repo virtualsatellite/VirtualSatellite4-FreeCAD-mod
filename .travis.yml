@@ -75,7 +75,7 @@ jobs:
       if: branch NOT IN (integration_snapshot, development_snapshot) 
       name: Test - FreeCAD Module Tests
       script:
-      - freecad -M "${workspace_loc:virsat4-freecad-mod/}" -t $(pwd)
+      - freecad -M "$(pwd)" -t VirtualSatelliteTest
 
     # -----------------------------------------------------------
     # Deploy Jobs for unsecured Development.
