@@ -7,10 +7,6 @@ services:
   - xvfb
  
 addons:
-  # -----------------------------------------------------------
-  # Make the sourceforge hosts known, thus ssh connections will
-  # not ask to accept the finger print of the server
-  # -----------------------------------------------------------
   ssh_known_hosts: frs.sourceforge.net
   # ---------------------------------------------------------------
   # Now use APT to install metacity, which is a window manager also 
@@ -68,9 +64,8 @@ jobs:
       if: branch NOT IN (integration_snapshot, development_snapshot) 
       name: Test - FreeCAD Module Tests
       script:
-      - VIRTUAL_SATELLITE_MODULE_PATH=$(pwd)
-      - echo "Current module path ${VIRTUAL_SATELLITE_MODULE_PATH}"
-      - freecad -M $(pwd) -c -t 0
+      - freecad -M $(pwd) -c -t TestVirtualSatelliteApp
+      - freecad -M $(pwd) -t 0
 
     - stage: test
       if: branch NOT IN (integration_snapshot, development_snapshot) 
