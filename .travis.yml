@@ -67,8 +67,7 @@ jobs:
       name: Test - FreeCAD Module Tests
       script:
       # Install A2plus dependency to FreeCAD
-      - mkdir -p ~/.FreeCAD/Mod
-      - curl -L -o ~/.FreeCad/Mod/a2plus.tar.gz ${A2PLUS_REPO}/archive/${A2PLUS_VERSION}.tar.gz
+      - curl -L --create-dirs -o ~/.FreeCad/Mod/a2plus.tar.gz ${A2PLUS_REPO}/archive/${A2PLUS_VERSION}.tar.gz
       - tar -zxf ~/.FreeCad/Mod/a2plus.tar.gz -C ~/.FreeCAD/Mod/^
       # Execute FreeCAD tests
       - freecad -M $(pwd) -t TestVirtualSatelliteApp
@@ -85,8 +84,7 @@ jobs:
       name: Test - FreeCAD All Tests
       script:
       # Install A2plus dependency to FreeCAD
-      - mkdir -p ~/.FreeCAD/Mod
-      - curl -L -o ~/.FreeCad/Mod/a2plus.tar.gz ${A2PLUS_REPO}/archive/${A2PLUS_VERSION}.tar.gz
+      - curl -L --create-dirs -o ~/.FreeCad/Mod/a2plus.tar.gz ${A2PLUS_REPO}/archive/${A2PLUS_VERSION}.tar.gz
       - tar -zxf ~/.FreeCad/Mod/a2plus.tar.gz -C ~/.FreeCAD/Mod/^
       # Execute FreeCAD tests
       - freecad -M $(pwd) -t 0
