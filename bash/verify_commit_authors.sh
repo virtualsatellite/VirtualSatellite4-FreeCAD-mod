@@ -45,7 +45,7 @@ CHANGED_MAILMAP=$?
 
 echo "[Info] Checking known_authors.txt"
 
-git diff --quiet development known_authors.txtgit
+git diff --quiet development known_authors.txt
 CHANGED_KNOWN_AUTHORS=$?
 
 echo "[Info] ------------------------------------"
