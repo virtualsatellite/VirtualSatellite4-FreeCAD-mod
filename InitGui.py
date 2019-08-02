@@ -51,4 +51,4 @@ class VirtualSatelliteWorkbench(Workbench):  # @UndefinedVariable
 
 
 # Finally add the Virtual Satellite Workbench to the FreeCAD application
-Gui.addWorkbench(VirtualSatelliteWorkbench())  # @UndefinedVariable
+Gui.addWorkbench(VirtualSatelliteWorkbench())  # NOQA @UndefinedVariable
