@@ -179,7 +179,7 @@ jobs:
       - echo "Version ${VERSION} (Build $(date +"%Y%m%d%H%M%S"r)-${TRAVIS_BUILD_NUMBER})" > BUILD.txt
       - pushd .
       - cd ..  
-      - zip -r VirtualSatellite4_FreeCAD_mod_Release_${VERSION}_$(TRAVIS_BUILD_NUMBER.zip VirtualSatellite4-FreeCAD-mod -x "*/.*"
+      - zip -r VirtualSatellite4_FreeCAD_mod_Release_${VERSION}_${TRAVIS_BUILD_NUMBER}.zip VirtualSatellite4-FreeCAD-mod -x "*/.*"
       - tar --exclude="*/.*" -czvf VirtualSatellite4_FreeCAD_mod_Release_${VERSION}_${TRAVIS_BUILD_NUMBER}.tar.gz VirtualSatellite4-FreeCAD-mod
       - popd
       deploy:
