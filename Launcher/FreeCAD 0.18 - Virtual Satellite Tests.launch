@@ -5,6 +5,6 @@
 <listEntry value="org.eclipse.ui.externaltools.launchGroup"/>
 </listAttribute>
 <stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="C:\Program Files\FreeCAD 0.18\bin\FreeCAD.exe"/>
-<stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="-M &quot;${workspace_loc:virsat4-freecad-mod/}&quot; -t VirtualSatelliteTest"/>
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="-M &quot;${workspace_loc:virsat4-freecad-mod/}&quot; -t TestVirtualSatelliteApp"/>
 <stringAttribute key="org.eclipse.ui.externaltools.ATTR_WORKING_DIRECTORY" value="C:\Program Files\FreeCAD 0.18"/>
 </launchConfiguration>
