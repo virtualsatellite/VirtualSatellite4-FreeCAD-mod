@@ -35,7 +35,7 @@ env:
   global:
   - VERSION=4.9.0
   - A2PLUS_REPO=https://github.com/kbwbe/A2plus
-  - ASPLUS_VERSION=v0.4.26
+  - A2PLUS_VERSION=v0.4.26
   # ---------------------------------------------
   # API Token for access to github
   # ---------------------------------------------
