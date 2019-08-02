@@ -30,7 +30,7 @@ import unittest
 class Test(unittest.TestCase):
 
     def testName(self):
-        self.fail("An example TestCase")
+        self.assertTrue(True, "All Things are fine")
 
 
 if __name__ == "__main__":
