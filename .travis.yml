@@ -72,6 +72,8 @@ jobs:
       script:
       - python3 -m pip install pep8
       - pep8 . --count --show-source --statistics
+      - python3 -m pip install flake8
+      - flake8 . --count --show-source --statistics
       
     - stage: test
       if: branch NOT IN (integration_snapshot, development_snapshot) 
