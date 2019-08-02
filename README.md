@@ -15,7 +15,8 @@ Virtual Satellite 4 FreeCAD Module is an extension to FreeCAD. FreeCAD is an ope
 ## Requirements 
 
 This program is based on FreeCAD and Python. The following infrastructure is required:
- - FreeCAD 0.18 64bit
+ - FreeCAD 0.18 and higher (64bit)
+ - A2plus Workbench 0.4.26 and higher
  
 ## Quickstart for users
 

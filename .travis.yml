@@ -34,6 +34,8 @@ stages:
 env:
   global:
   - VERSION=4.9.0
+  - A2PLUS_REPO=https://github.com/kbwbe/A2plus
+  - ASPLUS_VERSION=v0.4.26
   # ---------------------------------------------
   # API Token for access to github
   # ---------------------------------------------
@@ -64,6 +66,11 @@ jobs:
       if: branch NOT IN (integration_snapshot, development_snapshot) 
       name: Test - FreeCAD Module Tests
       script:
+      # Install A2plus dependency to FreeCAD
+      - mkdir -p ~/.FreeCAD/Mod
+      - curl -L -o ~/.FreeCad/Mod/a2plus.tar.gz ${A2PLUS_REPO}}/archive/${A2PLUS_VERSION}.tar.gz
+      - tar -zxf ~/.FreeCad/Mod/a2plus.tar.gz -C ~/.FreeCAD/Mod/^
+      # Execute FreeCAD tests
       - freecad -M $(pwd) -t TestVirtualSatelliteApp
       
     - stage: test
@@ -77,6 +84,11 @@ jobs:
       if: branch NOT IN (integration_snapshot, development_snapshot) 
       name: Test - FreeCAD All Tests
       script:
+      # Install A2plus dependency to FreeCAD
+      - mkdir -p ~/.FreeCAD/Mod
+      - curl -L -o ~/.FreeCad/Mod/a2plus.tar.gz ${A2PLUS_REPO}}/archive/${A2PLUS_VERSION}.tar.gz
+      - tar -zxf ~/.FreeCad/Mod/a2plus.tar.gz -C ~/.FreeCAD/Mod/^
+      # Execute FreeCAD tests
       - freecad -M $(pwd) -t 0
 
     # -----------------------------------------------------------
