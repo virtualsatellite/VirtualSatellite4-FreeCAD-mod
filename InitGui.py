@@ -25,7 +25,7 @@
 #
 
 
-class VirtualSatelliteWorkbench(Workbench):  # @UndefinedVariable
+class VirtualSatelliteWorkbench(Workbench):  # NOQA @UndefinedVariable
     '''
     This class initializes the Virtual Satellite Workbench in FreeCAD.
     It provides a new menu and some commands to import and export
@@ -40,7 +40,9 @@ class VirtualSatelliteWorkbench(Workbench):  # @UndefinedVariable
 
     def Initialize(self):
         # Required method by FreeCAD framework
-        import commands.example_command  # @UnusedImport
+        # This import has to happen here, moving on the top does not
+        # work as expected. This is due to some FreeCAD internals
+        import commands.example_command  # NOQA @UnusedImport
         from commands.definitions import COMMAND_ID_HELLO_WORLD
         self.appendToolbar('VirtualSatelliteMod', [COMMAND_ID_HELLO_WORLD])
         self.appendMenu('VirtualSatelliteMod', [COMMAND_ID_HELLO_WORLD])

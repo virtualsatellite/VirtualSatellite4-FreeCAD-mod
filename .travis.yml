@@ -51,11 +51,11 @@ jobs:
     # Run a quicksanity check if all commits are
     # handed in by known users
     #---------------------------------------------
-#    - stage: verify
-#      if: branch NOT IN (integration_snapshot, development_snapshot) 
-#      name: Verify - Authors Sanity Check
-#      script:
-#      - ./bash/verify_commit_authors.sh known_authors.txt
+    - stage: verify
+      if: branch NOT IN (integration_snapshot, development_snapshot) 
+      name: Verify - Authors Sanity Check
+      script:
+      - ./bash/verify_commit_authors.sh known_authors.txt
   
     # -----------------------------------------------------
     # Build and Test - SpotBugs Jobs
@@ -68,7 +68,7 @@ jobs:
       
     - stage: test
       if: branch NOT IN (integration_snapshot, development_snapshot) 
-      name: Test - FreeCAD Module pep8
+      name: Test - FreeCAD Module flake8
       script:
       - python3 -m pip install flake8
       - flake8 . --count --show-source --statistics
@@ -123,7 +123,6 @@ jobs:
         on:
           repo: virtualsatellite/VirtualSatellite4-FreeCAD-mod
           branch: development
-          
       
     # -----------------------------------------------------------
     # Deploy Jobs for unsecured Integration.
