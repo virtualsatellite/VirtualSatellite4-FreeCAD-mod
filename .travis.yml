@@ -64,15 +64,20 @@ jobs:
       if: branch NOT IN (integration_snapshot, development_snapshot) 
       name: Test - FreeCAD Module Tests
       script:
-      - freecad -M $(pwd) -c -t TestVirtualSatelliteApp
-      - freecad -M $(pwd) -t 0
-
+      - freecad -M $(pwd) -t TestVirtualSatelliteApp
+      
     - stage: test
       if: branch NOT IN (integration_snapshot, development_snapshot) 
       name: Test - FreeCAD Module pep8
       script:
       - python3 -m pip install pep8
       - pep8 . --count --show-source --statistics
+      
+    - stage: test
+      if: branch NOT IN (integration_snapshot, development_snapshot) 
+      name: Test - FreeCAD All Tests
+      script:
+      - freecad -M $(pwd) -t 0
 
     # -----------------------------------------------------------
     # Deploy Jobs for unsecured Development.
