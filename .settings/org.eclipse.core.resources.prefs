@@ -1,8 +1,9 @@
 eclipse.preferences.version=1
 encoding//.settings/org.python.pydev.analysis.yaml=UTF-8
 encoding//commands/__init__.py=utf-8
-encoding//commands/definitions.py=utf-8
-encoding//commands/example_command.py=utf-8
+encoding//commands/command_definitions.py=utf-8
+encoding//commands/command_export.py=utf-8
+encoding//commands/command_import.py=utf-8
 encoding//module/__init__.py=utf-8
 encoding//module/environment.py=utf-8
 encoding/<project>=UTF-8

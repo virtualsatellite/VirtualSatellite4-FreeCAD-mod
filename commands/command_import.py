@@ -24,4 +24,23 @@
 # SPDX-License-Identifier: LGPL-3.0-or-later
 #
 
-COMMAND_ID_HELLO_WORLD = 'VirtualSatellite_HelloWorld'
+import FreeCAD
+import FreeCADGui
+from module.environment import Environment, ICON_IMPORT
+from commands.command_definitions import COMMAND_ID_IMPORT_2_FREECAD
+
+
+class CommandExport:
+    def Activated(self):
+        FreeCAD.Console.PrintMessage("Calling the exporter\n")
+
+    def IsActive(self):
+        return True
+
+    def GetResources(self):
+        return {'Pixmap': Environment().get_icon_path(ICON_IMPORT),
+                'MenuText': 'Export to Virtual Satellite',
+                'ToolTip': 'Open the dialog for the Virtual Satellite json export.'}
+
+
+FreeCADGui.addCommand(COMMAND_ID_IMPORT_2_FREECAD, CommandExport())  # @UndefinedVariable
