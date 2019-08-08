@@ -38,6 +38,17 @@ class JsonPart(object):
     such as swapping the axes if needed as well as cleaning uuid etc.
     '''
 
+    attributes = {
+        "name": "-",
+        "shape": "-",
+        "uuid": "-",
+        "length_x": "m",
+        "length_y": "m",
+        "length_z": "m",
+        "radius": "m",
+        "color": "rgba"
+        }
+
     def parse(self, json_object):
         self.name = str(json_object[JSON_ELEMENT_NAME])
         self.shape = str(json_object[JSON_ELEMENT_SHAPE])

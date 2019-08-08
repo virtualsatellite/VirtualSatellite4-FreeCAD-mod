@@ -30,7 +30,6 @@ from json_io.json_definitions import FREECAD_FILE_EXTENSION
 import FreeCADGui
 import os
 
-
 App = FreeCAD
 Gui = FreeCADGui
 Log = FreeCAD.Console.PrintLog
@@ -78,9 +77,43 @@ class JsonImporter(object):
         create_or_update_dispatch = getattr(self, create_or_update_method_name, lambda: "Invalid call to : " + create_or_update_method_name)
         create_or_update_dispatch(json_part)
 
+        self.create_or_update_sheet(json_part)
+
         App.getDocument(part_file_name).saveAs(part_file_fullpath)
         App.closeDocument(part_file_name)
         Log('Saved part to file: ' + part_file_fullpath + "\n")
+
+    def create_or_update_sheet(self, json_part):
+        sheet = App.ActiveDocument.getObject("VirtualSatellite")
+        if sheet is None:
+            sheet = App.ActiveDocument.addObject("Spreadsheet::Sheet", "VirtualSatellite")
+
+        sheet.set("A1", "Virtual Satellite Part Data")
+        sheet.set("A2", "Name")
+        sheet.set("B2", "Value")
+        sheet.set("C2", "Unit")
+        sheet.setStyle("A1:C2", "bold")
+
+        sheet_line = 3
+        for json_part_attribute_name in list(json_part.attributes.keys()):
+
+            json_part_attribute_value = str(getattr(json_part, json_part_attribute_name))
+            json_part_attribute_unit = json_part.attributes[json_part_attribute_name]
+
+            sheet.set("A" + str(sheet_line), json_part_attribute_name)
+            sheet.set("B" + str(sheet_line), json_part_attribute_value)
+            sheet.set("C" + str(sheet_line), json_part_attribute_unit)
+
+            sheet_line += 1
+
+    def read_from_sheet(self, attribute_name):
+        sheet = App.ActiveDocument.getObject("VirtualSatellite")
+        column_a_cells = list(filter(lambda x: x.startswith('A'), sheet.PropertiesList))
+
+        for a_cell in column_a_cells:
+            if a_cell == attribute_name:
+                b_cell = a_cell.replace("A", "B")
+                return sheet.get(b_cell)
 
     def create_or_update_box(self, json_part):
         if App.ActiveDocument.getObject('Box') is None:

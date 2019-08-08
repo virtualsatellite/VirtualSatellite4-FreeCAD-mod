@@ -41,6 +41,7 @@ Gui = FreeCADGui
 
 # define the name of the directory to be created
 TEST_WORKING_DIRECTORY = "/tmp/FreeCADtest/"
+TEST_ALLOWED_AMOUNT_OF_PART_OBJECTS = 2
 
 
 class TestJsonImporter(unittest.TestCase):
@@ -88,7 +89,7 @@ class TestJsonImporter(unittest.TestCase):
         self.assertTrue(os.path.isfile(test_file_name), "File exists on drive")
         App.open(test_file_name)
 
-        self.assertEquals(len(App.ActiveDocument.RootObjects), 1, "Correct amount of objects in file")
+        self.assertEquals(len(App.ActiveDocument.RootObjects), TEST_ALLOWED_AMOUNT_OF_PART_OBJECTS, "Correct amount of objects in file")
 
         # Check that there is a box with the correct properties
         self.assertEquals(str(App.ActiveDocument.getObject("Box").Length), "40 mm", "Shape has correct size")
@@ -124,7 +125,7 @@ class TestJsonImporter(unittest.TestCase):
         App.open(test_file_name)
 
         # Check that there is a box with the correct properties
-        self.assertEquals(len(App.ActiveDocument.RootObjects), 1, "Correct amount of objects in file")
+        self.assertEquals(len(App.ActiveDocument.RootObjects), TEST_ALLOWED_AMOUNT_OF_PART_OBJECTS, "Correct amount of objects in file")
 
         json_data = """{
             "color": 12632256,
@@ -145,7 +146,7 @@ class TestJsonImporter(unittest.TestCase):
         test_file_name = TEST_WORKING_DIRECTORY + "Beam_6201a731_d703_43f8_ab37_6a0666dfe022" + FREECAD_FILE_EXTENSION
         App.open(test_file_name)
 
-        self.assertEquals(len(App.ActiveDocument.RootObjects), 1, "Correct amount of objects in file")
+        self.assertEquals(len(App.ActiveDocument.RootObjects), TEST_ALLOWED_AMOUNT_OF_PART_OBJECTS, "Correct amount of objects in file")
         self.assertTrue(os.path.isfile(test_file_name), "File exists on drive")
 
     def test_create_part_update_value(self):
@@ -174,7 +175,7 @@ class TestJsonImporter(unittest.TestCase):
         App.open(test_file_name)
 
         # Check that there is a box with the correct properties
-        self.assertEquals(len(App.ActiveDocument.RootObjects), 1, "Correct amount of objects in file")
+        self.assertEquals(len(App.ActiveDocument.RootObjects), TEST_ALLOWED_AMOUNT_OF_PART_OBJECTS, "Correct amount of objects in file")
         self.assertEquals(str(App.ActiveDocument.getObject("Box").Length), "40 mm", "Shape has correct size")
 
         json_data = """{
@@ -198,5 +199,5 @@ class TestJsonImporter(unittest.TestCase):
         App.open(test_file_name)
 
         # Check that there is a box with the correct properties
-        self.assertEquals(len(App.ActiveDocument.RootObjects), 1, "Correct amount of objects in file")
+        self.assertEquals(len(App.ActiveDocument.RootObjects), TEST_ALLOWED_AMOUNT_OF_PART_OBJECTS, "Correct amount of objects in file")
         self.assertEquals(str(App.ActiveDocument.getObject("Box").Length), "450 mm", "Shape has correctly changed size")
