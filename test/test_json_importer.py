@@ -67,7 +67,7 @@ class TestJsonImporter(unittest.TestCase):
         json_importer.create_or_update_part(json_object)
 
         # Check the file got created
-        test_file_name = TEST_WORKING_DIRECTORY + "Beam_6201a731_d703_43f8_ab37_6a0581dfe022" + FREECAD_FILE_EXTENSION;
+        test_file_name = TEST_WORKING_DIRECTORY + "Beam_6201a731_d703_43f8_ab37_6a0581dfe022" + FREECAD_FILE_EXTENSION
         self.assertTrue(os.path.isfile(test_file_name), "File exists on drive")
 
         App.open(test_file_name)
@@ -76,4 +76,3 @@ class TestJsonImporter(unittest.TestCase):
         self.assertEquals(str(App.ActiveDocument.getObject("Box").Length), "40 mm", "Shape has correct size")
         self.assertEquals(str(App.ActiveDocument.getObject("Box").Height), "300 mm", "Shape has correct size")
         self.assertEquals(str(App.ActiveDocument.getObject("Box").Width), "10 mm", "Shape has correct size")
-        
