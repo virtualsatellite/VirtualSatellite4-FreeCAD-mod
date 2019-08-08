@@ -24,15 +24,4 @@
 # SPDX-License-Identifier: LGPL-3.0-or-later
 #
 
-import unittest
-
-
-class Test(unittest.TestCase):
-
-    def testName(self):
-        self.assertTrue(True, "All Things are fine")
-
-
-if __name__ == "__main__":
-    # import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()
+from test.test_json_importer import TestJsonImporter #NOQA

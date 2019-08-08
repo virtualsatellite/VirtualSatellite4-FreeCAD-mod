@@ -24,23 +24,25 @@
 # SPDX-License-Identifier: LGPL-3.0-or-later
 #
 
-import FreeCAD
-import FreeCADGui
-from module.environment import Environment, ICON_IMPORT
-from commands.command_definitions import COMMAND_ID_IMPORT_2_FREECAD
 
+JSON_ELEMENT_COLOR = "color"
+JSON_ELEMENT_SHAPE = "shape"
 
-class CommandExport:
-    def Activated(self):
-        FreeCAD.Console.PrintMessage("Calling the json_io\n")
+JSON_ELEMENT_SHAPE_BOX = "BOX"
+JSON_ELEMENT_SHAPE_CONE = "CONE"
+JSON_ELEMENT_SHAPE_CYLINDER = "CYLINDER"
+JSON_ELEMENT_SHAPE_SPHERE = "SPHERE"
+JSON_ELEMENT_SHAPE_GEOMETRY = "GEOMETRY"
 
-    def IsActive(self):
-        return True
+JSON_ELEMENT_NAME = "name"
 
-    def GetResources(self):
-        return {'Pixmap': Environment().get_icon_path(ICON_IMPORT),
-                'MenuText': 'Export to Virtual Satellite',
-                'ToolTip': 'Open the dialog for the Virtual Satellite json export.'}
+# The axis between Virtual Satellite and FreeCAD are not identical
+# Therefore Y and Z gets swpapped here.
+JSON_ELEMENT_LENGTH_X = "lengthX"
+JSON_ELEMENT_LENGTH_Y = "lengthZ"
+JSON_ELEMENT_LENGTH_Z = "lengthY"
 
+JSON_ELEMENT_RADIUS = "radius"
+JSON_ELEMENT_UUID = "uuid"
 
-FreeCADGui.addCommand(COMMAND_ID_IMPORT_2_FREECAD, CommandExport())  # @UndefinedVariable
+FREECAD_FILE_EXTENSION = ".FCstd"
