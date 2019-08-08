@@ -36,11 +36,9 @@ JSON_ELEMENT_SHAPE_GEOMETRY = "GEOMETRY"
 
 JSON_ELEMENT_NAME = "name"
 
-# The axis between Virtual Satellite and FreeCAD are not identical
-# Therefore Y and Z gets swpapped here.
 JSON_ELEMENT_LENGTH_X = "lengthX"
-JSON_ELEMENT_LENGTH_Y = "lengthZ"
-JSON_ELEMENT_LENGTH_Z = "lengthY"
+JSON_ELEMENT_LENGTH_Y = "lengthY"
+JSON_ELEMENT_LENGTH_Z = "lengthZ"
 
 JSON_ELEMENT_RADIUS = "radius"
 JSON_ELEMENT_UUID = "uuid"

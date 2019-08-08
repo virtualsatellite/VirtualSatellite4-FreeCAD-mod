@@ -23,15 +23,18 @@
 #
 # SPDX-License-Identifier: LGPL-3.0-or-later
 #
-from json_io.json_definitions import JSON_ELEMENT_NAME,\
-    JSON_ELEMENT_SHAPE,\
-    JSON_ELEMENT_UUID, FREECAD_FILE_EXTENSION, JSON_ELEMENT_LENGTH_Z,\
-    JSON_ELEMENT_LENGTH_Y, JSON_ELEMENT_LENGTH_X
 
 import FreeCAD
 import string
+from json_io.json_part import JsonPart
+from json_io.json_definitions import FREECAD_FILE_EXTENSION
+
 
 App = FreeCAD
+Log = FreeCAD.Console.PrintLog
+Msg = FreeCAD.Console.PrintMessage
+Err = FreeCAD.Console.PrintError
+Wrn = FreeCAD.Console.PrintWarning
 
 
 class JsonImporter(object):
@@ -45,17 +48,14 @@ class JsonImporter(object):
         self.working_output_directory = working_ouput_directory
 
     def create_or_update_part(self, json_object):
-
-        # Retrieve name and shape information from json object
-        part_name = str(json_object[JSON_ELEMENT_NAME])
-        part_shape = str(json_object[JSON_ELEMENT_SHAPE])
-        part_uuid = str(json_object[JSON_ELEMENT_UUID]).replace("-", "_")
+        Log('Creating or Updating a part...\n')
+        json_part = JsonPart().parse(json_object)
 
         # Use the name to create the part document
         # should be careful in case the name already exists.
         # thus it is combined with the uuid. not really nice
         # but definitely efficient
-        part_file_name = str(part_name + "_" + part_uuid)
+        part_file_name = str(json_part.name + "_" + json_part.uuid)
         App.newDocument(part_file_name)
         App.setActiveDocument(part_file_name)
         App.ActiveDocument = App.getDocument(part_file_name)
@@ -63,37 +63,32 @@ class JsonImporter(object):
         part_file_fullpath = self.working_output_directory + part_file_name + FREECAD_FILE_EXTENSION
 
         # Dispatch to creation method depending on shape type
-        create_or_update_method_name = "create_or_update_" + part_shape.lower()
+        create_or_update_method_name = "create_or_update_" + json_part.shape.lower()
         create_or_update_dispatch = getattr(self, create_or_update_method_name, lambda: "Invalid call to : " + create_or_update_method_name)
-        create_or_update_dispatch(json_object)
+        create_or_update_dispatch(json_part)
 
         App.getDocument(part_file_name).saveAs(part_file_fullpath)
-        print("should have saved")
+        App.closeDocument(part_file_name)
+        Log('Saved part to file: ' + part_file_fullpath + "\n")
 
-    def create_or_update_box(self, json_object):
-        print("creating a box")
-        part_name = json_object[JSON_ELEMENT_NAME]
+    def create_or_update_box(self, json_part):
 
         App.ActiveDocument.addObject("Part::Box", "Box")
-        App.ActiveDocument.ActiveObject.Label = part_name
+        App.ActiveDocument.ActiveObject.Label = json_part.name
         App.ActiveDocument.recompute()
 
-        part_length_x = str(json_object[JSON_ELEMENT_LENGTH_X])
-        part_length_y = str(json_object[JSON_ELEMENT_LENGTH_Y])
-        part_length_z = str(json_object[JSON_ELEMENT_LENGTH_Z])
+        App.ActiveDocument.getObject("Box").Length = json_part.length_x + ' m'
+        App.ActiveDocument.getObject("Box").Height = json_part.length_y + ' m'
+        App.ActiveDocument.getObject("Box").Width = json_part.length_z + ' m'
 
-        App.ActiveDocument.getObject("Box").Length = part_length_x + ' m'
-        App.ActiveDocument.getObject("Box").Height = part_length_y + ' m'
-        App.ActiveDocument.getObject("Box").Width = part_length_z + ' m'
-
-    def create_or_update_cone(self, json_object):
+    def create_or_update_cone(self, json_part):
         pass
 
-    def create_or_update_cylinder(self, json_object):
+    def create_or_update_cylinder(self, json_part):
         pass
 
-    def create_or_update_sphere(self, json_object):
+    def create_or_update_sphere(self, json_part):
         pass
 
-    def create_or_update_geometry(self, json_object):
+    def create_or_update_geometry(self, json_part):
         pass
