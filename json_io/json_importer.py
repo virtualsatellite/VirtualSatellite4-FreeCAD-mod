@@ -25,7 +25,6 @@
 #
 
 import FreeCAD
-import string
 from json_io.json_part import JsonPart
 from json_io.json_definitions import FREECAD_FILE_EXTENSION
 
@@ -41,8 +40,6 @@ class JsonImporter(object):
     '''
     classdocs
     '''
-
-    working_output_directory: string
 
     def __init__(self, working_ouput_directory):
         self.working_output_directory = working_ouput_directory
