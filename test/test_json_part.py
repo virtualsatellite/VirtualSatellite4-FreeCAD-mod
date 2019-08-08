@@ -50,8 +50,10 @@ class TestJsonPart(unittest.TestCase):
         self.assertEqual(json_part.name, "Beam", "Property is correctly set")
         self.assertEqual(json_part.uuid, "6201a731_d703_43f8_ab37_6a0581dfe022", "Property is correctly set")
         self.assertEqual(json_part.shape, "BOX", "Property is correctly set")
+
         self.assertEqual(json_part.length_x, "0.04", "Property is correctly set")
         self.assertEqual(json_part.length_y, "0.3", "Property is correctly set and axes are swapped")
         self.assertEqual(json_part.length_z, "0.01", "Property is correctly set and axes are swapped")
         self.assertEqual(json_part.radius, "0.0", "Property is correctly set and")
-        self.assertEqual(json_part.color, "12632256", "Property is correctly set")
+
+        self.assertEqual(json_part.color, 12632256 << 8, "Property is correctly set")

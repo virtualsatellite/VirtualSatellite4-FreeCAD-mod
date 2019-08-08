@@ -27,9 +27,12 @@
 import FreeCAD
 from json_io.json_part import JsonPart
 from json_io.json_definitions import FREECAD_FILE_EXTENSION
+import FreeCADGui
+import os
 
 
 App = FreeCAD
+Gui = FreeCADGui
 Log = FreeCAD.Console.PrintLog
 Msg = FreeCAD.Console.PrintMessage
 Err = FreeCAD.Console.PrintError
@@ -53,7 +56,18 @@ class JsonImporter(object):
         # thus it is combined with the uuid. not really nice
         # but definitely efficient
         part_file_name = str(json_part.name + "_" + json_part.uuid)
-        App.newDocument(part_file_name)
+        part_file_fullpath = self.working_output_directory + part_file_name + FREECAD_FILE_EXTENSION
+
+        if(os.path.isfile(part_file_fullpath)):
+            Log('Open exisitng part file for update...\n')
+            documents = list(App.listDocuments().keys())
+            # If the document is not yet laoded, open it
+            if documents.count(part_file_name) == 0:
+                App.open(part_file_fullpath)
+        else:
+            Log('Create new part file...\n')
+            App.newDocument(part_file_name)
+
         App.setActiveDocument(part_file_name)
         App.ActiveDocument = App.getDocument(part_file_name)
 
@@ -69,14 +83,18 @@ class JsonImporter(object):
         Log('Saved part to file: ' + part_file_fullpath + "\n")
 
     def create_or_update_box(self, json_part):
+        if App.ActiveDocument.getObject('Box') is None:
+            App.ActiveDocument.addObject("Part::Box", "Box")
 
-        App.ActiveDocument.addObject("Part::Box", "Box")
-        App.ActiveDocument.ActiveObject.Label = json_part.name
-        App.ActiveDocument.recompute()
+        App.ActiveDocument.getObject("Box").Label = json_part.name
 
         App.ActiveDocument.getObject("Box").Length = json_part.length_x + ' m'
         App.ActiveDocument.getObject("Box").Height = json_part.length_y + ' m'
         App.ActiveDocument.getObject("Box").Width = json_part.length_z + ' m'
+
+        Gui.ActiveDocument.getObject("Box").ShapeColor = json_part.color
+
+        App.ActiveDocument.recompute()
 
     def create_or_update_cone(self, json_part):
         pass

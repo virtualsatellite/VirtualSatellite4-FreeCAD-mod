@@ -27,12 +27,16 @@
 import unittest
 
 import os
-import FreeCAD
-from json_io.json_importer import JsonImporter
 import json
+
+from json_io.json_importer import JsonImporter
 from json_io.json_definitions import FREECAD_FILE_EXTENSION
 
+import FreeCAD
+import FreeCADGui
+
 App = FreeCAD
+Gui = FreeCADGui
 
 
 # define the name of the directory to be created
@@ -44,10 +48,24 @@ class TestJsonImporter(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         try:
+            if os.path.exists(TEST_WORKING_DIRECTORY):
+                for subDir in os.listdir(TEST_WORKING_DIRECTORY):
+                    os.remove(os.path.join(TEST_WORKING_DIRECTORY, subDir))
+                # os.rmdir(TEST_WORKING_DIRECTORY)
+        except OSError:
+            cls.fail(cls, "Cannot Clean up test directory: %s failed" % TEST_WORKING_DIRECTORY)
+        try:
             if not os.path.exists(TEST_WORKING_DIRECTORY):
                 os.makedirs(TEST_WORKING_DIRECTORY)
         except OSError:
             cls.fail(cls, "Cannot create test directory: %s failed" % TEST_WORKING_DIRECTORY)
+
+    def tearDown(self):
+        unittest.TestCase.tearDown(self)
+        # Close all documents in FreeCAD
+        document_list = list(App.listDocuments().keys())
+        for document_name in document_list:
+            App.closeDocument(document_name)
 
     def test_create_part(self):
         json_data = """{
@@ -62,17 +80,123 @@ class TestJsonImporter(unittest.TestCase):
         }"""
 
         json_object = json.loads(json_data)
-
         json_importer = JsonImporter(TEST_WORKING_DIRECTORY)
         json_importer.create_or_update_part(json_object)
 
         # Check the file got created
         test_file_name = TEST_WORKING_DIRECTORY + "Beam_6201a731_d703_43f8_ab37_6a0581dfe022" + FREECAD_FILE_EXTENSION
         self.assertTrue(os.path.isfile(test_file_name), "File exists on drive")
-
         App.open(test_file_name)
+
+        self.assertEquals(len(App.ActiveDocument.RootObjects), 1, "Correct amount of objects in file")
 
         # Check that there is a box with the correct properties
         self.assertEquals(str(App.ActiveDocument.getObject("Box").Length), "40 mm", "Shape has correct size")
         self.assertEquals(str(App.ActiveDocument.getObject("Box").Height), "300 mm", "Shape has correct size")
         self.assertEquals(str(App.ActiveDocument.getObject("Box").Width), "10 mm", "Shape has correct size")
+
+        self.assertEquals(Gui.ActiveDocument.getObject("Box").ShapeColor,
+                          (0.7529411911964417, 0.7529411911964417, 0.7529411911964417, 0.0),
+                          "Shape has correct color")
+
+    def test_create_part_update_uuid(self):
+        '''
+        In this test case the uuid is changed. a new uuid has to create a new file.
+        '''
+        json_data = """{
+            "color": 12632256,
+            "shape": "BOX",
+            "name": "Beam",
+            "lengthX": 0.04,
+            "lengthY": 0.01,
+            "lengthZ": 0.3,
+            "radius": 0.0,
+            "uuid": "6201a731-d703-43f8-ab37-6a0581dfe022"
+        }"""
+
+        json_object = json.loads(json_data)
+        json_importer = JsonImporter(TEST_WORKING_DIRECTORY)
+        json_importer.create_or_update_part(json_object)
+
+        # Check the file got created
+        test_file_name = TEST_WORKING_DIRECTORY + "Beam_6201a731_d703_43f8_ab37_6a0581dfe022" + FREECAD_FILE_EXTENSION
+        self.assertTrue(os.path.isfile(test_file_name), "File exists on drive")
+        App.open(test_file_name)
+
+        # Check that there is a box with the correct properties
+        self.assertEquals(len(App.ActiveDocument.RootObjects), 1, "Correct amount of objects in file")
+
+        json_data = """{
+            "color": 12632256,
+            "shape": "BOX",
+            "name": "Beam",
+            "lengthX": 0.04,
+            "lengthY": 0.01,
+            "lengthZ": 0.3,
+            "radius": 0.0,
+            "uuid": "6201a731-d703-43f8-ab37-6a0666dfe022"
+        }"""
+
+        json_object = json.loads(json_data)
+        json_importer = JsonImporter(TEST_WORKING_DIRECTORY)
+        json_importer.create_or_update_part(json_object)
+
+        # Check the file got created
+        test_file_name = TEST_WORKING_DIRECTORY + "Beam_6201a731_d703_43f8_ab37_6a0666dfe022" + FREECAD_FILE_EXTENSION
+        App.open(test_file_name)
+
+        self.assertEquals(len(App.ActiveDocument.RootObjects), 1, "Correct amount of objects in file")
+        self.assertTrue(os.path.isfile(test_file_name), "File exists on drive")
+
+    def test_create_part_update_value(self):
+        '''
+        This test changes an attribute such as the size of the shape.
+        Thus the shape is changed but it is still the same object and file.
+        '''
+        json_data = """{
+            "color": 12632256,
+            "shape": "BOX",
+            "name": "Beam",
+            "lengthX": 0.04,
+            "lengthY": 0.01,
+            "lengthZ": 0.3,
+            "radius": 0.0,
+            "uuid": "6201a731-d703-43f8-ab37-6a0581dfe022"
+        }"""
+
+        json_object = json.loads(json_data)
+        json_importer = JsonImporter(TEST_WORKING_DIRECTORY)
+        json_importer.create_or_update_part(json_object)
+
+        # Check the file got created
+        test_file_name = TEST_WORKING_DIRECTORY + "Beam_6201a731_d703_43f8_ab37_6a0581dfe022" + FREECAD_FILE_EXTENSION
+        self.assertTrue(os.path.isfile(test_file_name), "File exists on drive")
+        App.open(test_file_name)
+
+        # Check that there is a box with the correct properties
+        self.assertEquals(len(App.ActiveDocument.RootObjects), 1, "Correct amount of objects in file")
+        self.assertEquals(str(App.ActiveDocument.getObject("Box").Length), "40 mm", "Shape has correct size")
+
+        json_data = """{
+            "color": 12632256,
+            "shape": "BOX",
+            "name": "Beam",
+            "lengthX": 0.45,
+            "lengthY": 0.01,
+            "lengthZ": 0.3,
+            "radius": 0.0,
+            "uuid": "6201a731-d703-43f8-ab37-6a0581dfe022"
+        }"""
+
+        json_object = json.loads(json_data)
+        json_importer = JsonImporter(TEST_WORKING_DIRECTORY)
+        json_importer.create_or_update_part(json_object)
+
+        # Check the file got created
+        test_file_name = TEST_WORKING_DIRECTORY + "Beam_6201a731_d703_43f8_ab37_6a0581dfe022" + FREECAD_FILE_EXTENSION
+        self.assertTrue(os.path.isfile(test_file_name), "File exists on drive")
+        App.open(test_file_name)
+
+        # Check that there is a box with the correct properties
+        self.assertEquals(len(App.ActiveDocument.RootObjects), 1, "Correct amount of objects in file")
+        self.assertEquals(str(App.ActiveDocument.getObject("Box").Length), "450 mm", "Shape has correctly changed size")
