@@ -27,7 +27,6 @@
 from json_io.json_definitions import JSON_ELEMENT_NAME, JSON_ELEMENT_SHAPE,\
     JSON_ELEMENT_UUID, JSON_ELEMENT_LENGTH_X, JSON_ELEMENT_LENGTH_Y,\
     JSON_ELEMENT_LENGTH_Z, JSON_ELEMENT_RADIUS, JSON_ELEMENT_COLOR
-from future.types.newint import long
 
 
 class JsonPart(object):
@@ -63,6 +62,6 @@ class JsonPart(object):
         self.radius = str(json_object[JSON_ELEMENT_RADIUS])
 
         # shift from pure rgb to rgba
-        self.color = long(json_object[JSON_ELEMENT_COLOR]) << 8
+        self.color = int(json_object[JSON_ELEMENT_COLOR]) << 8
 
         return self
