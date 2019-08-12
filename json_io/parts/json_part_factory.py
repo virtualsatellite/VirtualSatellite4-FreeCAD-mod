@@ -46,39 +46,39 @@ class JsonPartFactory(object):
 
     @classmethod
     def create_from_json(cls, json_object):
-        Log("Creating part object...")
+        Log("Creating part object...\n")
         shape = str(json_object[JSON_ELEMENT_SHAPE])
 
         # Dispatch to creation method depending on shape type
         create_method_name = "_create_json_part_" + shape.lower()
-        create_method_dispatch = getattr(cls, create_method_name, lambda: Err("Invalid call to : " + create_method_name))
+        create_method_dispatch = getattr(cls, create_method_name, lambda: Err("Invalid call to : " + create_method_name + "\n"))
         json_part_x = create_method_dispatch()
         json_part_x.parse_from_json(json_object)
 
-        Log("Done creating part object.")
+        Log("Done creating part object.\n")
         return json_part_x
 
     @classmethod
     def _create_json_part_box(cls):
-        Log("Creating box part.")
+        Log("Creating box part.\n")
         return JsonPartBox()
 
     @classmethod
     def _create_json_part_cylinder(cls):
-        Log("Creating cylinder part.")
+        Log("Creating cylinder part.\n")
         return JsonPartCylinder()
 
     @classmethod
     def _create_json_part_cone(cls):
-        Log("Creating cone part.")
+        Log("Creating cone part.\n")
         return JsonPartCone()
 
     @classmethod
     def _create_json_part_sphere(cls):
-        Log("Creating sphere part.")
+        Log("Creating sphere part.\n")
         return JsonPartSphere()
 
     @classmethod
     def _create_json_part_geometry(cls):
-        Log("Creating sphere part.")
+        Log("Creating sphere part.\n")
         return JsonPartGeometry()

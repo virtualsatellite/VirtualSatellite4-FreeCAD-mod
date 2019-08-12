@@ -25,10 +25,10 @@
 #
 
 import FreeCAD
-from json_io.json_definitions import FREECAD_FILE_EXTENSION
 import FreeCADGui
 import os
 from json_io.parts.json_part import AJsonPart
+from freecad.active_document_helper import FREECAD_FILE_EXTENSION
 
 App = FreeCAD
 Gui = FreeCADGui
