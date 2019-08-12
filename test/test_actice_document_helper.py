@@ -35,7 +35,7 @@ App = FreeCAD
 Gui = FreeCADGui
 
 
-class TestActiveDocumentHelper(AWorkingDirectoryTest):
+class TestJsonPartSheet(AWorkingDirectoryTest):
 
     @classmethod
     def setUpClass(cls):

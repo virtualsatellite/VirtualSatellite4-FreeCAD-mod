@@ -64,9 +64,12 @@ class ActiveDocumentHelper(object):
 
         return App.ActiveDocument
 
-    def save_and_close_active_document(self, file_name_without_extension):
+    def save_as(self, file_name_without_extension):
         file_full_path = self.get_file_full_path(file_name_without_extension)
+        App.getDocument(file_name_without_extension).saveAs(file_full_path)
 
-        App.ActiveDocument.saveAs(file_full_path)
+    def save_and_close_active_document(self, file_name_without_extension):
+        self.save_as(file_name_without_extension)
+
         App.closeDocument(file_name_without_extension)
         App.ActiveDocument = None

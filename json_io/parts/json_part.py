@@ -66,7 +66,7 @@ class AJsonPart(ABC):
         self.color = int(json_object[JSON_ELEMENT_COLOR]) << 8
 
         return self
-    
+
     def write_to_freecad(self, active_document):
         pass
 
