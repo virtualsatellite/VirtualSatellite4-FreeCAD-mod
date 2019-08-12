@@ -201,3 +201,53 @@ class TestJsonImporter(unittest.TestCase):
         # Check that there is a box with the correct properties
         self.assertEquals(len(App.ActiveDocument.RootObjects), TEST_ALLOWED_AMOUNT_OF_PART_OBJECTS, "Correct amount of objects in file")
         self.assertEquals(str(App.ActiveDocument.getObject("Box").Length), "450 mm", "Shape has correctly changed size")
+
+
+    def test_create_cone(self):
+        json_data = """{
+            "color": 12632256,
+            "shape": "Cone",
+            "name": "Antenna",
+            "lengthX": 0.04,
+            "lengthY": 0.01,
+            "lengthZ": 0.3,
+            "radius": 0.0,
+            "uuid": "6201a731-d703-43f8-ab37-6a0581dfe000"
+        }"""
+
+        json_object = json.loads(json_data)
+        json_importer = JsonImporter(TEST_WORKING_DIRECTORY)
+        json_importer.create_or_update_part(json_object)
+
+        # Check the file got created
+        test_file_name = TEST_WORKING_DIRECTORY + "Beam_6201a731_d703_43f8_ab37_6a0581dfe022" + FREECAD_FILE_EXTENSION
+        self.assertTrue(os.path.isfile(test_file_name), "File exists on drive")
+        App.open(test_file_name)
+
+        # Check that there is a box with the correct properties
+        self.assertEquals(len(App.ActiveDocument.RootObjects), TEST_ALLOWED_AMOUNT_OF_PART_OBJECTS, "Correct amount of objects in file")
+        self.assertEquals(str(App.ActiveDocument.getObject("Box").Length), "40 mm", "Shape has correct size")
+
+        json_data = """{
+            "color": 12632256,
+            "shape": "BOX",
+            "name": "Beam",
+            "lengthX": 0.45,
+            "lengthY": 0.01,
+            "lengthZ": 0.3,
+            "radius": 0.0,
+            "uuid": "6201a731-d703-43f8-ab37-6a0581dfe022"
+        }"""
+
+        json_object = json.loads(json_data)
+        json_importer = JsonImporter(TEST_WORKING_DIRECTORY)
+        json_importer.create_or_update_part(json_object)
+
+        # Check the file got created
+        test_file_name = TEST_WORKING_DIRECTORY + "Beam_6201a731_d703_43f8_ab37_6a0581dfe022" + FREECAD_FILE_EXTENSION
+        self.assertTrue(os.path.isfile(test_file_name), "File exists on drive")
+        App.open(test_file_name)
+
+        # Check that there is a box with the correct properties
+        self.assertEquals(len(App.ActiveDocument.RootObjects), TEST_ALLOWED_AMOUNT_OF_PART_OBJECTS, "Correct amount of objects in file")
+        self.assertEquals(str(App.ActiveDocument.getObject("Box").Length), "450 mm", "Shape has correctly changed size")

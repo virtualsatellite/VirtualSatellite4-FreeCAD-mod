@@ -27,9 +27,10 @@
 from json_io.json_definitions import JSON_ELEMENT_NAME, JSON_ELEMENT_SHAPE,\
     JSON_ELEMENT_UUID, JSON_ELEMENT_LENGTH_X, JSON_ELEMENT_LENGTH_Y,\
     JSON_ELEMENT_LENGTH_Z, JSON_ELEMENT_RADIUS, JSON_ELEMENT_COLOR
+from abc import ABC
 
 
-class JsonPart(object):
+class AJsonPart(ABC):
     '''
     This class translates a json object into a more specific
     one which represents all relevant information of a part. On
@@ -48,7 +49,7 @@ class JsonPart(object):
         "color": "rgba"
         }
 
-    def parse(self, json_object):
+    def parse_from_json(self, json_object):
         self.name = str(json_object[JSON_ELEMENT_NAME])
         self.shape = str(json_object[JSON_ELEMENT_SHAPE])
         self.uuid = str(json_object[JSON_ELEMENT_UUID]).replace("-", "_")
@@ -65,3 +66,7 @@ class JsonPart(object):
         self.color = int(json_object[JSON_ELEMENT_COLOR]) << 8
 
         return self
+
+    def get_shape_type(self):
+        shape_type = self.shape.lower().capitalize()
+        return shape_type

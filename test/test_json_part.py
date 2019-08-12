@@ -27,7 +27,7 @@
 import unittest
 
 import json
-from json_io.json_part import JsonPart
+from json_io.parts.json_part import AJsonPart
 
 
 class TestJsonPart(unittest.TestCase):
@@ -45,7 +45,7 @@ class TestJsonPart(unittest.TestCase):
         }"""
 
         json_object = json.loads(json_data)
-        json_part = JsonPart().parse(json_object)
+        json_part = AJsonPart().parse_from_json(json_object)
 
         self.assertEqual(json_part.name, "Beam", "Property is correctly set")
         self.assertEqual(json_part.uuid, "6201a731_d703_43f8_ab37_6a0581dfe022", "Property is correctly set")

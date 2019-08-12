@@ -25,10 +25,10 @@
 #
 
 import FreeCAD
-from json_io.json_part import JsonPart
 from json_io.json_definitions import FREECAD_FILE_EXTENSION
 import FreeCADGui
 import os
+from json_io.parts.json_part import AJsonPart
 
 App = FreeCAD
 Gui = FreeCADGui
@@ -48,7 +48,7 @@ class JsonImporter(object):
 
     def create_or_update_part(self, json_object):
         Log('Creating or Updating a part...\n')
-        json_part = JsonPart().parse(json_object)
+        json_part = AJsonPart().parse(json_object)
 
         # Use the name to create the part document
         # should be careful in case the name already exists.
