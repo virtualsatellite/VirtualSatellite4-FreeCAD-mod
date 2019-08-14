@@ -55,13 +55,13 @@ class TestJsonPartSheet(AWorkingDirectoryTest):
         cls._WORKING_DIRECTORY = cls.getDirectoryFullPath()
 
     def setUp(self):
-        self._active_document = ActiveDocumentHelper(self._WORKING_DIRECTORY).open_set_and_get_document("PartSheetTest")
         self._json_test_object = json.loads(self._json_test_data)
 
     def tearDown(self):
         super().tearDown()
 
     def test_write_to_freecad(self):
+        self._active_document = ActiveDocumentHelper(self._WORKING_DIRECTORY).open_set_and_get_document("PartSheetTest_Write")
         json_part_sheet = JsonPartSheet().parse_from_json(self._json_test_object)
 
         json_part_sheet_object = self._active_document.getObject(FREECAD_PART_SHEET_NAME)
@@ -72,15 +72,14 @@ class TestJsonPartSheet(AWorkingDirectoryTest):
         json_part_sheet_object = self._active_document.getObject(FREECAD_PART_SHEET_NAME)
         self.assertIsNotNone(json_part_sheet_object, "The object does exist now")
         self.assertEquals(len(self._active_document.RootObjects), 1, "Correct amount of objects in document")
+        self.assertEquals(len(json_part_sheet_object.PropertiesList), 36, "Computed correct amount of properties in the sheet")
 
     def test_read_sheet_attribute(self):
+        self._active_document = ActiveDocumentHelper(self._WORKING_DIRECTORY).open_set_and_get_document("PartSheetTest_Read")
         json_part_sheet = JsonPartSheet().parse_from_json(self._json_test_object)
 
         json_part_sheet.write_to_freecad(self._active_document)
 
-        ActiveDocumentHelper(self._WORKING_DIRECTORY).save_as("PartSheetTest")
-
         attribute = json_part_sheet.read_sheet_attribute(self._active_document, "length_z")
 
-        self.assertEquals(attribute, "0.40", "Got correct value")
-
+        self.assertEquals(attribute, 0.01, "Got correct value")

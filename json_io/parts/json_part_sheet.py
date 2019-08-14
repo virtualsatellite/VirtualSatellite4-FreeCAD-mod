@@ -28,11 +28,22 @@
 from json_io.parts.json_part import AJsonPart
 
 FREECAD_PART_SHEET_NAME = "VirtualSatellitePart"
+FREECAD_PART_SHEET_ATTRIBUTE_START_LINE = 3
 
 
 class JsonPartSheet(AJsonPart):
+    '''
+    This class handles the io of the part properties to an excel sheet
+    '''
 
     def write_to_freecad(self, active_document):
+        '''
+        This method writes all part properties into an excel sheet
+        within the part file. This sheet will be needed to read
+        out the uuid of the part which corresponds to the uuid of
+        virtual satellite.
+        '''
+
         sheet = active_document.getObject(FREECAD_PART_SHEET_NAME)
         if sheet is None:
             sheet = active_document.addObject("Spreadsheet::Sheet", FREECAD_PART_SHEET_NAME)
@@ -43,7 +54,7 @@ class JsonPartSheet(AJsonPart):
         sheet.set("C2", "Unit")
         sheet.setStyle("A1:C2", "bold")
 
-        sheet_line = 3
+        sheet_line = FREECAD_PART_SHEET_ATTRIBUTE_START_LINE
         for json_part_attribute_name in list(self.attributes.keys()):
 
             json_part_attribute_value = str(getattr(self, json_part_attribute_name))
@@ -55,11 +66,18 @@ class JsonPartSheet(AJsonPart):
 
             sheet_line += 1
 
-    def read_sheet_attribute(self, active_document, attribute_name):
-        sheet = active_document.getObject(FREECAD_PART_SHEET_NAME)
-        column_a_cells = list(filter(lambda x: x.startswith('A'), sheet.PropertiesList))
+        # Recompute the sheet, so that all properties are correctly written
+        # if not recomputed accessing the properties will result in none objects
+        active_document.recompute()
 
-        for a_cell in column_a_cells:
-            if a_cell == attribute_name:
-                b_cell = a_cell.replace("A", "B")
-                return sheet.get(b_cell)
+    def read_sheet_attribute(self, active_document, attribute_name):
+        '''
+        This method can be used to read from the part sheet from a
+        given document. The method allows to individually access the
+        written properties.
+        '''
+        sheet = active_document.getObject(FREECAD_PART_SHEET_NAME)
+        attribute_index = list(self.attributes).index(attribute_name)
+
+        if (attribute_index >= 0 and attribute_index < len(self.attributes)):
+                return sheet.get("B" + str(attribute_index + FREECAD_PART_SHEET_ATTRIBUTE_START_LINE))
