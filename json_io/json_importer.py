@@ -26,9 +26,9 @@
 
 import FreeCAD
 import FreeCADGui
-import os
-from json_io.parts.json_part import AJsonPart
-from freecad.active_document_helper import FREECAD_FILE_EXTENSION
+from freecad.active_document import ActiveDocument
+from json_io.parts.json_part_factory import JsonPartFactory
+from json_io.parts.json_part_sheet import JsonPartSheet
 
 App = FreeCAD
 Gui = FreeCADGui
@@ -48,65 +48,19 @@ class JsonImporter(object):
 
     def create_or_update_part(self, json_object):
         Log('Creating or Updating a part...\n')
-        json_part = AJsonPart().parse(json_object)
+        json_part = JsonPartFactory().create_from_json(json_object)
+        json_part_sheet = JsonPartSheet().parse_from_json(json_object)
 
         # Use the name to create the part document
         # should be careful in case the name already exists.
         # thus it is combined with the uuid. not really nice
         # but definitely efficient
         part_file_name = str(json_part.name + "_" + json_part.uuid)
-        part_file_fullpath = self.working_output_directory + part_file_name + FREECAD_FILE_EXTENSION
 
-        if(os.path.isfile(part_file_fullpath)):
-            Log('Open exisitng part file for update...\n')
-            documents = list(App.listDocuments().keys())
-            # If the document is not yet laoded, open it
-            if documents.count(part_file_name) == 0:
-                App.open(part_file_fullpath)
-        else:
-            Log('Create new part file...\n')
-            App.newDocument(part_file_name)
+        active_document = ActiveDocument(self.working_output_directory).open_set_and_get_document(part_file_name)
 
-        App.setActiveDocument(part_file_name)
-        App.ActiveDocument = App.getDocument(part_file_name)
+        json_part.write_to_freecad(active_document)
+        json_part_sheet.write_to_freecad(active_document)
 
-        part_file_fullpath = self.working_output_directory + part_file_name + FREECAD_FILE_EXTENSION
-
-        # Dispatch to creation method depending on shape type
-        create_or_update_method_name = "create_or_update_" + json_part.shape.lower()
-        create_or_update_dispatch = getattr(self, create_or_update_method_name, lambda: "Invalid call to : " + create_or_update_method_name)
-        create_or_update_dispatch(json_part)
-
-        self.create_or_update_sheet(json_part)
-
-        App.getDocument(part_file_name).saveAs(part_file_fullpath)
-        App.closeDocument(part_file_name)
-        Log('Saved part to file: ' + part_file_fullpath + "\n")
-
-   
-
-    def create_or_update_box(self, json_part):
-        if App.ActiveDocument.getObject('Box') is None:
-            App.ActiveDocument.addObject("Part::Box", "Box")
-
-        App.ActiveDocument.getObject("Box").Label = json_part.name
-
-        App.ActiveDocument.getObject("Box").Length = json_part.length_x + ' m'
-        App.ActiveDocument.getObject("Box").Height = json_part.length_y + ' m'
-        App.ActiveDocument.getObject("Box").Width = json_part.length_z + ' m'
-
-        Gui.ActiveDocument.getObject("Box").ShapeColor = json_part.color
-
-        App.ActiveDocument.recompute()
-
-    def create_or_update_cone(self, json_part):
-        pass
-
-    def create_or_update_cylinder(self, json_part):
-        pass
-
-    def create_or_update_sphere(self, json_part):
-        pass
-
-    def create_or_update_geometry(self, json_part):
-        pass
+        active_document.save_and_close_active_document(part_file_name)
+        Log('Saved part to file: ' + part_file_name + "\n")

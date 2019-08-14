@@ -24,8 +24,6 @@
 # SPDX-License-Identifier: LGPL-3.0-or-later
 #
 
-import unittest
-
 import os
 import json
 
@@ -33,40 +31,26 @@ from json_io.json_importer import JsonImporter
 
 import FreeCAD
 import FreeCADGui
-from freecad.active_document_helper import FREECAD_FILE_EXTENSION
+from test.test_setup import AWorkingDirectoryTest
+from freecad.active_document import FREECAD_FILE_EXTENSION
 
 App = FreeCAD
 Gui = FreeCADGui
 
 
 # define the name of the directory to be created
-TEST_WORKING_BASE_DIRECTORY = "/tmp/FreeCADtest/"
 TEST_ALLOWED_AMOUNT_OF_PART_OBJECTS = 2
 
 
-class TestJsonImporter(unittest.TestCase):
+class TestJsonImporter(AWorkingDirectoryTest):
 
     @classmethod
     def setUpClass(cls):
-        try:
-            if os.path.exists(TEST_WORKING_BASE_DIRECTORY):
-                for subDir in os.listdir(TEST_WORKING_BASE_DIRECTORY):
-                    os.remove(os.path.join(TEST_WORKING_BASE_DIRECTORY, subDir))
-                # os.rmdir(TEST_WORKING_BASE_DIRECTORY)
-        except OSError:
-            cls.fail(cls, "Cannot Clean up test directory: %s failed" % TEST_WORKING_BASE_DIRECTORY)
-        try:
-            if not os.path.exists(TEST_WORKING_BASE_DIRECTORY):
-                os.makedirs(TEST_WORKING_BASE_DIRECTORY)
-        except OSError:
-            cls.fail(cls, "Cannot create test directory: %s failed" % TEST_WORKING_BASE_DIRECTORY)
+        cls.setUpDirectory("Importer/")
+        cls._WORKING_DIRECTORY = cls.getDirectoryFullPath()
 
     def tearDown(self):
-        unittest.TestCase.tearDown(self)
-        # Close all documents in FreeCAD
-        document_list = list(App.listDocuments().keys())
-        for document_name in document_list:
-            App.closeDocument(document_name)
+        super().tearDown()
 
     def test_create_part(self):
         json_data = """{
@@ -81,11 +65,11 @@ class TestJsonImporter(unittest.TestCase):
         }"""
 
         json_object = json.loads(json_data)
-        json_importer = JsonImporter(TEST_WORKING_BASE_DIRECTORY)
+        json_importer = JsonImporter(self._WORKING_DIRECTORY)
         json_importer.create_or_update_part(json_object)
 
         # Check the file got created
-        test_file_name = TEST_WORKING_BASE_DIRECTORY + "Beam_6201a731_d703_43f8_ab37_6a0581dfe022" + FREECAD_FILE_EXTENSION
+        test_file_name = self._WORKING_DIRECTORY + "Beam_6201a731_d703_43f8_ab37_6a0581dfe022" + FREECAD_FILE_EXTENSION
         self.assertTrue(os.path.isfile(test_file_name), "File exists on drive")
         App.open(test_file_name)
 
@@ -116,11 +100,11 @@ class TestJsonImporter(unittest.TestCase):
         }"""
 
         json_object = json.loads(json_data)
-        json_importer = JsonImporter(TEST_WORKING_BASE_DIRECTORY)
+        json_importer = JsonImporter(self._WORKING_DIRECTORY)
         json_importer.create_or_update_part(json_object)
 
         # Check the file got created
-        test_file_name = TEST_WORKING_BASE_DIRECTORY + "Beam_6201a731_d703_43f8_ab37_6a0581dfe022" + FREECAD_FILE_EXTENSION
+        test_file_name = self._WORKING_DIRECTORY + "Beam_6201a731_d703_43f8_ab37_6a0581dfe022" + FREECAD_FILE_EXTENSION
         self.assertTrue(os.path.isfile(test_file_name), "File exists on drive")
         App.open(test_file_name)
 
@@ -139,11 +123,11 @@ class TestJsonImporter(unittest.TestCase):
         }"""
 
         json_object = json.loads(json_data)
-        json_importer = JsonImporter(TEST_WORKING_BASE_DIRECTORY)
+        json_importer = JsonImporter(self._WORKING_DIRECTORY)
         json_importer.create_or_update_part(json_object)
 
         # Check the file got created
-        test_file_name = TEST_WORKING_BASE_DIRECTORY + "Beam_6201a731_d703_43f8_ab37_6a0666dfe022" + FREECAD_FILE_EXTENSION
+        test_file_name = self._WORKING_DIRECTORY + "Beam_6201a731_d703_43f8_ab37_6a0666dfe022" + FREECAD_FILE_EXTENSION
         App.open(test_file_name)
 
         self.assertEquals(len(App.ActiveDocument.RootObjects), TEST_ALLOWED_AMOUNT_OF_PART_OBJECTS, "Correct amount of objects in file")
@@ -166,11 +150,11 @@ class TestJsonImporter(unittest.TestCase):
         }"""
 
         json_object = json.loads(json_data)
-        json_importer = JsonImporter(TEST_WORKING_BASE_DIRECTORY)
+        json_importer = JsonImporter(self._WORKING_DIRECTORY)
         json_importer.create_or_update_part(json_object)
 
         # Check the file got created
-        test_file_name = TEST_WORKING_BASE_DIRECTORY + "Beam_6201a731_d703_43f8_ab37_6a0581dfe022" + FREECAD_FILE_EXTENSION
+        test_file_name = self._WORKING_DIRECTORY + "Beam_6201a731_d703_43f8_ab37_6a0581dfe022" + FREECAD_FILE_EXTENSION
         self.assertTrue(os.path.isfile(test_file_name), "File exists on drive")
         App.open(test_file_name)
 
@@ -190,17 +174,14 @@ class TestJsonImporter(unittest.TestCase):
         }"""
 
         json_object = json.loads(json_data)
-        json_importer = JsonImporter(TEST_WORKING_BASE_DIRECTORY)
+        json_importer = JsonImporter(self._WORKING_DIRECTORY)
         json_importer.create_or_update_part(json_object)
 
         # Check the file got created
-        test_file_name = TEST_WORKING_BASE_DIRECTORY + "Beam_6201a731_d703_43f8_ab37_6a0581dfe022" + FREECAD_FILE_EXTENSION
+        test_file_name = self._WORKING_DIRECTORY + "Beam_6201a731_d703_43f8_ab37_6a0581dfe022" + FREECAD_FILE_EXTENSION
         self.assertTrue(os.path.isfile(test_file_name), "File exists on drive")
         App.open(test_file_name)
 
         # Check that there is a box with the correct properties
         self.assertEquals(len(App.ActiveDocument.RootObjects), TEST_ALLOWED_AMOUNT_OF_PART_OBJECTS, "Correct amount of objects in file")
         self.assertEquals(str(App.ActiveDocument.getObject("Box").Length), "450 mm", "Shape has correctly changed size")
-
-
-    
