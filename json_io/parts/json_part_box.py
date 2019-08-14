@@ -33,6 +33,6 @@ class JsonPartBox(AJsonPart):
     def _set_freecad_properties(self, active_document):
         object_name_and_type = self.get_shape_type()
 
-        active_document.app_active_document.getObject(object_name_and_type).Length = self.length_x + ' m'
-        active_document.app_active_document.getObject(object_name_and_type).Height = self.length_y + ' m'
-        active_document.app_active_document.getObject(object_name_and_type).Width = self.length_z + ' m'
+        active_document.app_active_document.getObject(object_name_and_type).Length = self.length_x
+        active_document.app_active_document.getObject(object_name_and_type).Height = self.length_y
+        active_document.app_active_document.getObject(object_name_and_type).Width = self.length_z

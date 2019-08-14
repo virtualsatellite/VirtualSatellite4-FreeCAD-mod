@@ -36,6 +36,11 @@ Wrn = FreeCAD.Console.PrintWarning
 
 FREECAD_FILE_EXTENSION = ".FCstd"
 
+VECTOR_ZERO = FreeCAD.Vector(0, 0, 0)
+VECTOR_X = FreeCAD.Vector(1, 0, 0)
+VECTOR_Y = FreeCAD.Vector(0, 1, 0)
+VECTOR_Z = FreeCAD.Vector(0, 0, 1)
+
 
 class ActiveDocument(object):
 
@@ -73,6 +78,16 @@ class ActiveDocument(object):
 
         self.app_active_document = App.ActiveDocument
         self.gui_active_document = Gui.ActiveDocument
+
+        self.app = App
+        self.gui = Gui
+
+        # set the unit schema to mm/kg/s which is index 0
+        # apparently this setting just seems to affect the UI
+        # FreeCAD seems to be on standard units internally
+        self.app.Units.setSchema(0)
+        self.app_active_document.recompute()
+        self.gui_active_document.ActiveView.setAxisCross(True)
 
     def save_as(self, file_name_without_extension):
         file_full_path = self.get_file_full_path(file_name_without_extension)

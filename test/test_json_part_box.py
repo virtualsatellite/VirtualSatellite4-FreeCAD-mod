@@ -26,53 +26,27 @@
 
 
 import json
-from json_io.parts.json_part import AJsonPart
 from test.test_setup import AWorkingDirectoryTest
 from freecad.active_document import ActiveDocument
 import FreeCAD
 import FreeCADGui
+from json_io.parts.json_part_box import JsonPartBox
 
 App = FreeCAD
 Gui = FreeCADGui
 
 
-class TestJsonPart(AWorkingDirectoryTest):
+class TestJsonPartBox(AWorkingDirectoryTest):
 
     @classmethod
     def setUpClass(cls):
-        cls.setUpDirectory("Part/")
+        cls.setUpDirectory("PartBox/")
         cls._WORKING_DIRECTORY = cls.getDirectoryFullPath()
 
     def tearDown(self):
         super().tearDown()
 
-    def test_parse(self):
-        json_data = """{
-            "name": "Beam",
-            "uuid": "6201a731-d703-43f8-ab37-6a0581dfe022",
-            "shape": "BOX",
-            "lengthX": 0.04,
-            "lengthY": 0.01,
-            "lengthZ": 0.3,
-            "radius": 0.0,
-            "color": 12632256
-        }"""
-
-        json_object = json.loads(json_data)
-        json_part = AJsonPart().parse_from_json(json_object)
-
-        self.assertEqual(json_part.name, "Beam", "Property is correctly set")
-        self.assertEqual(json_part.uuid, "6201a731_d703_43f8_ab37_6a0581dfe022", "Property is correctly set")
-        self.assertEqual(json_part.shape, "BOX", "Property is correctly set")
-
-        self.assertEqual(json_part.length_x, 40, "Property is correctly set")
-        self.assertEqual(json_part.length_y, 300, "Property is correctly set and axes are swapped")
-        self.assertEqual(json_part.length_z, 10, "Property is correctly set and axes are swapped")
-        self.assertEqual(json_part.radius, 0, "Property is correctly set and")
-
-        self.assertEqual(json_part.color, 12632256 << 8, "Property is correctly set")
-
-    def test_create_part(self):
+    def test_create_part_box(self):
         json_data = """{
             "color": 12632256,
             "shape": "BOX",
@@ -84,14 +58,22 @@ class TestJsonPart(AWorkingDirectoryTest):
             "uuid": "6201a731-d703-43f8-ab37-6a0581dfe022"
         }"""
 
-        active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("PartSheetTest_Write")
+        active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("PartBox")
         json_object = json.loads(json_data)
 
-        json_part = AJsonPart()
+        json_part = JsonPartBox()
         json_part.parse_from_json(json_object)
         json_part.write_to_freecad(active_document)
 
         self.assertIsNotNone(App.ActiveDocument.getObject("Box"), "The Box object got created")
+
+        # Check that there is a box with the correct properties
+        self.assertEquals(str(App.ActiveDocument.getObject("Box").Length), "40 mm", "Shape has correct size")
+        self.assertEquals(str(App.ActiveDocument.getObject("Box").Height), "300 mm", "Shape has correct size")
+        self.assertEquals(str(App.ActiveDocument.getObject("Box").Width), "10 mm", "Shape has correct size")
+
         self.assertEquals(Gui.ActiveDocument.getObject("Box").ShapeColor,
                           (0.7529411911964417, 0.7529411911964417, 0.7529411911964417, 0.0),
                           "Shape has correct color")
+
+        active_document.save_and_close_active_document("PartBox")

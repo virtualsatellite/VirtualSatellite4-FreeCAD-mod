@@ -29,6 +29,9 @@ from json_io.json_definitions import JSON_ELEMENT_NAME, JSON_ELEMENT_SHAPE,\
     JSON_ELEMENT_LENGTH_Z, JSON_ELEMENT_RADIUS, JSON_ELEMENT_COLOR
 
 
+M_TO_MM = 1000
+
+
 class AJsonPart():
     '''
     This class translates a json object into a more specific
@@ -41,10 +44,10 @@ class AJsonPart():
         "name": "-",
         "shape": "-",
         "uuid": "-",
-        "length_x": "m",
-        "length_y": "m",
-        "length_z": "m",
-        "radius": "m",
+        "length_x": "mm",
+        "length_y": "mm",
+        "length_z": "mm",
+        "radius": "mm",
         "color": "rgba"
         }
 
@@ -54,12 +57,14 @@ class AJsonPart():
         self.uuid = str(json_object[JSON_ELEMENT_UUID]).replace("-", "_")
 
         # The axis between Virtual Satellite and FreeCAD are not identical
-        # Therefore Y and Z gets swpapped here.
-        self.length_x = str(json_object[JSON_ELEMENT_LENGTH_X])
-        self.length_y = str(json_object[JSON_ELEMENT_LENGTH_Z])
-        self.length_z = str(json_object[JSON_ELEMENT_LENGTH_Y])
+        # Therefore Y and Z gets swpapped here. We also convert m to mm
+        # by definition the values in this part object represent the values
+        # as used in FreeCAD
+        self.length_x = float(json_object[JSON_ELEMENT_LENGTH_X]) * M_TO_MM
+        self.length_y = float(json_object[JSON_ELEMENT_LENGTH_Z]) * M_TO_MM
+        self.length_z = float(json_object[JSON_ELEMENT_LENGTH_Y]) * M_TO_MM
 
-        self.radius = str(json_object[JSON_ELEMENT_RADIUS])
+        self.radius = float(json_object[JSON_ELEMENT_RADIUS]) * M_TO_MM
 
         # shift from pure rgb to rgba
         self.color = int(json_object[JSON_ELEMENT_COLOR]) << 8

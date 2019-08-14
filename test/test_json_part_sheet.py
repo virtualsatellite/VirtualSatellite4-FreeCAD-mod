@@ -82,4 +82,4 @@ class TestJsonPartSheet(AWorkingDirectoryTest):
 
         attribute = json_part_sheet.read_sheet_attribute(active_document, "length_z")
 
-        self.assertEquals(attribute, 0.01, "Got correct value")
+        self.assertEquals(attribute, 10, "Got correct value")

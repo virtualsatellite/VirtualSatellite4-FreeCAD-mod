@@ -26,6 +26,8 @@
 
 from test.test_json_importer import TestJsonImporter  # NOQA 
 from test.test_json_part import TestJsonPart  # NOQA 
+from test.test_json_part_box import TestJsonPartBox  # NOQA 
+from test.test_json_part_cone import TestJsonPartCone  # NOQA 
 from test.test_json_part_factory import TestJsonPartFactory # NOQA
 from test.test_actice_document import TestActiveDocument # NOQA
 from test.test_json_part_sheet import TestJsonPartSheet # NOQA
