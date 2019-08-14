@@ -26,6 +26,7 @@ encoding//test/test_json_importer.py=utf-8
 encoding//test/test_json_part.py=utf-8
 encoding//test/test_json_part_box.py=utf-8
 encoding//test/test_json_part_cone.py=utf-8
+encoding//test/test_json_part_cylinder.py=utf-8
 encoding//test/test_json_part_factory.py=utf-8
 encoding//test/test_json_part_sheet.py=utf-8
 encoding//test/test_setup.py=utf-8
