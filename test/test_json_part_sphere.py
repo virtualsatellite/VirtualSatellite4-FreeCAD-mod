@@ -30,49 +30,48 @@ from test.test_setup import AWorkingDirectoryTest
 from freecad.active_document import ActiveDocument
 import FreeCAD
 import FreeCADGui
-from json_io.parts.json_part_cylinder import JsonPartCylinder
+from json_io.parts.json_part_sphere import JsonPartSphere
 
 App = FreeCAD
 Gui = FreeCADGui
 
 
-class TestJsonPartCylinder(AWorkingDirectoryTest):
+class TestJsonPartSphere(AWorkingDirectoryTest):
 
     @classmethod
     def setUpClass(cls):
-        cls.setUpDirectory("PartCylinder/")
+        cls.setUpDirectory("PartSphere/")
         cls._WORKING_DIRECTORY = cls.getDirectoryFullPath()
 
     def tearDown(self):
         super().tearDown()
 
-    def test_create_part_cylinder(self):
+    def test_create_part_sphere(self):
         json_data = """{
             "color": 12632256,
-            "shape": "CYLINDER",
+            "shape": "SPHERE",
             "name": "Tube",
             "lengthX": 0.0,
-            "lengthY": 0.1,
+            "lengthY": 0.0,
             "lengthZ": 0.0,
-            "radius": 0.05,
+            "radius": 0.003,
             "uuid": "6201a731-d703-43f8-ab37-6a0581dfe022"
         }"""
 
-        active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("PartCylinder")
+        active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("PartSphere")
         json_object = json.loads(json_data)
 
-        json_part = JsonPartCylinder()
+        json_part = JsonPartSphere()
         json_part.parse_from_json(json_object)
         json_part.write_to_freecad(active_document)
 
-        active_document.save_as("PartCylinder")
+        active_document.save_as("PartSphere")
 
-        self.assertIsNotNone(App.ActiveDocument.getObject("Cylinder"), "The Box object got created")
+        self.assertIsNotNone(App.ActiveDocument.getObject("Sphere"), "The Sphere object got created")
 
         # Check that there is a box with the correct properties
-        self.assertEquals(App.ActiveDocument.getObject("Cylinder").Radius, 50, "Shape has correct size")
-        self.assertEquals(App.ActiveDocument.getObject("Cylinder").Height, 100, "Shape has correct size")
+        self.assertEquals(App.ActiveDocument.getObject("Sphere").Radius, 3, "Shape has correct size")
 
-        self.assertEquals(Gui.ActiveDocument.getObject("Cylinder").ShapeColor,
+        self.assertEquals(Gui.ActiveDocument.getObject("Sphere").ShapeColor,
                           (0.7529411911964417, 0.7529411911964417, 0.7529411911964417, 0.0),
                           "Shape has correct color")

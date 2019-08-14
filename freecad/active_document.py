@@ -82,13 +82,6 @@ class ActiveDocument(object):
         self.app = App
         self.gui = Gui
 
-        # set the unit schema to mm/kg/s which is index 0
-        # apparently this setting just seems to affect the UI
-        # FreeCAD seems to be on standard units internally
-        self.app.Units.setSchema(0)
-        self.app_active_document.recompute()
-        self.gui_active_document.ActiveView.setAxisCross(True)
-
     def save_as(self, file_name_without_extension):
         file_full_path = self.get_file_full_path(file_name_without_extension)
         App.getDocument(file_name_without_extension).saveAs(file_full_path)

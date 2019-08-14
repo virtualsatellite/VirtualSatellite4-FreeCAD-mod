@@ -26,13 +26,32 @@
 
 
 from json_io.parts.json_part import AJsonPart
+from freecad.active_document import VECTOR_X
 
 
 class JsonPartBox(AJsonPart):
 
     def _set_freecad_properties(self, active_document):
         object_name_and_type = self.get_shape_type()
+        box = active_document.app_active_document.getObject(object_name_and_type)
 
-        active_document.app_active_document.getObject(object_name_and_type).Length = self.length_x
-        active_document.app_active_document.getObject(object_name_and_type).Height = self.length_y
-        active_document.app_active_document.getObject(object_name_and_type).Width = self.length_z
+        box.Length = self.length_x
+        box.Height = self.length_y
+        box.Width = self.length_z
+
+        # now center the box as in virtual satellite
+
+        # Now virtual satellite axis correction
+        # 1. the cone is aligned on the y axis
+        # 2. the origin is in the center of it
+        # hence:
+        # 1. turn it by 90° on the x axis
+        # 2. move it forward by half its size on the y axis
+        vector_translation = active_document.app.Vector(-self.length_x/2, -self.length_z/2, -self.length_y/2)
+        vector_rotation = active_document.app.Rotation(VECTOR_X, 0)
+
+        placement = active_document.app.Placement(
+            vector_translation,
+            vector_rotation)
+
+        box.Placement = placement

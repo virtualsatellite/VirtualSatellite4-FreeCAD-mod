@@ -29,4 +29,9 @@ from json_io.parts.json_part import AJsonPart
 
 
 class JsonPartSphere(AJsonPart):
-    pass
+
+    def _set_freecad_properties(self, active_document):
+        object_name_and_type = self.get_shape_type()
+        sphere = active_document.app_active_document.getObject(object_name_and_type)
+
+        sphere.Radius = self.radius

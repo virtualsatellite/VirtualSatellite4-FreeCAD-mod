@@ -29,6 +29,7 @@ encoding//test/test_json_part_cone.py=utf-8
 encoding//test/test_json_part_cylinder.py=utf-8
 encoding//test/test_json_part_factory.py=utf-8
 encoding//test/test_json_part_sheet.py=utf-8
+encoding//test/test_json_part_sphere.py=utf-8
 encoding//test/test_setup.py=utf-8
 encoding/<project>=UTF-8
 encoding/Init.py=utf-8

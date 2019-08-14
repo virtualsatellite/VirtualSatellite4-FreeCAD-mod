@@ -93,6 +93,8 @@ class AJsonPart():
         self._create_freecad_object(active_document)
         self._set_freecad_name_and_color(active_document)
         self._set_freecad_properties(active_document)
+        object_name_and_type = self.get_shape_type()
+        active_document.app_active_document.getObject(object_name_and_type).recompute()
 
     def get_shape_type(self):
         shape_type = self.shape.lower().capitalize()
