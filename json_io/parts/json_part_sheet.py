@@ -44,9 +44,9 @@ class JsonPartSheet(AJsonPart):
         virtual satellite.
         '''
 
-        sheet = active_document.getObject(FREECAD_PART_SHEET_NAME)
+        sheet = active_document.app_active_document.getObject(FREECAD_PART_SHEET_NAME)
         if sheet is None:
-            sheet = active_document.addObject("Spreadsheet::Sheet", FREECAD_PART_SHEET_NAME)
+            sheet = active_document.app_active_document.addObject("Spreadsheet::Sheet", FREECAD_PART_SHEET_NAME)
 
         sheet.set("A1", "Virtual Satellite Part Data")
         sheet.set("A2", "Name")
@@ -68,7 +68,7 @@ class JsonPartSheet(AJsonPart):
 
         # Recompute the sheet, so that all properties are correctly written
         # if not recomputed accessing the properties will result in none objects
-        active_document.recompute()
+        active_document.app_active_document.recompute()
 
     def read_sheet_attribute(self, active_document, attribute_name):
         '''
@@ -76,7 +76,7 @@ class JsonPartSheet(AJsonPart):
         given document. The method allows to individually access the
         written properties.
         '''
-        sheet = active_document.getObject(FREECAD_PART_SHEET_NAME)
+        sheet = active_document.app_active_document.getObject(FREECAD_PART_SHEET_NAME)
         attribute_index = list(self.attributes).index(attribute_name)
 
         if (attribute_index >= 0 and attribute_index < len(self.attributes)):

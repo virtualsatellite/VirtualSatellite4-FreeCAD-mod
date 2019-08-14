@@ -27,10 +27,9 @@
 from json_io.json_definitions import JSON_ELEMENT_NAME, JSON_ELEMENT_SHAPE,\
     JSON_ELEMENT_UUID, JSON_ELEMENT_LENGTH_X, JSON_ELEMENT_LENGTH_Y,\
     JSON_ELEMENT_LENGTH_Z, JSON_ELEMENT_RADIUS, JSON_ELEMENT_COLOR
-from abc import ABC
 
 
-class AJsonPart(ABC):
+class AJsonPart():
     '''
     This class translates a json object into a more specific
     one which represents all relevant information of a part. On
@@ -67,8 +66,28 @@ class AJsonPart(ABC):
 
         return self
 
-    def write_to_freecad(self, active_document):
+    def _create_freecad_object(self, active_document):
+        object_name_and_type = self.get_shape_type()
+        document_object = active_document.app_active_document.getObject(object_name_and_type)
+
+        if document_object is None:
+            object_type = "Part::" + object_name_and_type
+            object_name = object_name_and_type
+            active_document.app_active_document.addObject(object_type, object_name)
+
+    def _set_freecad_name_and_color(self, active_document):
+        object_name_and_type = self.get_shape_type()
+
+        active_document.app_active_document.getObject(object_name_and_type).Label = self.name
+        active_document.gui_active_document.getObject(object_name_and_type).ShapeColor = self.color
+
+    def _set_freecad_properties(self, active_document):
         pass
+
+    def write_to_freecad(self, active_document):
+        self._create_freecad_object(active_document)
+        self._set_freecad_name_and_color(active_document)
+        self._set_freecad_properties(active_document)
 
     def get_shape_type(self):
         shape_type = self.shape.lower().capitalize()

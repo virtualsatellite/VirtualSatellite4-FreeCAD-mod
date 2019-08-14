@@ -27,7 +27,7 @@
 
 import FreeCAD
 import FreeCADGui
-from freecad.active_document_helper import ActiveDocumentHelper
+from freecad.active_document import ActiveDocument
 import os
 from test.test_setup import AWorkingDirectoryTest
 
@@ -35,11 +35,11 @@ App = FreeCAD
 Gui = FreeCADGui
 
 
-class TestJsonPartSheet(AWorkingDirectoryTest):
+class TestActiveDocument(AWorkingDirectoryTest):
 
     @classmethod
     def setUpClass(cls):
-        cls.setUpDirectory("ActiveDocumentHelper/")
+        cls.setUpDirectory("ActiveDocument/")
         cls._WORKING_DIRECTORY = cls.getDirectoryFullPath()
 
     def tearDown(self):
@@ -48,8 +48,8 @@ class TestJsonPartSheet(AWorkingDirectoryTest):
     def test_get_file_full_path(self):
         TEST_DOCUMENT_NAME = "box_263_456_789_111"
 
-        file_full_path = ActiveDocumentHelper(self._WORKING_DIRECTORY).get_file_full_path(TEST_DOCUMENT_NAME)
-        self.assertEqual(file_full_path, "/tmp/FreeCADtest/ActiveDocumentHelper/box_263_456_789_111.FCstd", "Got correct full path")
+        file_full_path = ActiveDocument(self._WORKING_DIRECTORY).get_file_full_path(TEST_DOCUMENT_NAME)
+        self.assertEqual(file_full_path, "/tmp/FreeCADtest/ActiveDocument/box_263_456_789_111.FCstd", "Got correct full path")
 
     def test_create_document(self):
         TEST_DOCUMENT_NAME = "box_263_456_789_222"
@@ -57,12 +57,14 @@ class TestJsonPartSheet(AWorkingDirectoryTest):
         loaded_documents = list(App.listDocuments().keys())
         self.assertNotIn(TEST_DOCUMENT_NAME, loaded_documents, "New Document is not yet loaded")
 
-        active_document = ActiveDocumentHelper(self._WORKING_DIRECTORY).open_set_and_get_document(TEST_DOCUMENT_NAME)
+        active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document(TEST_DOCUMENT_NAME)
 
         loaded_documents = list(App.listDocuments().keys())
         self.assertIn(TEST_DOCUMENT_NAME, loaded_documents, "Document is now loaded")
 
         self.assertIsNotNone(active_document, "Created a document")
+        self.assertEquals(App.ActiveDocument, App.getDocument(TEST_DOCUMENT_NAME), "The Active Document got correctly set")
+        self.assertEquals(Gui.ActiveDocument, Gui.getDocument(TEST_DOCUMENT_NAME), "The Active Document got correctly set")
 
     def test_save_and_close_active_document(self):
         TEST_DOCUMENT_NAME = "box_263_456_789_333"
@@ -70,13 +72,13 @@ class TestJsonPartSheet(AWorkingDirectoryTest):
         loaded_documents = list(App.listDocuments().keys())
         self.assertNotIn(TEST_DOCUMENT_NAME, loaded_documents, "New Document is not yet loaded")
 
-        ActiveDocumentHelper(self._WORKING_DIRECTORY).open_set_and_get_document(TEST_DOCUMENT_NAME)
+        ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document(TEST_DOCUMENT_NAME)
 
-        file_full_path = ActiveDocumentHelper(self._WORKING_DIRECTORY).get_file_full_path(TEST_DOCUMENT_NAME)
+        file_full_path = ActiveDocument(self._WORKING_DIRECTORY).get_file_full_path(TEST_DOCUMENT_NAME)
 
         self.assertFalse(os.path.isfile(file_full_path), "File not yet saved")
 
-        ActiveDocumentHelper(self._WORKING_DIRECTORY).save_and_close_active_document(TEST_DOCUMENT_NAME)
+        ActiveDocument(self._WORKING_DIRECTORY).save_and_close_active_document(TEST_DOCUMENT_NAME)
 
         self.assertTrue(os.path.isfile(file_full_path), "File got saved")
 
@@ -90,7 +92,7 @@ class TestJsonPartSheet(AWorkingDirectoryTest):
         self.assertNotIn(TEST_DOCUMENT_NAME, loaded_documents, "New Document is not yet loaded")
         self.assertEquals(0, len(loaded_documents), "List of loaded documents is still empty")
 
-        ActiveDocumentHelper(self._WORKING_DIRECTORY).open_set_and_get_document(TEST_DOCUMENT_NAME)
+        ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document(TEST_DOCUMENT_NAME)
 
         loaded_documents = list(App.listDocuments().keys())
         self.assertIn(TEST_DOCUMENT_NAME, loaded_documents, "Document is now loaded")
@@ -99,12 +101,12 @@ class TestJsonPartSheet(AWorkingDirectoryTest):
         # Now save and load the document
         App.ActiveDocument.addObject("Part::Box", "BoxReopen")
 
-        ActiveDocumentHelper(self._WORKING_DIRECTORY).save_and_close_active_document(TEST_DOCUMENT_NAME)
+        ActiveDocument(self._WORKING_DIRECTORY).save_and_close_active_document(TEST_DOCUMENT_NAME)
 
         loaded_documents = list(App.listDocuments().keys())
         self.assertNotIn(TEST_DOCUMENT_NAME, loaded_documents, "Document got closed")
 
-        ActiveDocumentHelper(self._WORKING_DIRECTORY).open_set_and_get_document(TEST_DOCUMENT_NAME)
+        ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document(TEST_DOCUMENT_NAME)
         freecad_object = App.ActiveDocument.getObject("BoxReopen")
 
         self.assertIsNotNone(freecad_object, "Was able to read file and get specific object for this test")
@@ -116,7 +118,7 @@ class TestJsonPartSheet(AWorkingDirectoryTest):
 
         loaded_documents = list(App.listDocuments().keys())
         self.assertEquals(1, len(loaded_documents), "Document is still loaded, just open it.")
-        ActiveDocumentHelper(self._WORKING_DIRECTORY).open_set_and_get_document(TEST_DOCUMENT_NAME)
+        ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document(TEST_DOCUMENT_NAME)
         loaded_documents = list(App.listDocuments().keys())
         self.assertEquals(1, len(loaded_documents), "Document is still the same. No other document got loaded.")
 

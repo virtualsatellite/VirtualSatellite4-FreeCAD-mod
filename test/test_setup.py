@@ -30,7 +30,6 @@ import os
 
 import FreeCAD
 import FreeCADGui
-from abc import ABC
 
 App = FreeCAD
 Gui = FreeCADGui
@@ -40,7 +39,7 @@ Gui = FreeCADGui
 TEST_WORKING_BASE_DIRECTORY = "/tmp/FreeCADtest/"
 
 
-class AWorkingDirectoryTest(unittest.TestCase, ABC):
+class AWorkingDirectoryTest(unittest.TestCase):
 
     @classmethod
     def setUpDirectory(cls, working_directory):

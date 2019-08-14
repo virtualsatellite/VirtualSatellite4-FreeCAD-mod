@@ -27,7 +27,7 @@
 
 import FreeCAD
 import FreeCADGui
-from freecad.active_document_helper import ActiveDocumentHelper
+from freecad.active_document import ActiveDocument
 from test.test_setup import AWorkingDirectoryTest
 from json_io.parts.json_part_sheet import JsonPartSheet, FREECAD_PART_SHEET_NAME
 import json
@@ -61,25 +61,25 @@ class TestJsonPartSheet(AWorkingDirectoryTest):
         super().tearDown()
 
     def test_write_to_freecad(self):
-        self._active_document = ActiveDocumentHelper(self._WORKING_DIRECTORY).open_set_and_get_document("PartSheetTest_Write")
+        active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("PartSheetTest_Write")
         json_part_sheet = JsonPartSheet().parse_from_json(self._json_test_object)
 
-        json_part_sheet_object = self._active_document.getObject(FREECAD_PART_SHEET_NAME)
+        json_part_sheet_object = active_document.app_active_document.getObject(FREECAD_PART_SHEET_NAME)
         self.assertIsNone(json_part_sheet_object, "The object does not yet exist")
 
-        json_part_sheet.write_to_freecad(self._active_document)
+        json_part_sheet.write_to_freecad(active_document)
 
-        json_part_sheet_object = self._active_document.getObject(FREECAD_PART_SHEET_NAME)
+        json_part_sheet_object = active_document.app_active_document.getObject(FREECAD_PART_SHEET_NAME)
         self.assertIsNotNone(json_part_sheet_object, "The object does exist now")
-        self.assertEquals(len(self._active_document.RootObjects), 1, "Correct amount of objects in document")
+        self.assertEquals(len(active_document.app_active_document.RootObjects), 1, "Correct amount of objects in document")
         self.assertEquals(len(json_part_sheet_object.PropertiesList), 36, "Computed correct amount of properties in the sheet")
 
     def test_read_sheet_attribute(self):
-        self._active_document = ActiveDocumentHelper(self._WORKING_DIRECTORY).open_set_and_get_document("PartSheetTest_Read")
+        active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("PartSheetTest_Read")
         json_part_sheet = JsonPartSheet().parse_from_json(self._json_test_object)
 
-        json_part_sheet.write_to_freecad(self._active_document)
+        json_part_sheet.write_to_freecad(active_document)
 
-        attribute = json_part_sheet.read_sheet_attribute(self._active_document, "length_z")
+        attribute = json_part_sheet.read_sheet_attribute(active_document, "length_z")
 
         self.assertEquals(attribute, 0.01, "Got correct value")

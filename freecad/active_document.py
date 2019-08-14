@@ -23,10 +23,12 @@
 #
 # SPDX-License-Identifier: LGPL-3.0-or-later
 #
+import FreeCADGui
 import FreeCAD
 import os
 
 App = FreeCAD
+Gui = FreeCADGui
 Log = FreeCAD.Console.PrintLog
 Msg = FreeCAD.Console.PrintMessage
 Err = FreeCAD.Console.PrintError
@@ -35,7 +37,7 @@ Wrn = FreeCAD.Console.PrintWarning
 FREECAD_FILE_EXTENSION = ".FCstd"
 
 
-class ActiveDocumentHelper(object):
+class ActiveDocument(object):
 
     def __init__(self, working_directory):
         self._working_directory = working_directory
@@ -59,10 +61,18 @@ class ActiveDocumentHelper(object):
         else:
             Log('Open existing already open FreeCAD file for update...\n')
 
-        App.setActiveDocument(file_name_without_extension)
-        App.ActiveDocument = App.getDocument(file_name_without_extension)
+        self.set_active_documents(file_name_without_extension)
 
-        return App.ActiveDocument
+        return self
+
+    def set_active_documents(self, file_name_without_extension):
+        App.setActiveDocument(file_name_without_extension)
+
+        App.ActiveDocument = App.getDocument(file_name_without_extension)
+        Gui.ActiveDocument = Gui.getDocument(file_name_without_extension)
+
+        self.app_active_document = App.ActiveDocument
+        self.gui_active_document = Gui.ActiveDocument
 
     def save_as(self, file_name_without_extension):
         file_full_path = self.get_file_full_path(file_name_without_extension)
