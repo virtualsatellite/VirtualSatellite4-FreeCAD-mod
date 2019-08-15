@@ -80,4 +80,4 @@ class JsonPartSheet(AJsonPart):
         attribute_index = list(self.attributes).index(attribute_name)
 
         if (attribute_index >= 0 and attribute_index < len(self.attributes)):
-                return sheet.get("B" + str(attribute_index + FREECAD_PART_SHEET_ATTRIBUTE_START_LINE))
+            return sheet.get("B" + str(attribute_index + FREECAD_PART_SHEET_ATTRIBUTE_START_LINE))
