@@ -35,9 +35,9 @@ class JsonPartBox(AJsonPart):
         object_name_and_type = self.get_shape_type()
         box = active_document.app_active_document.getObject(object_name_and_type)
 
-        box.Length = self.length_x
-        box.Height = self.length_y
-        box.Width = self.length_z
+        box.Length = self.length
+        box.Height = self.height
+        box.Width = self.width
 
         # now center the box as in virtual satellite
 
@@ -47,7 +47,7 @@ class JsonPartBox(AJsonPart):
         # hence:
         # 1. turn it by 90° on the x axis
         # 2. move it forward by half its size on the y axis
-        vector_translation = active_document.app.Vector(-self.length_x/2, -self.length_z/2, -self.length_y/2)
+        vector_translation = active_document.app.Vector(-self.length/2, -self.width/2, -self.height/2)
         vector_rotation = active_document.app.Rotation(VECTOR_X, 0)
 
         placement = active_document.app.Placement(

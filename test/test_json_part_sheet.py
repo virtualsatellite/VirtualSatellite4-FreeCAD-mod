@@ -80,6 +80,6 @@ class TestJsonPartSheet(AWorkingDirectoryTest):
 
         json_part_sheet.write_to_freecad(active_document)
 
-        attribute = json_part_sheet.read_sheet_attribute(active_document, "length_z")
+        attribute = json_part_sheet.read_sheet_attribute(active_document, "height")
 
-        self.assertEquals(attribute, 10, "Got correct value")
+        self.assertEquals(attribute, 300, "Got correct value")

@@ -36,7 +36,7 @@ class JsonPartCylinder(AJsonPart):
         cone = active_document.app_active_document.getObject(object_name_and_type)
 
         cone.Radius = self.radius
-        cone.Height = self.length_z
+        cone.Height = self.width
 
         # Now virtual satellite axis correction
         # 1. the cone is aligned on the y axis
@@ -44,7 +44,7 @@ class JsonPartCylinder(AJsonPart):
         # hence:
         # 1. turn it by 90° on the x axis
         # 2. move it forward by half its size on the y axis
-        vector_translation = active_document.app.Vector(0, self.length_z/2, 0)
+        vector_translation = active_document.app.Vector(0, self.width/2, 0)
         vector_rotation = active_document.app.Rotation(VECTOR_X, 90)
 
         placement = active_document.app.Placement(

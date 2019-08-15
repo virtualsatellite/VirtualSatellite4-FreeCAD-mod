@@ -44,9 +44,9 @@ class AJsonPart():
         "name": "-",
         "shape": "-",
         "uuid": "-",
-        "length_x": "mm",
-        "length_y": "mm",
-        "length_z": "mm",
+        "length": "mm",
+        "width": "mm",
+        "height": "mm",
         "radius": "mm",
         "color": "rgba"
         }
@@ -56,13 +56,11 @@ class AJsonPart():
         self.shape = str(json_object[JSON_ELEMENT_SHAPE])
         self.uuid = str(json_object[JSON_ELEMENT_UUID]).replace("-", "_")
 
-        # The axis between Virtual Satellite and FreeCAD are not identical
-        # Therefore Y and Z gets swpapped here. We also convert m to mm
-        # by definition the values in this part object represent the values
-        # as used in FreeCAD
-        self.length_x = float(json_object[JSON_ELEMENT_LENGTH_X]) * M_TO_MM
-        self.length_y = float(json_object[JSON_ELEMENT_LENGTH_Z]) * M_TO_MM
-        self.length_z = float(json_object[JSON_ELEMENT_LENGTH_Y]) * M_TO_MM
+        # the coordinate system between virtual satellite and FreeCAD seem
+        # to be identical. no Further adjustments or transformations needed.
+        self.length = float(json_object[JSON_ELEMENT_LENGTH_X]) * M_TO_MM
+        self.width = float(json_object[JSON_ELEMENT_LENGTH_Y]) * M_TO_MM
+        self.height = float(json_object[JSON_ELEMENT_LENGTH_Z]) * M_TO_MM
 
         self.radius = float(json_object[JSON_ELEMENT_RADIUS]) * M_TO_MM
 

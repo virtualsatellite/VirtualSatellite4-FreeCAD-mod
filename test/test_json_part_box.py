@@ -52,8 +52,8 @@ class TestJsonPartBox(AWorkingDirectoryTest):
             "shape": "BOX",
             "name": "Beam",
             "lengthX": 0.04,
-            "lengthY": 0.01,
-            "lengthZ": 0.3,
+            "lengthY": 0.02,
+            "lengthZ": 0.01,
             "radius": 0.0,
             "uuid": "6201a731-d703-43f8-ab37-6a0581dfe022"
         }"""
@@ -68,9 +68,9 @@ class TestJsonPartBox(AWorkingDirectoryTest):
         self.assertIsNotNone(App.ActiveDocument.getObject("Box"), "The Box object got created")
 
         # Check that there is a box with the correct properties
-        self.assertEquals(str(App.ActiveDocument.getObject("Box").Length), "40 mm", "Shape has correct size")
-        self.assertEquals(str(App.ActiveDocument.getObject("Box").Height), "300 mm", "Shape has correct size")
-        self.assertEquals(str(App.ActiveDocument.getObject("Box").Width), "10 mm", "Shape has correct size")
+        self.assertEquals(App.ActiveDocument.getObject("Box").Length, 40, "Shape has correct size")
+        self.assertEquals(App.ActiveDocument.getObject("Box").Width, 20, "Shape has correct size")
+        self.assertEquals(App.ActiveDocument.getObject("Box").Height, 10, "Shape has correct size")
 
         self.assertEquals(Gui.ActiveDocument.getObject("Box").ShapeColor,
                           (0.7529411911964417, 0.7529411911964417, 0.7529411911964417, 0.0),

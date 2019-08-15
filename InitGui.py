@@ -24,7 +24,6 @@
 # SPDX-License-Identifier: LGPL-3.0-or-later
 #
 
-
 class VirtualSatelliteWorkbench(Workbench):  # NOQA @UndefinedVariable
     '''
     This class initializes the Virtual Satellite Workbench in FreeCAD.
