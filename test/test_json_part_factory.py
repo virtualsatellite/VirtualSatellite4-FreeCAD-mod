@@ -114,7 +114,8 @@ class TestJsonPartFactory(unittest.TestCase):
             "lengthY": 0.01,
             "lengthZ": 0.3,
             "radius": 0.0,
-            "color": 12632256
+            "color": 12632256,
+            "STL_path" : "testfile.stl"
         }"""
 
         json_object = json.loads(json_data)

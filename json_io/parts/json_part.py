@@ -52,6 +52,10 @@ class AJsonPart():
         }
 
     def parse_from_json(self, json_object):
+        '''
+        This method parses the properties from the json object as they are needed for FreeCAD
+        Transformations are also applied where needed.
+        '''
         self.name = str(json_object[JSON_ELEMENT_NAME])
         self.shape = str(json_object[JSON_ELEMENT_SHAPE])
         self.uuid = str(json_object[JSON_ELEMENT_UUID]).replace("-", "_")
@@ -70,6 +74,12 @@ class AJsonPart():
         return self
 
     def _create_freecad_object(self, active_document):
+        '''
+        This method handles the correct creation of the FreeCAD object depending
+        on the primitive or geometry as selected in the Virtual Satellite and
+        the json respectively. The primitives have the same name in FreeCAD as in
+        Virtual Satellite. Geometries instead need special treatment.
+        '''
         object_name_and_type = self.get_shape_type()
         document_object = active_document.app_active_document.getObject(object_name_and_type)
 

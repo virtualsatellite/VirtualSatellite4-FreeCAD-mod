@@ -26,7 +26,52 @@
 
 
 from json_io.parts.json_part import AJsonPart
+from json_io.json_definitions import JSON_ELEMENT_STL_PATH
+import Mesh  # NOQA @UnresolvedImport
+import Part  # NOQA @UnusedImport
+import os
 
 
 class JsonPartGeometry(AJsonPart):
-    pass
+
+    def parse_from_json(self, json_object):
+        super().parse_from_json(json_object)
+        self.stl_path = json_object[JSON_ELEMENT_STL_PATH]
+
+    def _set_freecad_properties(self, active_document):
+        pass
+
+    def _get_geometry_name(self):
+        geometry_full_path = self.stl_path
+        geometry_base_name = os.path.basename(geometry_full_path)
+        geometry_file_name = os.path.splitext(geometry_base_name)[0]
+        return geometry_file_name
+
+    def _create_freecad_object(self, active_document):
+        object_name_and_type = self.get_shape_type()
+        object_geometry_name = self._get_geometry_name()
+        document_object = active_document.app_active_document.getObject(object_name_and_type)
+
+        if document_object is None:
+            # Import the mesh
+            Mesh.insert(self.stl_path)
+            meshed_object = active_document.app_active_document.getObject(object_geometry_name)
+            meshed_object.Label = object_geometry_name + "_mesh"
+
+            # Make form out of the mesh
+            shape_form = Part.Shape()
+            shape_form.makeShapeFromMesh(meshed_object.Mesh.Topology, 0.100000)
+            active_document.app_active_document.addObject("Part::Feature", object_geometry_name + "_form").Shape = shape_form
+
+            # Now clean the shape
+            shape_cleaned = shape_form.removeSplitter()
+            active_document.app_active_document.addObject("Part::Feature", object_geometry_name + "_cleaned").Shape = shape_cleaned
+
+            # Now create the solid
+            shape_solid = Part.Solid(shape_cleaned)
+            active_document.app_active_document.addObject("Part::Feature", "Geometry").Shape = shape_solid
+
+            # Hide origin objects
+            active_document.gui_active_document.getObject(object_geometry_name).Visibility = False
+            active_document.gui_active_document.getObject(object_geometry_name + "_form").Visibility = False
+            active_document.gui_active_document.getObject(object_geometry_name + "_cleaned").Visibility = False

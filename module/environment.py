@@ -33,6 +33,7 @@ ICON_EXPORT = 'VirtualSatelliteExport.svg'
 
 PATH_RESOURCE = "Resources"
 PATH_ICONS = "Icons"
+PATH_TEST_RESOURCE = "Tests"
 
 
 class Environment:
@@ -61,15 +62,31 @@ class Environment:
     @classmethod
     def get_icons_path(cls):
         '''
-        This method hands back the resource path of the current module.
+        This method hands back the icon resource path of the current module.
         '''
         path = os.path.join(cls.get_resource_path(), PATH_ICONS)
         return path
 
     @classmethod
-    def get_icon_path(cls, iconName):
+    def get_icon_path(cls, icon_name):
         '''
-        This method hands back the resource path of the current module.
+        This method hands back the resource path of the named icon.
         '''
-        path = os.path.join(cls.get_icons_path(), iconName)
+        path = os.path.join(cls.get_icons_path(), icon_name)
+        return path
+
+    @classmethod
+    def get_tests_resource_path(cls):
+        '''
+        This method hands back the resource path of the named test resource.
+        '''
+        path = os.path.join(cls.get_resource_path(), PATH_TEST_RESOURCE)
+        return path
+
+    @classmethod
+    def get_test_resource_path(cls, test_resource_name):
+        '''
+        This method hands back the resource path of the named test resource.
+        '''
+        path = os.path.join(cls.get_tests_resource_path(), test_resource_name)
         return path
