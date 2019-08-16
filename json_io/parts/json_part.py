@@ -27,7 +27,7 @@
 from json_io.json_definitions import JSON_ELEMENT_NAME, JSON_ELEMENT_SHAPE,\
     JSON_ELEMENT_UUID, JSON_ELEMENT_LENGTH_X, JSON_ELEMENT_LENGTH_Y,\
     JSON_ELEMENT_LENGTH_Z, JSON_ELEMENT_RADIUS, JSON_ELEMENT_COLOR
-from json_io.parts.json_spread_sheet import JsonSpreadSheet
+from json_io.json_spread_sheet import JsonSpreadSheet
 
 
 M_TO_MM = 1000

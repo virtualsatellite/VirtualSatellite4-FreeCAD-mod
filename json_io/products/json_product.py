@@ -29,7 +29,7 @@ from json_io.json_definitions import JSON_ELEMENT_NAME, JSON_ELEMENT_UUID,\
     JSON_ELEMENT_POS_Z, JSON_ELEMENT_ROT_X, JSON_ELEMENT_ROT_Y,\
     JSON_ELEMENT_ROT_Z, JSON_ELEMENT_PART_UUID, JSON_ELEMENT_PART_NAME
 import math
-from json_io.parts.json_spread_sheet import JsonSpreadSheet
+from json_io.json_spread_sheet import JsonSpreadSheet
 
 
 M_TO_MM = 1000
