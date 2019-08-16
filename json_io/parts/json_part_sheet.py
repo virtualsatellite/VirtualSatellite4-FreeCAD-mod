@@ -24,7 +24,6 @@
 # SPDX-License-Identifier: LGPL-3.0-or-later
 #
 
-
 FREECAD_PART_SHEET_NAME = "VirtualSatellitePart"
 FREECAD_PART_SHEET_ATTRIBUTE_START_LINE = 3
 
@@ -37,6 +36,11 @@ class JsonSpreadSheet(object):
     def __init__(self, json_part):
         self._json_part = json_part
 
+    def is_sheet_attached(self, active_document):
+        sheet = active_document.app_active_document.getObject(FREECAD_PART_SHEET_NAME)
+        sheet_attached = sheet is not None
+        return sheet_attached
+
     def write_to_freecad(self, active_document):
         '''
         This method writes all part properties into an excel sheet
@@ -46,7 +50,7 @@ class JsonSpreadSheet(object):
         '''
 
         sheet = active_document.app_active_document.getObject(FREECAD_PART_SHEET_NAME)
-        if sheet is None:
+        if not self.is_sheet_attached(active_document):
             sheet = active_document.app_active_document.addObject("Spreadsheet::Sheet", FREECAD_PART_SHEET_NAME)
 
         sheet.set("A1", "Virtual Satellite Part Data")

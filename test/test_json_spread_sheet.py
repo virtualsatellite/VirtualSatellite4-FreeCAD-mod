@@ -86,3 +86,14 @@ class TestJsonSpreadSheet(AWorkingDirectoryTest):
         attribute = json_spread_sheet.read_sheet_attribute(active_document, "height")
 
         self.assertEquals(attribute, 300, "Got correct value")
+
+    def test_is_sheet_attached(self):
+        active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("PartSheetTest_Attached")
+        json_part = AJsonPart().parse_from_json(self._json_test_object)
+        json_spread_sheet = JsonSpreadSheet(json_part)
+
+        self.assertFalse(json_spread_sheet.is_sheet_attached(active_document), "There is no sheet yet")
+
+        json_spread_sheet.write_to_freecad(active_document)
+
+        self.assertTrue(json_spread_sheet.is_sheet_attached(active_document), "Sheet got attached and can be read")

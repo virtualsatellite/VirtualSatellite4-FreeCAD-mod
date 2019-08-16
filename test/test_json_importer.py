@@ -33,6 +33,8 @@ import FreeCAD
 import FreeCADGui
 from test.test_setup import AWorkingDirectoryTest
 from freecad.active_document import FREECAD_FILE_EXTENSION
+from module.environment import Environment
+from json_io.json_definitions import JSON_ELEMENT_STL_PATH
 
 App = FreeCAD
 Gui = FreeCADGui
@@ -185,3 +187,74 @@ class TestJsonImporter(AWorkingDirectoryTest):
         # Check that there is a box with the correct properties
         self.assertEquals(len(App.ActiveDocument.RootObjects), TEST_ALLOWED_AMOUNT_OF_PART_OBJECTS, "Correct amount of objects in file")
         self.assertEquals(str(App.ActiveDocument.getObject("Box").Length), "450 mm", "Shape has correctly changed size")
+
+    def test_create_part_change_shape(self):
+        json_data = """{
+            "color": 12632256,
+            "shape": "BOX",
+            "name": "Beam",
+            "lengthX": 0.04,
+            "lengthY": 0.01,
+            "lengthZ": 0.3,
+            "radius": 0.0,
+            "uuid": "6201a731-d703-43f8-ab37-6a7171dfe022",
+            "STL_path": "Test.stl"
+        }"""
+
+        json_object = json.loads(json_data)
+        json_importer = JsonImporter(self._WORKING_DIRECTORY)
+
+        # get the current module path and get the directory for the test resource
+        # place that path into the json object before executing the transformations
+        stl_test_resource_path = Environment.get_test_resource_path("Switch.stl")
+        json_object[JSON_ELEMENT_STL_PATH] = stl_test_resource_path
+
+        json_importer.create_or_update_part(json_object)
+
+        # Check the file got created
+        test_file_name = self._WORKING_DIRECTORY + "Beam_6201a731_d703_43f8_ab37_6a7171dfe022" + FREECAD_FILE_EXTENSION
+        App.open(test_file_name)
+
+        # Check that there is the correct object inside
+        self.assertIsNotNone(App.ActiveDocument.getObject("Box"), "Got correct object")
+        App.closeDocument("Beam_6201a731_d703_43f8_ab37_6a7171dfe022")
+
+        # Now start cyling the objects
+        json_object["shape"] = "CYLINDER"
+        json_importer.create_or_update_part(json_object)
+
+        # Check that there is the correct object inside
+        App.open(test_file_name)
+        self.assertIsNone(App.ActiveDocument.getObject("Box"), "Removed previous object")
+        self.assertIsNotNone(App.ActiveDocument.getObject("Cylinder"), "Got correct object")
+        App.closeDocument("Beam_6201a731_d703_43f8_ab37_6a7171dfe022")
+
+        # Next object
+        json_object["shape"] = "SPHERE"
+        json_importer.create_or_update_part(json_object)
+
+        # Check that there is the correct object inside
+        App.open(test_file_name)
+        self.assertIsNone(App.ActiveDocument.getObject("Cylinder"), "Removed previous object")
+        self.assertIsNotNone(App.ActiveDocument.getObject("Sphere"), "Got correct object")
+        App.closeDocument("Beam_6201a731_d703_43f8_ab37_6a7171dfe022")
+
+        # Next object
+        json_object["shape"] = "GEOMETRY"
+        json_importer.create_or_update_part(json_object)
+
+        # Check that there is the correct object inside
+        App.open(test_file_name)
+        self.assertIsNone(App.ActiveDocument.getObject("Sphere"), "Removed previous object")
+        self.assertIsNotNone(App.ActiveDocument.getObject("Geometry"), "Got correct object")
+        App.closeDocument("Beam_6201a731_d703_43f8_ab37_6a7171dfe022")
+
+        # Next object
+        json_object["shape"] = "CONE"
+        json_importer.create_or_update_part(json_object)
+
+        # Check that there is the correct object inside
+        App.open(test_file_name)
+        self.assertIsNone(App.ActiveDocument.getObject("Geometry"), "Removed previous object")
+        self.assertIsNotNone(App.ActiveDocument.getObject("Cone"), "Got correct object")
+        App.closeDocument("Beam_6201a731_d703_43f8_ab37_6a7171dfe022")

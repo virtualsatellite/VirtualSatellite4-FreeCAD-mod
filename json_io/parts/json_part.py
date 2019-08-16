@@ -77,6 +77,21 @@ class AJsonPart():
 
         return self
 
+    def _clean_freecad_object(self, active_document):
+        '''
+        This method checks if the object to be created complies with the one
+        mentioned in the sheet, if not it will remove the object to create space for a new one
+        '''
+        if self.sheet.is_sheet_attached(active_document):
+            current_shape_type = self.sheet.read_sheet_attribute(active_document, "shape")
+            # if the current shape type is different than the once specified in
+            # the json, it means it has been changed and needs to be updated
+            # therefore all previous objects should be removed
+            if current_shape_type != self.shape:
+                root_objects = list(active_document.app_active_document.RootObjects)
+                for root_object in root_objects:
+                    active_document.app_active_document.removeObject(root_object.Name)
+
     def _create_freecad_object(self, active_document):
         '''
         This method handles the correct creation of the FreeCAD object depending
@@ -107,6 +122,7 @@ class AJsonPart():
         the corresponding object in FreeCAD.
         '''
         # Create the FreeCAD object and set its properties
+        self._clean_freecad_object(active_document)
         self._create_freecad_object(active_document)
         self._set_freecad_name_and_color(active_document)
         self._set_freecad_properties(active_document)
