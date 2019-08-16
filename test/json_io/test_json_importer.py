@@ -86,6 +86,26 @@ class TestJsonImporter(AWorkingDirectoryTest):
                           (0.7529411911964417, 0.7529411911964417, 0.7529411911964417, 0.0),
                           "Shape has correct color")
 
+    def test_create_part_for_none(self):
+        json_data = """{
+            "color": 12632256,
+            "shape": "NONE",
+            "name": "Beam",
+            "lengthX": 0.04,
+            "lengthY": 0.01,
+            "lengthZ": 0.3,
+            "radius": 0.0,
+            "uuid": "6201a731-d703-22a2-ab37-6a0581dfe022"
+        }"""
+
+        json_object = json.loads(json_data)
+        json_importer = JsonImporter(self._WORKING_DIRECTORY)
+        json_importer.create_or_update_part(json_object)
+
+        # Check the file got created
+        test_file_name = self._WORKING_DIRECTORY + "Beam_6201a731_d703_22a2_ab37_6a0581dfe022" + FREECAD_FILE_EXTENSION
+        self.assertFalse(os.path.isfile(test_file_name), "File does not exist on drive")
+
     def test_create_part_update_uuid(self):
         '''
         In this test case the uuid is changed. a new uuid has to create a new file.
@@ -198,7 +218,7 @@ class TestJsonImporter(AWorkingDirectoryTest):
             "lengthZ": 0.3,
             "radius": 0.0,
             "uuid": "6201a731-d703-43f8-ab37-6a7171dfe022",
-            "STL_path": "Test.stl"
+            "stlPath": "Test.stl"
         }"""
 
         json_object = json.loads(json_data)

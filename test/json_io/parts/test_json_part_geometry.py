@@ -58,7 +58,7 @@ class TestJsonPartGeometry(AWorkingDirectoryTest):
             "radius": 1.0,
             "lengthZ": 0.0,
             "uuid": "38eae3a5-8338-4a51-b1df-5583058f9e77",
-            "STL_path": "Test.stl"
+            "stlPath": "Test.stl"
         }"""
 
         active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("PartGeometry")

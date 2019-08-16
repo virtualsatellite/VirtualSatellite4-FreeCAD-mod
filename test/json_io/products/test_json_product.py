@@ -40,7 +40,7 @@ class TestJsonProduct(AWorkingDirectoryTest):
 
     @classmethod
     def setUpClass(cls):
-        cls.setUpDirectory("Part/")
+        cls.setUpDirectory("Product/")
         cls._WORKING_DIRECTORY = cls.getDirectoryFullPath()
 
     def tearDown(self):
@@ -48,15 +48,21 @@ class TestJsonProduct(AWorkingDirectoryTest):
 
     def test_parse(self):
         json_data = """{
-            "name": "Beam",
-            "uuid": "6201a731-d703-43f8-ab37-6a0581dfe022",
-            "shape": "BOX",
-            "lengthX": 0.04,
-            "lengthY": 0.01,
-            "lengthZ": 0.3,
-            "radius": 0.0,
-            "color": 12632256
-        }"""
+                "name": "BasePlateBottom",
+                "uuid": "e8794f3d-86ec-44c5-9618-8b7170c45484",
+                "uuidED": "3d3708fd-5c6c-4af9-b710-d68778466084",
+                "partName": "BasePlate",
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "rotY": 0.0,
+                "rotZ": 0.0,
+                "shape": "BOX",
+                "children": [
+                ]
+            }
+            """
 
         json_object = json.loads(json_data)
         json_part = AJsonPart().parse_from_json(json_object)
@@ -72,26 +78,4 @@ class TestJsonProduct(AWorkingDirectoryTest):
 
         self.assertEqual(json_part.color, 12632256 << 8, "Property is correctly set")
 
-    def test_create_part(self):
-        json_data = """{
-            "color": 12632256,
-            "shape": "BOX",
-            "name": "Beam",
-            "lengthX": 0.04,
-            "lengthY": 0.01,
-            "lengthZ": 0.3,
-            "radius": 0.0,
-            "uuid": "6201a731-d703-43f8-ab37-6a0581dfe022"
-        }"""
-
-        active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("PartSheetTest_Write")
-        json_object = json.loads(json_data)
-
-        json_part = AJsonPart()
-        json_part.parse_from_json(json_object)
-        json_part.write_to_freecad(active_document)
-
-        self.assertIsNotNone(App.ActiveDocument.getObject("Box"), "The Box object got created")
-        self.assertEquals(Gui.ActiveDocument.getObject("Box").ShapeColor,
-                          (0.7529411911964417, 0.7529411911964417, 0.7529411911964417, 0.0),
-                          "Shape has correct color")
+   

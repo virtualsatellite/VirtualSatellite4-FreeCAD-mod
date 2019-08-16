@@ -115,10 +115,28 @@ class TestJsonPartFactory(unittest.TestCase):
             "lengthZ": 0.3,
             "radius": 0.0,
             "color": 12632256,
-            "STL_path" : "testfile.stl"
+            "stlPath" : "testfile.stl"
         }"""
 
         json_object = json.loads(json_data)
         json_part = JsonPartFactory().create_from_json(json_object)
 
         self.assertIsInstance(json_part, JsonPartGeometry, "Created correct object")
+
+    def test_create_none(self):
+        json_data = """{
+            "name": "Beam",
+            "uuid": "6201a731-d703-43f8-ab37-6a0581dfe022",
+            "shape": "NONE",
+            "lengthX": 0.04,
+            "lengthY": 0.01,
+            "lengthZ": 0.3,
+            "radius": 0.0,
+            "color": 12632256,
+            "stlPath" : "testfile.stl"
+        }"""
+
+        json_object = json.loads(json_data)
+        json_part = JsonPartFactory().create_from_json(json_object)
+
+        self.assertIsNone(json_part, "Created no object")

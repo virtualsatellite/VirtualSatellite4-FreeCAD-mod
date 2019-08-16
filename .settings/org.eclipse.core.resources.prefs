@@ -35,6 +35,7 @@ encoding//test/json_io/parts/test_json_part_factory.py=utf-8
 encoding//test/json_io/parts/test_json_part_geometry.py=utf-8
 encoding//test/json_io/parts/test_json_part_sphere.py=utf-8
 encoding//test/json_io/parts/test_json_spread_sheet.py=utf-8
+encoding//test/json_io/products/test_json_product.py=utf-8
 encoding//test/json_io/test_json_importer.py=utf-8
 encoding//test/test_setup.py=utf-8
 encoding/<project>=UTF-8

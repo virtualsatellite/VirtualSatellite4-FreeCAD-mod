@@ -29,7 +29,8 @@ from json_io.parts.json_part_box import JsonPartBox
 from json_io.parts.json_part_cylinder import JsonPartCylinder
 from json_io.parts.json_part_cone import JsonPartCone
 from json_io.parts.json_part_sphere import JsonPartSphere
-from json_io.json_definitions import JSON_ELEMENT_SHAPE
+from json_io.json_definitions import JSON_ELEMENT_SHAPE,\
+    JSON_ELEMENT_SHAPE_NONE
 import FreeCAD
 from json_io.parts.json_part_geometry import JsonPartGeometry
 
@@ -49,14 +50,18 @@ class JsonPartFactory(object):
         Log("Creating part object...\n")
         shape = str(json_object[JSON_ELEMENT_SHAPE])
 
-        # Dispatch to creation method depending on shape type
-        create_method_name = "_create_json_part_" + shape.lower()
-        create_method_dispatch = getattr(cls, create_method_name, lambda: Err("Invalid call to : " + create_method_name + "\n"))
-        json_part_x = create_method_dispatch()
-        json_part_x.parse_from_json(json_object)
+        if shape != JSON_ELEMENT_SHAPE_NONE:
+            # Dispatch to creation method depending on shape type
+            create_method_name = "_create_json_part_" + shape.lower()
+            create_method_dispatch = getattr(cls, create_method_name, lambda: Err("Invalid call to : " + create_method_name + "\n"))
+            json_part_x = create_method_dispatch()
+            json_part_x.parse_from_json(json_object)
 
-        Log("Done creating part object.\n")
-        return json_part_x
+            Log("Done creating part object.\n")
+            return json_part_x
+        else:
+            Log("No part object created.\n")
+            return None
 
     @classmethod
     def _create_json_part_box(cls):

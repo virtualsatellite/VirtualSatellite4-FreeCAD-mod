@@ -46,18 +46,21 @@ class JsonImporter(object):
         self.working_output_directory = working_ouput_directory
 
     def create_or_update_part(self, json_object):
-        Log('Creating or Updating a part...\n')
+        Log("Creating or Updating a part...\n")
         json_part = JsonPartFactory().create_from_json(json_object)
 
-        # Use the name to create the part document
-        # should be careful in case the name already exists.
-        # thus it is combined with the uuid. not really nice
-        # but definitely efficient
-        part_file_name = str(json_part.name + "_" + json_part.uuid)
+        if json_part is not None:
+            # Use the name to create the part document
+            # should be careful in case the name already exists.
+            # thus it is combined with the uuid. not really nice
+            # but definitely efficient
+            part_file_name = str(json_part.name + "_" + json_part.uuid)
 
-        active_document = ActiveDocument(self.working_output_directory).open_set_and_get_document(part_file_name)
+            active_document = ActiveDocument(self.working_output_directory).open_set_and_get_document(part_file_name)
 
-        json_part.write_to_freecad(active_document)
+            json_part.write_to_freecad(active_document)
 
-        active_document.save_and_close_active_document(part_file_name)
-        Log('Saved part to file: ' + part_file_name + "\n")
+            active_document.save_and_close_active_document(part_file_name)
+            Log("Saved part to file: " + part_file_name + "\n")
+        else:
+            Log("Visualization shape is most likely NONE, therefore no file is created\n")

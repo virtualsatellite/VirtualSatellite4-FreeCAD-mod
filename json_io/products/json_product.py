@@ -24,45 +24,51 @@
 # SPDX-License-Identifier: LGPL-3.0-or-later
 #
 
-from json_io.json_definitions import JSON_ELEMENT_NAME, JSON_ELEMENT_SHAPE,\
-    JSON_ELEMENT_UUID, JSON_ELEMENT_LENGTH_X, JSON_ELEMENT_LENGTH_Y,\
-    JSON_ELEMENT_LENGTH_Z, JSON_ELEMENT_RADIUS, JSON_ELEMENT_COLOR
-from json_io.parts.json_part_sheet import JsonSpreadSheet
+from json_io.json_definitions import JSON_ELEMENT_NAME, JSON_ELEMENT_UUID,\
+    JSON_ELEMENT_UUID_ED, JSON_ELEMENT_POS_Y, JSON_ELEMENT_POS_X,\
+    JSON_ELEMENT_POS_Z, JSON_ELEMENT_ROT_X, JSON_ELEMENT_ROT_Y,\
+    JSON_ELEMENT_ROT_Z
+import math
+from json_io.parts.json_spread_sheet import JsonSpreadSheet
 
 
 M_TO_MM = 1000
 
+RAD_TO_DEG = 180.0 / math.pi
+
 
 class AJsonProduct():
-    
+
     def __init__(self):
         self.attributes = {
             "name": "-",
-            "shape": "-",
             "uuid": "-",
-            "length": "mm",
-            "width": "mm",
-            "height": "mm",
-            "radius": "mm",
-            "color": "rgba"
+            "uuid_part": "-",
+            "pos_x": "mm",
+            "pos_y": "mm",
+            "pos_z": "mm",
+            "rot_x": "°",
+            "rot_Y": "°",
+            "rot_Z": "°",
             }
 
     def parse_from_json(self, json_object):
-    
+
         self.name = str(json_object[JSON_ELEMENT_NAME])
-        self.shape = str(json_object[JSON_ELEMENT_SHAPE])
         self.uuid = str(json_object[JSON_ELEMENT_UUID]).replace("-", "_")
+        self.uuid_part = str(json_object[JSON_ELEMENT_UUID_ED]).replace("-", "_")
 
         # the coordinate system between virtual satellite and FreeCAD seem
         # to be identical. no Further adjustments or transformations needed.
-        self.length = float(json_object[JSON_ELEMENT_LENGTH_X]) * M_TO_MM
-        self.width = float(json_object[JSON_ELEMENT_LENGTH_Y]) * M_TO_MM
-        self.height = float(json_object[JSON_ELEMENT_LENGTH_Z]) * M_TO_MM
+        self.pos_x = float(json_object[JSON_ELEMENT_POS_X]) * M_TO_MM
+        self.pos_y = float(json_object[JSON_ELEMENT_POS_Y]) * M_TO_MM
+        self.pos_z = float(json_object[JSON_ELEMENT_POS_Z]) * M_TO_MM
 
-        self.radius = float(json_object[JSON_ELEMENT_RADIUS]) * M_TO_MM
-
-        # shift from pure rgb to rgba
-        self.color = int(json_object[JSON_ELEMENT_COLOR]) << 8
+        # the coordinate system between virtual satellite and FreeCAD seem
+        # to be identical. no Further adjustments or transformations needed.
+        self.rot_x = float(json_object[JSON_ELEMENT_ROT_X]) * RAD_TO_DEG
+        self.rot_y = float(json_object[JSON_ELEMENT_ROT_Y]) * RAD_TO_DEG
+        self.rot_z = float(json_object[JSON_ELEMENT_ROT_Z]) * RAD_TO_DEG
 
         self.sheet = JsonSpreadSheet(self)
 
@@ -73,10 +79,10 @@ class AJsonProduct():
 
     def _create_freecad_object(self, active_document):
         pass
-    
+
     def _set_freecad_name_and_color(self, active_document):
         pass
-    
+
     def _set_freecad_properties(self, active_document):
         pass
 
