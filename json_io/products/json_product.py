@@ -27,20 +27,14 @@
 from json_io.json_definitions import JSON_ELEMENT_NAME, JSON_ELEMENT_SHAPE,\
     JSON_ELEMENT_UUID, JSON_ELEMENT_LENGTH_X, JSON_ELEMENT_LENGTH_Y,\
     JSON_ELEMENT_LENGTH_Z, JSON_ELEMENT_RADIUS, JSON_ELEMENT_COLOR
-from json_io.parts.json_spread_sheet import JsonSpreadSheet
+from json_io.parts.json_part_sheet import JsonSpreadSheet
 
 
 M_TO_MM = 1000
 
 
-class AJsonPart():
-    '''
-    This class translates a json object into a more specific
-    one which represents all relevant information of a part. On
-    top of that this class will provide additional functionality
-    such as swapping the axes if needed as well as cleaning uuid etc.
-    '''
-
+class AJsonProduct():
+    
     def __init__(self):
         self.attributes = {
             "name": "-",
@@ -54,10 +48,7 @@ class AJsonPart():
             }
 
     def parse_from_json(self, json_object):
-        '''
-        This method parses the properties from the json object as they are needed for FreeCAD
-        Transformations are also applied where needed.
-        '''
+    
         self.name = str(json_object[JSON_ELEMENT_NAME])
         self.shape = str(json_object[JSON_ELEMENT_SHAPE])
         self.uuid = str(json_object[JSON_ELEMENT_UUID]).replace("-", "_")
@@ -78,41 +69,14 @@ class AJsonPart():
         return self
 
     def _clean_freecad_object(self, active_document):
-        '''
-        This method checks if the object to be created complies with the one
-        mentioned in the sheet, if not it will remove the object to create space for a new one
-        '''
-        if self.sheet.is_sheet_attached(active_document):
-            current_shape_type = self.sheet.read_sheet_attribute(active_document, "shape")
-            # if the current shape type is different than the once specified in
-            # the json, it means it has been changed and needs to be updated
-            # therefore all previous objects should be removed
-            if current_shape_type != self.shape:
-                root_objects = list(active_document.app_active_document.RootObjects)
-                for root_object in root_objects:
-                    active_document.app_active_document.removeObject(root_object.Name)
+        pass
 
     def _create_freecad_object(self, active_document):
-        '''
-        This method handles the correct creation of the FreeCAD object depending
-        on the primitive or geometry as selected in the Virtual Satellite and
-        the json respectively. The primitives have the same name in FreeCAD as in
-        Virtual Satellite. Geometries instead need special treatment.
-        '''
-        object_name_and_type = self.get_shape_type()
-        document_object = active_document.app_active_document.getObject(object_name_and_type)
-
-        if document_object is None:
-            object_type = "Part::" + object_name_and_type
-            object_name = object_name_and_type
-            active_document.app_active_document.addObject(object_type, object_name)
-
+        pass
+    
     def _set_freecad_name_and_color(self, active_document):
-        object_name_and_type = self.get_shape_type()
-
-        active_document.app_active_document.getObject(object_name_and_type).Label = self.name
-        active_document.gui_active_document.getObject(object_name_and_type).ShapeColor = self.color
-
+        pass
+    
     def _set_freecad_properties(self, active_document):
         pass
 
@@ -135,6 +99,3 @@ class AJsonPart():
         object_name_and_type = self.get_shape_type()
         active_document.app_active_document.getObject(object_name_and_type).recompute()
 
-    def get_shape_type(self):
-        shape_type = self.shape.lower().capitalize()
-        return shape_type

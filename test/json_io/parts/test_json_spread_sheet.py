@@ -29,7 +29,7 @@ import FreeCAD
 import FreeCADGui
 from freecad.active_document import ActiveDocument
 from test.test_setup import AWorkingDirectoryTest
-from json_io.parts.json_part_sheet import JsonSpreadSheet, FREECAD_PART_SHEET_NAME
+from json_io.parts.json_spread_sheet import JsonSpreadSheet, FREECAD_PART_SHEET_NAME
 import json
 from json_io.parts.json_part import AJsonPart
 
