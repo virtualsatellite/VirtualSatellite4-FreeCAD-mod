@@ -36,7 +36,7 @@ App = FreeCAD
 Gui = FreeCADGui
 
 
-class TestJsonProduct(AWorkingDirectoryTest):
+class TestJsonPart(AWorkingDirectoryTest):
 
     @classmethod
     def setUpClass(cls):

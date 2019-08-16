@@ -26,11 +26,11 @@
 
 
 import json
-from json_io.parts.json_part import AJsonPart
 from test.test_setup import AWorkingDirectoryTest
-from freecad.active_document import ActiveDocument
 import FreeCAD
 import FreeCADGui
+from json_io.products.json_product import AJsonProduct
+
 
 App = FreeCAD
 Gui = FreeCADGui
@@ -50,32 +50,32 @@ class TestJsonProduct(AWorkingDirectoryTest):
         json_data = """{
                 "name": "BasePlateBottom",
                 "uuid": "e8794f3d-86ec-44c5-9618-8b7170c45484",
-                "uuidED": "3d3708fd-5c6c-4af9-b710-d68778466084",
+                "partUuid": "3d3708fd-5c6c-4af9-b710-d68778466084",
                 "partName": "BasePlate",
-                "posX": 0.0,
-                "posY": 0.0,
-                "posZ": 0.0,
-                "rotX": 0.0,
-                "rotY": 0.0,
-                "rotZ": 0.0,
-                "shape": "BOX",
+                "posX": 2.0,
+                "posY": 3.0,
+                "posZ": 4.0,
+                "rotX": 0.1,
+                "rotY": 0.2,
+                "rotZ": 0.3,
                 "children": [
                 ]
             }
             """
 
         json_object = json.loads(json_data)
-        json_part = AJsonPart().parse_from_json(json_object)
+        json_product = AJsonProduct().parse_from_json(json_object)
 
-        self.assertEqual(json_part.name, "Beam", "Property is correctly set")
-        self.assertEqual(json_part.uuid, "6201a731_d703_43f8_ab37_6a0581dfe022", "Property is correctly set")
-        self.assertEqual(json_part.shape, "BOX", "Property is correctly set")
+        self.assertEqual(json_product.name, "BasePlateBottom", "Property is correctly set")
+        self.assertEqual(json_product.uuid, "e8794f3d_86ec_44c5_9618_8b7170c45484", "Property is correctly set")
 
-        self.assertEqual(json_part.length, 40, "Property is correctly set")
-        self.assertEqual(json_part.width,  10, "Property is correctly set")
-        self.assertEqual(json_part.height, 300, "Property is correctly set")
-        self.assertEqual(json_part.radius, 0, "Property is correctly set and")
+        self.assertEqual(json_product.part_name, "BasePlate", "Property is correctly set")
+        self.assertEqual(json_product.part_uuid, "3d3708fd_5c6c_4af9_b710_d68778466084", "Property is correctly set")
 
-        self.assertEqual(json_part.color, 12632256 << 8, "Property is correctly set")
+        self.assertEqual(json_product.pos_x, 2000, "Property is correctly set")
+        self.assertEqual(json_product.pos_y, 3000, "Property is correctly set")
+        self.assertEqual(json_product.pos_z, 4000, "Property is correctly set")
 
-   
+        self.assertEqual(json_product.rot_x, 5.729577951308233, "Property is correctly set")
+        self.assertEqual(json_product.rot_y, 11.459155902616466, "Property is correctly set")
+        self.assertEqual(json_product.rot_z, 17.188733853924695, "Property is correctly set")

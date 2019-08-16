@@ -25,9 +25,9 @@
 #
 
 from json_io.json_definitions import JSON_ELEMENT_NAME, JSON_ELEMENT_UUID,\
-    JSON_ELEMENT_UUID_ED, JSON_ELEMENT_POS_Y, JSON_ELEMENT_POS_X,\
+    JSON_ELEMENT_POS_Y, JSON_ELEMENT_POS_X,\
     JSON_ELEMENT_POS_Z, JSON_ELEMENT_ROT_X, JSON_ELEMENT_ROT_Y,\
-    JSON_ELEMENT_ROT_Z
+    JSON_ELEMENT_ROT_Z, JSON_ELEMENT_PART_UUID, JSON_ELEMENT_PART_NAME
 import math
 from json_io.parts.json_spread_sheet import JsonSpreadSheet
 
@@ -43,7 +43,8 @@ class AJsonProduct():
         self.attributes = {
             "name": "-",
             "uuid": "-",
-            "uuid_part": "-",
+            "part_name": "-",
+            "part_uuid": "-",
             "pos_x": "mm",
             "pos_y": "mm",
             "pos_z": "mm",
@@ -56,7 +57,8 @@ class AJsonProduct():
 
         self.name = str(json_object[JSON_ELEMENT_NAME])
         self.uuid = str(json_object[JSON_ELEMENT_UUID]).replace("-", "_")
-        self.uuid_part = str(json_object[JSON_ELEMENT_UUID_ED]).replace("-", "_")
+        self.part_uuid = str(json_object[JSON_ELEMENT_PART_UUID]).replace("-", "_")
+        self.part_name = str(json_object[JSON_ELEMENT_PART_NAME]).replace("-", "_")
 
         # the coordinate system between virtual satellite and FreeCAD seem
         # to be identical. no Further adjustments or transformations needed.
@@ -104,4 +106,3 @@ class AJsonProduct():
         # Recompute the object on FreeCAD side
         object_name_and_type = self.get_shape_type()
         active_document.app_active_document.getObject(object_name_and_type).recompute()
-
