@@ -34,6 +34,12 @@ import os
 
 class JsonPartGeometry(AJsonPart):
 
+    def __init__(self):
+        # register the new attribute for the geometries to make sure
+        # the value gets exported into the spread sheet as well
+        super().__init__()
+        self.attributes["stl_path"] = "-"
+
     def parse_from_json(self, json_object):
         super().parse_from_json(json_object)
         self.stl_path = json_object[JSON_ELEMENT_STL_PATH]

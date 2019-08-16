@@ -77,6 +77,10 @@ class TestJsonPartGeometry(AWorkingDirectoryTest):
 
         self.assertIsNotNone(App.ActiveDocument.getObject("Geometry"), "The Box object got created")
 
+        # Check that the extra attribute for the STL files got written to the sheet
+        sheet_stl_path = json_part.sheet.read_sheet_attribute(active_document, "stl_path")
+        self.assertEqual(sheet_stl_path, stl_test_resource_path, "The path is perfectly written to the spreadsheet")
+
         # Check that there is a box with the correct properties
         self.assertEquals(Gui.ActiveDocument.getObject("Geometry").ShapeColor,
                           (0.003921568859368563, 0.007843137718737125, 0.9098039269447327, 0.0),

@@ -25,16 +25,17 @@
 #
 
 
-from json_io.parts.json_part import AJsonPart
-
 FREECAD_PART_SHEET_NAME = "VirtualSatellitePart"
 FREECAD_PART_SHEET_ATTRIBUTE_START_LINE = 3
 
 
-class JsonPartSheet(AJsonPart):
+class JsonSpreadSheet(object):
     '''
     This class handles the io of the part properties to an excel sheet
     '''
+
+    def __init__(self, json_part):
+        self._json_part = json_part
 
     def write_to_freecad(self, active_document):
         '''
@@ -55,10 +56,10 @@ class JsonPartSheet(AJsonPart):
         sheet.setStyle("A1:C2", "bold")
 
         sheet_line = FREECAD_PART_SHEET_ATTRIBUTE_START_LINE
-        for json_part_attribute_name in list(self.attributes.keys()):
+        for json_part_attribute_name in list(self._json_part.attributes.keys()):
 
-            json_part_attribute_value = str(getattr(self, json_part_attribute_name))
-            json_part_attribute_unit = self.attributes[json_part_attribute_name]
+            json_part_attribute_value = str(getattr(self._json_part, json_part_attribute_name))
+            json_part_attribute_unit = self._json_part.attributes[json_part_attribute_name]
 
             sheet.set("A" + str(sheet_line), json_part_attribute_name)
             sheet.set("B" + str(sheet_line), json_part_attribute_value)
@@ -77,7 +78,7 @@ class JsonPartSheet(AJsonPart):
         written properties.
         '''
         sheet = active_document.app_active_document.getObject(FREECAD_PART_SHEET_NAME)
-        attribute_index = list(self.attributes).index(attribute_name)
+        attribute_index = list(self._json_part.attributes).index(attribute_name)
 
-        if (attribute_index >= 0 and attribute_index < len(self.attributes)):
+        if (attribute_index >= 0 and attribute_index < len(self._json_part.attributes)):
             return sheet.get("B" + str(attribute_index + FREECAD_PART_SHEET_ATTRIBUTE_START_LINE))

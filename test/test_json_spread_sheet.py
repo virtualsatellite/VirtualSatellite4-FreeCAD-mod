@@ -29,14 +29,15 @@ import FreeCAD
 import FreeCADGui
 from freecad.active_document import ActiveDocument
 from test.test_setup import AWorkingDirectoryTest
-from json_io.parts.json_part_sheet import JsonPartSheet, FREECAD_PART_SHEET_NAME
+from json_io.parts.json_part_sheet import JsonSpreadSheet, FREECAD_PART_SHEET_NAME
 import json
+from json_io.parts.json_part import AJsonPart
 
 App = FreeCAD
 Gui = FreeCADGui
 
 
-class TestJsonPartSheet(AWorkingDirectoryTest):
+class TestJsonSpreadSheet(AWorkingDirectoryTest):
 
     _json_test_data = """{
         "name": "Beam",
@@ -62,12 +63,13 @@ class TestJsonPartSheet(AWorkingDirectoryTest):
 
     def test_write_to_freecad(self):
         active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("PartSheetTest_Write")
-        json_part_sheet = JsonPartSheet().parse_from_json(self._json_test_object)
+        json_part = AJsonPart().parse_from_json(self._json_test_object)
+        json_spread_sheet = JsonSpreadSheet(json_part)
 
         json_part_sheet_object = active_document.app_active_document.getObject(FREECAD_PART_SHEET_NAME)
         self.assertIsNone(json_part_sheet_object, "The object does not yet exist")
 
-        json_part_sheet.write_to_freecad(active_document)
+        json_spread_sheet.write_to_freecad(active_document)
 
         json_part_sheet_object = active_document.app_active_document.getObject(FREECAD_PART_SHEET_NAME)
         self.assertIsNotNone(json_part_sheet_object, "The object does exist now")
@@ -76,10 +78,11 @@ class TestJsonPartSheet(AWorkingDirectoryTest):
 
     def test_read_sheet_attribute(self):
         active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("PartSheetTest_Read")
-        json_part_sheet = JsonPartSheet().parse_from_json(self._json_test_object)
+        json_part = AJsonPart().parse_from_json(self._json_test_object)
+        json_spread_sheet = JsonSpreadSheet(json_part)
 
-        json_part_sheet.write_to_freecad(active_document)
+        json_spread_sheet.write_to_freecad(active_document)
 
-        attribute = json_part_sheet.read_sheet_attribute(active_document, "height")
+        attribute = json_spread_sheet.read_sheet_attribute(active_document, "height")
 
         self.assertEquals(attribute, 300, "Got correct value")

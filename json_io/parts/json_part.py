@@ -27,6 +27,7 @@
 from json_io.json_definitions import JSON_ELEMENT_NAME, JSON_ELEMENT_SHAPE,\
     JSON_ELEMENT_UUID, JSON_ELEMENT_LENGTH_X, JSON_ELEMENT_LENGTH_Y,\
     JSON_ELEMENT_LENGTH_Z, JSON_ELEMENT_RADIUS, JSON_ELEMENT_COLOR
+from json_io.parts.json_part_sheet import JsonSpreadSheet
 
 
 M_TO_MM = 1000
@@ -40,16 +41,17 @@ class AJsonPart():
     such as swapping the axes if needed as well as cleaning uuid etc.
     '''
 
-    attributes = {
-        "name": "-",
-        "shape": "-",
-        "uuid": "-",
-        "length": "mm",
-        "width": "mm",
-        "height": "mm",
-        "radius": "mm",
-        "color": "rgba"
-        }
+    def __init__(self):
+        self.attributes = {
+            "name": "-",
+            "shape": "-",
+            "uuid": "-",
+            "length": "mm",
+            "width": "mm",
+            "height": "mm",
+            "radius": "mm",
+            "color": "rgba"
+            }
 
     def parse_from_json(self, json_object):
         '''
@@ -70,6 +72,8 @@ class AJsonPart():
 
         # shift from pure rgb to rgba
         self.color = int(json_object[JSON_ELEMENT_COLOR]) << 8
+
+        self.sheet = JsonSpreadSheet(self)
 
         return self
 
@@ -98,9 +102,20 @@ class AJsonPart():
         pass
 
     def write_to_freecad(self, active_document):
+        '''
+        This method uses all information from this json part to create
+        the corresponding object in FreeCAD.
+        '''
+        # Create the FreeCAD object and set its properties
         self._create_freecad_object(active_document)
         self._set_freecad_name_and_color(active_document)
         self._set_freecad_properties(active_document)
+
+        # Attach the Spreadsheet with a copy of all relevant parameters
+        # to the FreeCAD document
+        self.sheet.write_to_freecad(active_document)
+
+        # Recompute the object on FreeCAD side
         object_name_and_type = self.get_shape_type()
         active_document.app_active_document.getObject(object_name_and_type).recompute()
 

@@ -28,7 +28,6 @@ import FreeCAD
 import FreeCADGui
 from freecad.active_document import ActiveDocument
 from json_io.parts.json_part_factory import JsonPartFactory
-from json_io.parts.json_part_sheet import JsonPartSheet
 
 App = FreeCAD
 Gui = FreeCADGui
@@ -49,7 +48,6 @@ class JsonImporter(object):
     def create_or_update_part(self, json_object):
         Log('Creating or Updating a part...\n')
         json_part = JsonPartFactory().create_from_json(json_object)
-        json_part_sheet = JsonPartSheet().parse_from_json(json_object)
 
         # Use the name to create the part document
         # should be careful in case the name already exists.
@@ -60,7 +58,6 @@ class JsonImporter(object):
         active_document = ActiveDocument(self.working_output_directory).open_set_and_get_document(part_file_name)
 
         json_part.write_to_freecad(active_document)
-        json_part_sheet.write_to_freecad(active_document)
 
         active_document.save_and_close_active_document(part_file_name)
         Log('Saved part to file: ' + part_file_name + "\n")
