@@ -109,6 +109,15 @@ class TestJsonProductAssembly(AWorkingDirectoryTest):
         self.assertEqual(json_product.rot_y, 0.0, "Property is correctly set")
         self.assertEqual(json_product.rot_z, 0.0, "Property is correctly set")
 
+        # Now check for the children
+        self.assertEquals(len(json_product.children), 2, "Parsed two children")
+
+        json_product_child_1 = json_product.children[0]
+        json_product_child_2 = json_product.children[1]
+
+        self.assertEqual(json_product_child_1.name, "BasePlateBottom", "Parsed correct child")
+        self.assertEqual(json_product_child_2.name, "BasePlateTop", "Parsed correct child")
+
     def test_parse_with_no_children(self):
         json_data = """{
                 "name": "BasePlateBottom",

@@ -29,4 +29,3 @@ from json_io.products.json_product import AJsonProduct
 
 class JsonProductChild(AJsonProduct):
     pass
-   
