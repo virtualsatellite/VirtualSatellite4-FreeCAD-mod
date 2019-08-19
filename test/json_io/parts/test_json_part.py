@@ -95,3 +95,22 @@ class TestJsonPart(AWorkingDirectoryTest):
         self.assertEquals(Gui.ActiveDocument.getObject("Box").ShapeColor,
                           (0.7529411911964417, 0.7529411911964417, 0.7529411911964417, 0.0),
                           "Shape has correct color")
+
+    def test_get_part_unique_name(self):
+        json_data = """{
+            "color": 12632256,
+            "shape": "BOX",
+            "name": "Beam",
+            "lengthX": 0.04,
+            "lengthY": 0.01,
+            "lengthZ": 0.3,
+            "radius": 0.0,
+            "uuid": "6201a731-d703-43f8-ab37-6a0581dfe022"
+        }"""
+
+        json_object = json.loads(json_data)
+
+        json_part = AJsonPart()
+        json_part.parse_from_json(json_object)
+
+        self.assertEquals(json_part.get_part_unique_name(), "Beam_6201a731_d703_43f8_ab37_6a0581dfe022", "Correct unique name")

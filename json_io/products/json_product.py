@@ -28,7 +28,7 @@ from json_io.json_definitions import JSON_ELEMENT_NAME, JSON_ELEMENT_UUID,\
     JSON_ELEMENT_POS_Y, JSON_ELEMENT_POS_X,\
     JSON_ELEMENT_POS_Z, JSON_ELEMENT_ROT_X, JSON_ELEMENT_ROT_Y,\
     JSON_ELEMENT_ROT_Z, JSON_ELEMENT_PART_UUID, JSON_ELEMENT_PART_NAME, M_TO_MM,\
-    RAD_TO_DEG
+    RAD_TO_DEG, _get_combined_name_uuid
 from json_io.json_spread_sheet import JsonSpreadSheet
 
 
@@ -82,10 +82,8 @@ class AJsonProduct():
 
         return self
 
-    def _clean_freecad_object(self, active_document):
-        pass
-
-    def _create_freecad_object(self, active_document):
+    def _create_or_update_freecad_part(self, active_document):
+        # importPartFromFile(active_document.app_active_document, )
         pass
 
     def _set_freecad_name_and_color(self, active_document):
@@ -95,20 +93,13 @@ class AJsonProduct():
         pass
 
     def write_to_freecad(self, active_document):
-        '''
-        This method uses all information from this json part to create
-        the corresponding object in FreeCAD.
-        '''
-        # Create the FreeCAD object and set its properties
-        self._clean_freecad_object(active_document)
-        self._create_freecad_object(active_document)
-        self._set_freecad_name_and_color(active_document)
-        self._set_freecad_properties(active_document)
+        self._create_or_update_freecad_object(active_document)
 
-        # Attach the Spreadsheet with a copy of all relevant parameters
         # to the FreeCAD document
         self.sheet.write_to_freecad(active_document)
 
-        # Recompute the object on FreeCAD side
-        object_name_and_type = self.get_shape_type()
-        active_document.app_active_document.getObject(object_name_and_type).recompute()
+    def get_product_unique_name(self):
+        return _get_combined_name_uuid(self.name, self.uuid)
+
+    def get_part_unique_name(self):
+        return _get_combined_name_uuid(self.part_name, self.part_uuid)

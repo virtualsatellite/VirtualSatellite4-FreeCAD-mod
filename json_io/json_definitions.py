@@ -63,3 +63,27 @@ JSON_ELEMENT_PART_UUID = "partUuid"
 JSON_ELEMENT_PART_NAME = "partName"
 
 JSON_ELEMNT_CHILDREN = "children"
+
+
+def _get_combined_name_uuid(name, uuid):
+    return str(name + "_" + uuid.replace("-", "_"))
+
+
+def _get_element_name_uuid(json_object):
+    name = json_object[JSON_ELEMENT_NAME]
+    uuid = json_object[JSON_ELEMENT_UUID]
+    return _get_combined_name_uuid(name, uuid)
+
+
+def get_product_name_uuid(json_object):
+    return _get_element_name_uuid(json_object)
+
+
+def get_part_name_uuid(json_object):
+    return _get_element_name_uuid(json_object)
+
+
+def get_product_part_name_uuid(json_object):
+    name = json_object[JSON_ELEMENT_PART_NAME]
+    uuid = json_object[JSON_ELEMENT_PART_UUID]
+    return _get_combined_name_uuid(name, uuid)

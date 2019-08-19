@@ -30,6 +30,9 @@ import os
 
 import FreeCAD
 import FreeCADGui
+from freecad.active_document import ActiveDocument
+import json
+from json_io.parts.json_part_box import JsonPartBox
 
 App = FreeCAD
 Gui = FreeCADGui
@@ -72,3 +75,29 @@ class AWorkingDirectoryTest(unittest.TestCase):
         document_list = list(App.listDocuments().keys())
         for document_name in document_list:
             App.closeDocument(document_name)
+
+    def create_Test_Part(self):
+        '''
+        Method to create and store a test part, as it is needed in the assembly tests
+        '''
+        json_data = """{
+            "color": 12632256,
+            "shape": "BOX",
+            "name": "BasePlate",
+            "lengthX": 0.04,
+            "lengthY": 0.02,
+            "lengthZ": 0.002,
+            "radius": 0.0,
+            "uuid": "3d3708fd-5c6c-4af9-b710-d68778466084"
+        }"""
+
+        json_object = json.loads(json_data)
+
+        json_part = JsonPartBox()
+        json_part.parse_from_json(json_object)
+
+        active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document(json_part.get_part_unique_name())
+
+        json_part.write_to_freecad(active_document)
+
+        active_document.save_and_close_active_document(json_part.get_part_unique_name())

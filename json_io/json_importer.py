@@ -28,6 +28,7 @@ import FreeCAD
 import FreeCADGui
 from freecad.active_document import ActiveDocument
 from json_io.parts.json_part_factory import JsonPartFactory
+from json_io.json_definitions import get_part_name_uuid
 
 App = FreeCAD
 Gui = FreeCADGui
@@ -54,7 +55,7 @@ class JsonImporter(object):
             # should be careful in case the name already exists.
             # thus it is combined with the uuid. not really nice
             # but definitely efficient
-            part_file_name = str(json_part.name + "_" + json_part.uuid)
+            part_file_name = get_part_name_uuid(json_object)
 
             active_document = ActiveDocument(self.working_output_directory).open_set_and_get_document(part_file_name)
 

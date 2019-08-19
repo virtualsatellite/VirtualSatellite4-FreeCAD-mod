@@ -30,6 +30,7 @@ from test.test_setup import AWorkingDirectoryTest
 import FreeCAD
 import FreeCADGui
 from json_io.products.json_product_child import JsonProductChild
+from freecad.active_document import ActiveDocument
 
 
 App = FreeCAD
@@ -37,6 +38,50 @@ Gui = FreeCADGui
 
 
 class TestJsonProductChild(AWorkingDirectoryTest):
+
+    json_data = """{
+            "name": "BasePlateBottom",
+            "uuid": "e8794f3d-86ec-44c5-9618-8b7170c45484",
+            "partUuid": "3d3708fd-5c6c-4af9-b710-d68778466084",
+            "partName": "BasePlate",
+            "posX": 2.0,
+            "posY": 3.0,
+            "posZ": 4.0,
+            "rotX": 0.1,
+            "rotY": 0.2,
+            "rotZ": 0.3,
+            "children": [
+                {
+                    "posX": 0.0,
+                    "posY": 0.0,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "children": [
+                    ],
+                    "rotZ": 0.0,
+                    "rotY": 0.0,
+                    "name": "BasePlateBottom",
+                    "uuid": "e8794f3d-86ec-44c5-9618-8b7170c45484",
+                    "partUuid": "3d3708fd-5c6c-4af9-b710-d68778466084",
+                    "partName": "BasePlate"
+                },
+                {
+                    "posX": 0.0,
+                    "posY": 0.0,
+                    "posZ": 0.5,
+                    "rotX": 0.0,
+                    "children": [
+                    ],
+                    "rotZ": 0.0,
+                    "rotY": 0.0,
+                    "name": "BasePlateTop",
+                    "uuid": "a199e3bd-3bc1-426d-8321-e9bd829339b3",
+                    "partUuid": "3d3708fd-5c6c-4af9-b710-d68778466084",
+                    "partName": "BasePlate"
+                }
+            ]
+        }
+        """
 
     @classmethod
     def setUpClass(cls):
@@ -47,51 +92,7 @@ class TestJsonProductChild(AWorkingDirectoryTest):
         super().tearDown()
 
     def test_parse(self):
-        json_data = """{
-                "name": "BasePlateBottom",
-                "uuid": "e8794f3d-86ec-44c5-9618-8b7170c45484",
-                "partUuid": "3d3708fd-5c6c-4af9-b710-d68778466084",
-                "partName": "BasePlate",
-                "posX": 2.0,
-                "posY": 3.0,
-                "posZ": 4.0,
-                "rotX": 0.1,
-                "rotY": 0.2,
-                "rotZ": 0.3,
-                "children": [
-                    {
-                        "posX": 0.0,
-                        "posY": 0.0,
-                        "posZ": 0.0,
-                        "rotX": 0.0,
-                        "children": [
-                        ],
-                        "rotZ": 0.0,
-                        "rotY": 0.0,
-                        "name": "BasePlateBottom",
-                        "uuid": "e8794f3d-86ec-44c5-9618-8b7170c45484",
-                        "partUuid": "3d3708fd-5c6c-4af9-b710-d68778466084",
-                        "partName": "BasePlate"
-                    },
-                    {
-                        "posX": 0.0,
-                        "posY": 0.0,
-                        "posZ": 0.5,
-                        "rotX": 0.0,
-                        "children": [
-                        ],
-                        "rotZ": 0.0,
-                        "rotY": 0.0,
-                        "name": "BasePlateTop",
-                        "uuid": "a199e3bd-3bc1-426d-8321-e9bd829339b3",
-                        "partUuid": "3d3708fd-5c6c-4af9-b710-d68778466084",
-                        "partName": "BasePlate"
-                    }
-                ]
-            }
-            """
-
-        json_object = json.loads(json_data)
+        json_object = json.loads(self.json_data)
         json_product = JsonProductChild().parse_from_json(json_object)
 
         self.assertEqual(json_product.name, "BasePlateBottom", "Property is correctly set")
@@ -108,3 +109,13 @@ class TestJsonProductChild(AWorkingDirectoryTest):
         self.assertEqual(json_product.rot_x, 5.729577951308233, "Property is correctly set")
         self.assertEqual(json_product.rot_y, 11.459155902616466, "Property is correctly set")
         self.assertEqual(json_product.rot_z, 17.188733853924695, "Property is correctly set")
+
+    def test_create_part_product_child(self):
+        active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("ProductChild")
+        json_object = json.loads(self.json_data)
+        json_product = JsonProductChild().parse_from_json(json_object)
+        active_document.save_as("ProductChild")
+
+        json_product.write_to_freecad(active_document)
+
+
