@@ -27,14 +27,9 @@
 from json_io.json_definitions import JSON_ELEMENT_NAME, JSON_ELEMENT_UUID,\
     JSON_ELEMENT_POS_Y, JSON_ELEMENT_POS_X,\
     JSON_ELEMENT_POS_Z, JSON_ELEMENT_ROT_X, JSON_ELEMENT_ROT_Y,\
-    JSON_ELEMENT_ROT_Z, JSON_ELEMENT_PART_UUID, JSON_ELEMENT_PART_NAME
-import math
+    JSON_ELEMENT_ROT_Z, JSON_ELEMENT_PART_UUID, JSON_ELEMENT_PART_NAME, M_TO_MM,\
+    RAD_TO_DEG
 from json_io.json_spread_sheet import JsonSpreadSheet
-
-
-M_TO_MM = 1000
-
-RAD_TO_DEG = 180.0 / math.pi
 
 
 class AJsonProduct():
@@ -53,13 +48,21 @@ class AJsonProduct():
             "rot_Z": "°",
             }
 
-    def parse_from_json(self, json_object):
+        self.pos_x = 0.0
+        self.pos_y = 0.0
+        self.pos_z = 0.0
 
+        self.rot_x = 0.0
+        self.rot_y = 0.0
+        self.rot_z = 0.0
+
+    def _parse_name_and_uuid_from_json(self, json_object):
         self.name = str(json_object[JSON_ELEMENT_NAME])
         self.uuid = str(json_object[JSON_ELEMENT_UUID]).replace("-", "_")
         self.part_uuid = str(json_object[JSON_ELEMENT_PART_UUID]).replace("-", "_")
         self.part_name = str(json_object[JSON_ELEMENT_PART_NAME]).replace("-", "_")
 
+    def _parse_position_and_rotation_from_json(self, json_object):
         # the coordinate system between virtual satellite and FreeCAD seem
         # to be identical. no Further adjustments or transformations needed.
         self.pos_x = float(json_object[JSON_ELEMENT_POS_X]) * M_TO_MM
@@ -72,6 +75,9 @@ class AJsonProduct():
         self.rot_y = float(json_object[JSON_ELEMENT_ROT_Y]) * RAD_TO_DEG
         self.rot_z = float(json_object[JSON_ELEMENT_ROT_Z]) * RAD_TO_DEG
 
+    def parse_from_json(self, json_object):
+        self._parse_name_and_uuid_from_json(json_object)
+        self._parse_position_and_rotation_from_json(json_object)
         self.sheet = JsonSpreadSheet(self)
 
         return self

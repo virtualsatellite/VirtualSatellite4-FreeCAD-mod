@@ -23,43 +23,10 @@
 #
 # SPDX-License-Identifier: LGPL-3.0-or-later
 #
-import math
+
+from json_io.products.json_product import AJsonProduct
 
 
-M_TO_MM = 1000
-
-RAD_TO_DEG = 180.0 / math.pi
-
-JSON_ELEMENT_COLOR = "color"
-JSON_ELEMENT_SHAPE = "shape"
-
-JSON_ELEMENT_SHAPE_NONE = "NONE"
-JSON_ELEMENT_SHAPE_BOX = "BOX"
-JSON_ELEMENT_SHAPE_CONE = "CONE"
-JSON_ELEMENT_SHAPE_CYLINDER = "CYLINDER"
-JSON_ELEMENT_SHAPE_SPHERE = "SPHERE"
-JSON_ELEMENT_SHAPE_GEOMETRY = "GEOMETRY"
-
-JSON_ELEMENT_NAME = "name"
-
-JSON_ELEMENT_LENGTH_X = "lengthX"
-JSON_ELEMENT_LENGTH_Y = "lengthY"
-JSON_ELEMENT_LENGTH_Z = "lengthZ"
-
-JSON_ELEMENT_RADIUS = "radius"
-JSON_ELEMENT_UUID = "uuid"
-
-JSON_ELEMENT_STL_PATH = "stlPath"
-
-JSON_ELEMENT_POS_X = "posX"
-JSON_ELEMENT_POS_Y = "posY"
-JSON_ELEMENT_POS_Z = "posZ"
-
-JSON_ELEMENT_ROT_X = "rotX"
-JSON_ELEMENT_ROT_Y = "rotY"
-JSON_ELEMENT_ROT_Z = "rotZ"
-
-JSON_ELEMENT_PART_UUID = "partUuid"
-JSON_ELEMENT_PART_NAME = "partName"
-
-JSON_ELEMNT_CHILDREN = "children"
+class JsonProductChild(AJsonProduct):
+    pass
+   
