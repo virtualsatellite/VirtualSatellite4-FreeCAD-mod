@@ -30,8 +30,6 @@ from test.test_setup import AWorkingDirectoryTest
 import FreeCAD
 import FreeCADGui
 from json_io.products.json_product_assembly import JsonProductAssembly
-from freecad.active_document import ActiveDocument
-from json_io.parts.json_part_box import JsonPartBox
 
 
 App = FreeCAD
@@ -45,12 +43,12 @@ class TestJsonProductAssembly(AWorkingDirectoryTest):
             "uuid": "e8794f3d-86ec-44c5-9618-8b7170c45484",
             "partUuid": "3d3708fd-5c6c-4af9-b710-d68778466084",
             "partName": "BasePlate",
-            "posX": 2.0,
-            "posY": 3.0,
-            "posZ": 4.0,
-            "rotX": 0.1,
-            "rotY": 0.2,
-            "rotZ": 0.3,
+            "posX": 10.0,
+            "posY": 15.0,
+            "posZ": 20.0,
+            "rotX": 0.349,
+            "rotY": 0.698,
+            "rotZ": 1.046,
             "children": [
                 {
                     "posX": 0.0,

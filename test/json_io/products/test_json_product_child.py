@@ -47,9 +47,9 @@ class TestJsonProductChild(AWorkingDirectoryTest):
             "posX": 2.0,
             "posY": 3.0,
             "posZ": 4.0,
-            "rotX": 0.1,
-            "rotY": 0.2,
-            "rotZ": 0.3,
+            "rotX": 0.349,
+            "rotY": 0.698,
+            "rotZ": 1.046,
             "children": [
                 {
                     "posX": 0.0,
@@ -106,13 +106,13 @@ class TestJsonProductChild(AWorkingDirectoryTest):
         self.assertEqual(json_product.pos_y, 3000, "Property is correctly set")
         self.assertEqual(json_product.pos_z, 4000, "Property is correctly set")
 
-        self.assertEqual(json_product.rot_x, 5.729577951308233, "Property is correctly set")
-        self.assertEqual(json_product.rot_y, 11.459155902616466, "Property is correctly set")
-        self.assertEqual(json_product.rot_z, 17.188733853924695, "Property is correctly set")
+        self.assertEqual(json_product.rot_x, 19.99622705006573, "Property is correctly set")
+        self.assertEqual(json_product.rot_y, 39.99245410013146, "Property is correctly set")
+        self.assertEqual(json_product.rot_z, 59.93138537068411, "Property is correctly set")
 
     def test_create_part_product_child(self):
         self.create_Test_Part()
-        
+
         active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("ProductChild")
         json_object = json.loads(self.json_data)
         json_product = JsonProductChild().parse_from_json(json_object)
@@ -121,5 +121,3 @@ class TestJsonProductChild(AWorkingDirectoryTest):
         json_product.write_to_freecad(active_document)
 
         active_document.save_as("ProductChild")
-
-

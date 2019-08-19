@@ -31,7 +31,7 @@ from json_io.json_definitions import JSON_ELEMENT_NAME, JSON_ELEMENT_UUID,\
     RAD_TO_DEG, _get_combined_name_uuid
 from json_io.json_spread_sheet import JsonSpreadSheet
 from A2plus.a2p_importpart import importPartFromFile
-from freecad.active_document import FREECAD_FILE_EXTENSION
+from freecad.active_document import VECTOR_X, VECTOR_Y, VECTOR_Z, VECTOR_ZERO
 
 
 class AJsonProduct():
@@ -85,19 +85,67 @@ class AJsonProduct():
         return self
 
     def _create_or_update_freecad_part(self, active_document):
+        '''
+        This method imports the part referenced by the product.
+        The referenced part will be placed under the product part name into
+        the assembly. E.g. A BasePlate will be added as BasePlateBottom to the
+        assembly. In case the object already exists, nothing special will happen.
+        '''
         import_part_file_name = self.get_part_unique_name()
+        import_product_part_name = self.get_unique_name()
         import_part_full_path = active_document.get_file_full_path(import_part_file_name)
-        importPartFromFile(active_document.app_active_document, import_part_full_path)
+        imported_product_part = importPartFromFile(
+            active_document.app_active_document,
+            import_part_full_path)
+        imported_product_part.Label = import_product_part_name
 
     def _set_freecad_name_and_color(self, active_document):
         pass
 
-    def _set_freecad_properties(self, active_document):
-        pass
+    def _set_freecad_position_and_rotation(self, active_document):
+        product_part_name = self.get_unique_name()
+
+        product_part = active_document.app_active_document.getObjectsByLabel(product_part_name)[0]
+
+        # First translate than rotate around X, Y and Z
+        vector_translation = active_document.app.Vector(self.pos_x, self.pos_y, self.pos_z)
+        vector_rotation_zero = active_document.app.Rotation(VECTOR_ZERO, 0)
+        vector_rotation_x = active_document.app.Rotation(VECTOR_X, self.rot_x)
+        vector_rotation_y = active_document.app.Rotation(VECTOR_Y, self.rot_y)
+        vector_rotation_z = active_document.app.Rotation(VECTOR_Z, self.rot_z)
+
+        placement = product_part.Placement
+
+        placement_translation = active_document.app.Placement(
+            vector_translation,
+            vector_rotation_zero,
+            VECTOR_ZERO)
+
+        placement_rotation_x = active_document.app.Placement(
+            VECTOR_ZERO,
+            vector_rotation_x,
+            VECTOR_ZERO)
+
+        placement_rotation_y = active_document.app.Placement(
+            VECTOR_ZERO,
+            vector_rotation_y,
+            VECTOR_ZERO)
+
+        placement_rotation_z = active_document.app.Placement(
+            VECTOR_ZERO,
+            vector_rotation_z,
+            VECTOR_ZERO)
+
+        placement = placement_rotation_x.multiply(placement)
+        placement = placement_rotation_y.multiply(placement)
+        placement = placement_rotation_z.multiply(placement)
+        placement = placement_translation.multiply(placement)
+
+        product_part.Placement = placement
 
     def write_to_freecad(self, active_document):
         self._create_or_update_freecad_part(active_document)
-
+        self._set_freecad_position_and_rotation(active_document)
         # to the FreeCAD document
         self.sheet.write_to_freecad(active_document)
 
