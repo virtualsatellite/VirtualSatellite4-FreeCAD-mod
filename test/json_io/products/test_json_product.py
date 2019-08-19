@@ -100,5 +100,5 @@ class TestJsonProduct(AWorkingDirectoryTest):
         json_object = json.loads(json_data)
         json_product = AJsonProduct().parse_from_json(json_object)
 
-        self.assertEquals(json_product.get_product_unique_name(), "BasePlateBottom_e8794f3d_86ec_44c5_9618_8b7170c45484", "Correct unique name")
+        self.assertEquals(json_product.get_unique_name(), "BasePlateBottom_e8794f3d_86ec_44c5_9618_8b7170c45484", "Correct unique name")
         self.assertEquals(json_product.get_part_unique_name(), "BasePlate_3d3708fd_5c6c_4af9_b710_d68778466084", "Correct unique name")

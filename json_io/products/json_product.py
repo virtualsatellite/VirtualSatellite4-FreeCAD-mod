@@ -30,6 +30,8 @@ from json_io.json_definitions import JSON_ELEMENT_NAME, JSON_ELEMENT_UUID,\
     JSON_ELEMENT_ROT_Z, JSON_ELEMENT_PART_UUID, JSON_ELEMENT_PART_NAME, M_TO_MM,\
     RAD_TO_DEG, _get_combined_name_uuid
 from json_io.json_spread_sheet import JsonSpreadSheet
+from A2plus.a2p_importpart import importPartFromFile
+from freecad.active_document import FREECAD_FILE_EXTENSION
 
 
 class AJsonProduct():
@@ -44,8 +46,8 @@ class AJsonProduct():
             "pos_y": "mm",
             "pos_z": "mm",
             "rot_x": "°",
-            "rot_Y": "°",
-            "rot_Z": "°",
+            "rot_y": "°",
+            "rot_z": "°",
             }
 
         self.pos_x = 0.0
@@ -83,8 +85,9 @@ class AJsonProduct():
         return self
 
     def _create_or_update_freecad_part(self, active_document):
-        # importPartFromFile(active_document.app_active_document, )
-        pass
+        import_part_file_name = self.get_part_unique_name()
+        import_part_full_path = active_document.get_file_full_path(import_part_file_name)
+        importPartFromFile(active_document.app_active_document, import_part_full_path)
 
     def _set_freecad_name_and_color(self, active_document):
         pass
@@ -93,13 +96,19 @@ class AJsonProduct():
         pass
 
     def write_to_freecad(self, active_document):
-        self._create_or_update_freecad_object(active_document)
+        self._create_or_update_freecad_part(active_document)
 
         # to the FreeCAD document
         self.sheet.write_to_freecad(active_document)
 
-    def get_product_unique_name(self):
+    def get_unique_name(self):
+        '''
+        Returns the uniqe name of the current product
+        '''
         return _get_combined_name_uuid(self.name, self.uuid)
 
     def get_part_unique_name(self):
+        '''
+        Returns the unique name of the referenced part
+        '''
         return _get_combined_name_uuid(self.part_name, self.part_uuid)

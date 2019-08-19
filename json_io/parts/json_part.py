@@ -137,5 +137,5 @@ class AJsonPart():
         shape_type = self.shape.lower().capitalize()
         return shape_type
 
-    def get_part_unique_name(self):
+    def get_unique_name(self):
         return _get_combined_name_uuid(self.name, self.uuid)

@@ -96,8 +96,8 @@ class AWorkingDirectoryTest(unittest.TestCase):
         json_part = JsonPartBox()
         json_part.parse_from_json(json_object)
 
-        active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document(json_part.get_part_unique_name())
+        active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document(json_part.get_unique_name())
 
         json_part.write_to_freecad(active_document)
 
-        active_document.save_and_close_active_document(json_part.get_part_unique_name())
+        active_document.save_and_close_active_document(json_part.get_unique_name())

@@ -24,7 +24,7 @@
 # SPDX-License-Identifier: LGPL-3.0-or-later
 #
 
-FREECAD_PART_SHEET_NAME = "VirtualSatellitePart"
+FREECAD_PART_SHEET_NAME = "VS"
 FREECAD_PART_SHEET_ATTRIBUTE_START_LINE = 3
 
 
@@ -33,11 +33,15 @@ class JsonSpreadSheet(object):
     This class handles the io of the part properties to an excel sheet
     '''
 
-    def __init__(self, json_part):
-        self._json_part = json_part
+    def __init__(self, json_part_or_product):
+        self._json_part_or_product = json_part_or_product
+
+    def create_sheet_name(self):
+        return FREECAD_PART_SHEET_NAME + "_" + self._json_part_or_product.get_unique_name()
 
     def is_sheet_attached(self, active_document):
-        sheet = active_document.app_active_document.getObject(FREECAD_PART_SHEET_NAME)
+        sheet_name = self.create_sheet_name()
+        sheet = active_document.app_active_document.getObject(sheet_name)
         sheet_attached = sheet is not None
         return sheet_attached
 
@@ -49,9 +53,10 @@ class JsonSpreadSheet(object):
         virtual satellite.
         '''
 
-        sheet = active_document.app_active_document.getObject(FREECAD_PART_SHEET_NAME)
+        sheet_name = self.create_sheet_name()
+        sheet = active_document.app_active_document.getObject(sheet_name)
         if not self.is_sheet_attached(active_document):
-            sheet = active_document.app_active_document.addObject("Spreadsheet::Sheet", FREECAD_PART_SHEET_NAME)
+            sheet = active_document.app_active_document.addObject("Spreadsheet::Sheet", sheet_name)
 
         sheet.set("A1", "Virtual Satellite Part Data")
         sheet.set("A2", "Name")
@@ -60,10 +65,10 @@ class JsonSpreadSheet(object):
         sheet.setStyle("A1:C2", "bold")
 
         sheet_line = FREECAD_PART_SHEET_ATTRIBUTE_START_LINE
-        for json_part_attribute_name in list(self._json_part.attributes.keys()):
+        for json_part_attribute_name in list(self._json_part_or_product.attributes.keys()):
 
-            json_part_attribute_value = str(getattr(self._json_part, json_part_attribute_name))
-            json_part_attribute_unit = self._json_part.attributes[json_part_attribute_name]
+            json_part_attribute_value = str(getattr(self._json_part_or_product, json_part_attribute_name))
+            json_part_attribute_unit = self._json_part_or_product.attributes[json_part_attribute_name]
 
             sheet.set("A" + str(sheet_line), json_part_attribute_name)
             sheet.set("B" + str(sheet_line), json_part_attribute_value)
@@ -81,8 +86,9 @@ class JsonSpreadSheet(object):
         given document. The method allows to individually access the
         written properties.
         '''
-        sheet = active_document.app_active_document.getObject(FREECAD_PART_SHEET_NAME)
-        attribute_index = list(self._json_part.attributes).index(attribute_name)
+        sheet_name = self.create_sheet_name()
+        sheet = active_document.app_active_document.getObject(sheet_name)
+        attribute_index = list(self._json_part_or_product.attributes).index(attribute_name)
 
-        if (attribute_index >= 0 and attribute_index < len(self._json_part.attributes)):
+        if (attribute_index >= 0 and attribute_index < len(self._json_part_or_product.attributes)):
             return sheet.get("B" + str(attribute_index + FREECAD_PART_SHEET_ATTRIBUTE_START_LINE))

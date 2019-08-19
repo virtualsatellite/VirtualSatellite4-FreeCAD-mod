@@ -111,11 +111,15 @@ class TestJsonProductChild(AWorkingDirectoryTest):
         self.assertEqual(json_product.rot_z, 17.188733853924695, "Property is correctly set")
 
     def test_create_part_product_child(self):
+        self.create_Test_Part()
+        
         active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("ProductChild")
         json_object = json.loads(self.json_data)
         json_product = JsonProductChild().parse_from_json(json_object)
         active_document.save_as("ProductChild")
 
         json_product.write_to_freecad(active_document)
+
+        active_document.save_as("ProductChild")
 
 
