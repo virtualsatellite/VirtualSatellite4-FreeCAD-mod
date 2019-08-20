@@ -92,12 +92,18 @@ class AWorkingDirectoryTest(unittest.TestCase):
         }"""
 
         json_object = json.loads(json_data)
-
         json_part = JsonPartBox()
         json_part.parse_from_json(json_object)
 
         active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document(json_part.get_unique_name())
-
         json_part.write_to_freecad(active_document)
-
         active_document.save_and_close_active_document(json_part.get_unique_name())
+
+    def assertAlmostEqualVector(self, first, second, places=7, msg=None):
+        '''
+        This method helps to make sure, that the content of two array is numerical correct
+        and as expected.
+        '''
+        self.assertEqual(len(first), len(second), msg)
+        for index in range(len(first)):
+            self.assertAlmostEqual(first[index], second[index], places, msg)
