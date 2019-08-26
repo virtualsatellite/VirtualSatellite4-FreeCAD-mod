@@ -29,7 +29,6 @@ from json_io.json_definitions import _get_combined_name_uuid
 
 
 class JsonProductChild(AJsonProduct):
-    pass
 
     def get_part_unique_name(self):
         '''

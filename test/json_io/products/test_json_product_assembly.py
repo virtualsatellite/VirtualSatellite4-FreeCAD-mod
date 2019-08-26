@@ -153,4 +153,19 @@ class TestJsonProductAssembly(AWorkingDirectoryTest):
 
         active_document.save_as("ProductAssemblyRootPart")
 
-        # find the object by its label
+        # find the object by its label there should be three objects identifiable in the current export
+        # the part in the product and two times the referenced parts in the children.
+        self.assertEquals(len(json_product.children), 2, "correct amount of children")
+        self.assertEquals(len(active_document.app_active_document.RootObjects), 6, "Found correct amount of root objects 3 objects plus 3 sheets")
+
+        product_part_name = json_product.get_unique_name()
+        product_object = active_document.app_active_document.getObjectsByLabel(product_part_name)[0]
+        self.assertIsNotNone(product_object, "Found an object under the given part name")
+
+        product_child1_part_name = json_product.children[0].get_unique_name()
+        product_object = active_document.app_active_document.getObjectsByLabel(product_child1_part_name)[0]
+        self.assertIsNotNone(product_object, "Found an object under the given part name")
+
+        product_child2_part_name = json_product.children[1].get_unique_name()
+        product_object = active_document.app_active_document.getObjectsByLabel(product_child2_part_name)[0]
+        self.assertIsNotNone(product_object, "Found an object under the given part name")

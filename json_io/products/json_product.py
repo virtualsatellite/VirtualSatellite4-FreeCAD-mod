@@ -178,4 +178,3 @@ class AJsonProduct():
         has_part_name = hasattr(self, "part_name")
 
         return has_part_uuid and has_part_name
-
