@@ -77,3 +77,15 @@ class JsonProductAssembly(AJsonProduct):
             return self
         else:
             return None
+
+        def write_to_freecad(self, active_document):
+            # This assembly may refer to a part as well
+            # hence if there is a partUuid and if there is a part name, than
+            # it should be written to the FreeCAD document as well.
+            if self.is_part_reference():
+                super().write_to_freecad(active_document)
+
+            # And now write the children, they decide on their own if they reference
+            # part or a product
+            for child in self.children:
+                child.write_to_freecad(active_document)

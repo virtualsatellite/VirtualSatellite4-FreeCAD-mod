@@ -80,6 +80,8 @@ class TestJsonProduct(AWorkingDirectoryTest):
         self.assertEqual(json_product.rot_y, 11.459155902616466, "Property is correctly set")
         self.assertEqual(json_product.rot_z, 17.188733853924695, "Property is correctly set")
 
+        self.assertFalse(json_product.has_children, "The defined product has an empty list of children")
+
     def test_get_unique_names(self):
         json_data = """{
                 "name": "BasePlateBottom",
@@ -102,3 +104,43 @@ class TestJsonProduct(AWorkingDirectoryTest):
 
         self.assertEquals(json_product.get_unique_name(), "BasePlateBottom_e8794f3d_86ec_44c5_9618_8b7170c45484", "Correct unique name")
         self.assertEquals(json_product.get_part_unique_name(), "BasePlate_3d3708fd_5c6c_4af9_b710_d68778466084", "Correct unique name")
+
+    def test_is_part_reference(self):
+        json_data = """{
+                "name": "BasePlateBottom",
+                "uuid": "e8794f3d-86ec-44c5-9618-8b7170c45484",
+                "posX": 2.0,
+                "posY": 3.0,
+                "posZ": 4.0,
+                "rotX": 0.1,
+                "rotY": 0.2,
+                "rotZ": 0.3,
+                "children": [
+                ]
+            }
+            """
+
+        json_object = json.loads(json_data)
+        json_product = AJsonProduct().parse_from_json(json_object)
+
+        self.assertFalse(json_product.is_part_reference(), "The current product does not reference a part")
+
+        json_data = """{
+                "name": "BasePlateBottom",
+                "uuid": "e8794f3d-86ec-44c5-9618-8b7170c45484",
+                "partUuid": "3d3708fd-5c6c-4af9-b710-d68778466084",
+                "partName": "BasePlate",
+                "posX": 2.0,
+                "posY": 3.0,
+                "posZ": 4.0,
+                "rotX": 0.1,
+                "rotY": 0.2,
+                "rotZ": 0.3,
+                "children": [
+                ]
+            }
+            """
+        json_object = json.loads(json_data)
+        json_product = AJsonProduct().parse_from_json(json_object)
+
+        self.assertTrue(json_product.is_part_reference(), "The current product references a part")

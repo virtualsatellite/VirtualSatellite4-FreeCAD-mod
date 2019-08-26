@@ -25,7 +25,19 @@
 #
 
 from json_io.products.json_product import AJsonProduct
+from json_io.json_definitions import _get_combined_name_uuid
 
 
 class JsonProductChild(AJsonProduct):
     pass
+
+    def get_part_unique_name(self):
+        '''
+        Returns the unique name of the referenced part in case it has no children.
+        In case it has children, we know that this is a sub assembly or an assembly.
+        In this case the file name of the product has to be returned
+        '''
+        if self.has_children:
+            return _get_combined_name_uuid(self.name, self.uuid)
+        else:
+            return _get_combined_name_uuid(self.part_name, self.part_uuid)

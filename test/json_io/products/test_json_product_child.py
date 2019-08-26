@@ -52,6 +52,22 @@ class TestJsonProductChild(AWorkingDirectoryTest):
             "rotY": 0.6981317,
             "rotZ": 1.0471976,
             "children": [
+            ]
+        }
+        """
+
+    json_data_with_child = """{
+            "name": "BasePlateBottom",
+            "uuid": "e8794f3d-86ec-44c5-9618-8b7170c45484",
+            "partUuid": "3d3708fd-5c6c-4af9-b710-d68778466084",
+            "partName": "BasePlate",
+            "posX": 0.02,
+            "posY": 0.03,
+            "posZ": 0.04,
+            "rotX": 0.3490659,
+            "rotY": 0.6981317,
+            "rotZ": 1.0471976,
+            "children": [
                 {
                     "posX": 0.0,
                     "posY": 0.0,
@@ -63,20 +79,6 @@ class TestJsonProductChild(AWorkingDirectoryTest):
                     "rotY": 0.0,
                     "name": "BasePlateBottom",
                     "uuid": "e8794f3d-86ec-44c5-9618-8b7170c45484",
-                    "partUuid": "3d3708fd-5c6c-4af9-b710-d68778466084",
-                    "partName": "BasePlate"
-                },
-                {
-                    "posX": 0.0,
-                    "posY": 0.0,
-                    "posZ": 0.5,
-                    "rotX": 0.0,
-                    "children": [
-                    ],
-                    "rotZ": 0.0,
-                    "rotY": 0.0,
-                    "name": "BasePlateTop",
-                    "uuid": "a199e3bd-3bc1-426d-8321-e9bd829339b3",
                     "partUuid": "3d3708fd-5c6c-4af9-b710-d68778466084",
                     "partName": "BasePlate"
                 }
@@ -111,11 +113,22 @@ class TestJsonProductChild(AWorkingDirectoryTest):
         self.assertAlmostEqual(json_product.rot_y, 40, 5, "Property is correctly set")
         self.assertAlmostEqual(json_product.rot_z, 60, 5, "Property is correctly set")
 
+        self.assertFalse(json_product.has_children, "Current product has no children")
+        self.assertEquals(json_product.get_part_unique_name(), "BasePlate_3d3708fd_5c6c_4af9_b710_d68778466084", "No children thus references the part")
+
+    def test_parse_with_children(self):
+        json_object = json.loads(self.json_data_with_child)
+        json_product = JsonProductChild().parse_from_json(json_object)
+
+        self.assertTrue(json_product.has_children, "Current product has children")
+        self.assertEquals(json_product.get_part_unique_name(), "BasePlateBottom_e8794f3d_86ec_44c5_9618_8b7170c45484", "No children thus references the part")
+
     def test_create_part_product_child(self):
         self.create_Test_Part()
 
         active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("ProductChild")
         json_object = json.loads(self.json_data)
+
         json_product = JsonProductChild().parse_from_json(json_object)
         active_document.save_as("ProductChild")
 

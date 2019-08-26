@@ -30,6 +30,7 @@ from test.test_setup import AWorkingDirectoryTest
 import FreeCAD
 import FreeCADGui
 from json_io.products.json_product_assembly import JsonProductAssembly
+from freecad.active_document import ActiveDocument
 
 
 App = FreeCAD
@@ -39,7 +40,7 @@ Gui = FreeCADGui
 class TestJsonProductAssembly(AWorkingDirectoryTest):
 
     json_data = """{
-            "name": "BasePlateBottom",
+            "name": "BasePlateBottom1",
             "uuid": "e8794f3d-86ec-44c5-9618-8b7170c45484",
             "partUuid": "3d3708fd-5c6c-4af9-b710-d68778466084",
             "partName": "BasePlate",
@@ -59,7 +60,7 @@ class TestJsonProductAssembly(AWorkingDirectoryTest):
                     ],
                     "rotZ": 0.0,
                     "rotY": 0.0,
-                    "name": "BasePlateBottom",
+                    "name": "BasePlateBottom2",
                     "uuid": "e8794f3d-86ec-44c5-9618-8b7170c45484",
                     "partUuid": "3d3708fd-5c6c-4af9-b710-d68778466084",
                     "partName": "BasePlate"
@@ -94,7 +95,7 @@ class TestJsonProductAssembly(AWorkingDirectoryTest):
         json_object = json.loads(self.json_data)
         json_product = JsonProductAssembly().parse_from_json(json_object)
 
-        self.assertEqual(json_product.name, "BasePlateBottom", "Property is correctly set")
+        self.assertEqual(json_product.name, "BasePlateBottom1", "Property is correctly set")
         self.assertEqual(json_product.uuid, "e8794f3d_86ec_44c5_9618_8b7170c45484", "Property is correctly set")
 
         self.assertEqual(json_product.part_name, "BasePlate", "Property is correctly set")
@@ -115,7 +116,7 @@ class TestJsonProductAssembly(AWorkingDirectoryTest):
         json_product_child_1 = json_product.children[0]
         json_product_child_2 = json_product.children[1]
 
-        self.assertEqual(json_product_child_1.name, "BasePlateBottom", "Parsed correct child")
+        self.assertEqual(json_product_child_1.name, "BasePlateBottom2", "Parsed correct child")
         self.assertEqual(json_product_child_2.name, "BasePlateTop", "Parsed correct child")
 
     def test_parse_with_no_children(self):
@@ -138,9 +139,18 @@ class TestJsonProductAssembly(AWorkingDirectoryTest):
         json_object = json.loads(json_data)
         json_product = JsonProductAssembly().parse_from_json(json_object)
 
-        self.assertIsNone(json_product, "There is no assembly if there are not children")
+        self.assertIsNone(json_product, "There is no assembly if there are no children")
 
-    def test_create_part_product_assembly(self):
+    def test_create_part_product_assembly_with_root_part(self):
         self.create_Test_Part()
+
+        active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("ProductAssemblyRootPart")
         json_object = json.loads(self.json_data)
         json_product = JsonProductAssembly().parse_from_json(json_object)
+        active_document.save_as("ProductAssemblyRootPart")
+
+        json_product.write_to_freecad(active_document)
+
+        active_document.save_as("ProductAssemblyRootPart")
+
+        # find the object by its label

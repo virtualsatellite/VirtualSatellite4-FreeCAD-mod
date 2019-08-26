@@ -28,7 +28,7 @@ from json_io.json_definitions import JSON_ELEMENT_NAME, JSON_ELEMENT_UUID,\
     JSON_ELEMENT_POS_Y, JSON_ELEMENT_POS_X,\
     JSON_ELEMENT_POS_Z, JSON_ELEMENT_ROT_X, JSON_ELEMENT_ROT_Y,\
     JSON_ELEMENT_ROT_Z, JSON_ELEMENT_PART_UUID, JSON_ELEMENT_PART_NAME, M_TO_MM,\
-    RAD_TO_DEG, _get_combined_name_uuid
+    RAD_TO_DEG, _get_combined_name_uuid, JSON_ELEMNT_CHILDREN
 from json_io.json_spread_sheet import JsonSpreadSheet
 from A2plus.a2p_importpart import importPartFromFile
 from freecad.active_document import VECTOR_X, VECTOR_Y, VECTOR_Z, VECTOR_ZERO
@@ -61,8 +61,13 @@ class AJsonProduct():
     def _parse_name_and_uuid_from_json(self, json_object):
         self.name = str(json_object[JSON_ELEMENT_NAME])
         self.uuid = str(json_object[JSON_ELEMENT_UUID]).replace("-", "_")
-        self.part_uuid = str(json_object[JSON_ELEMENT_PART_UUID]).replace("-", "_")
-        self.part_name = str(json_object[JSON_ELEMENT_PART_NAME]).replace("-", "_")
+
+        json_has_part_uuid = JSON_ELEMENT_PART_UUID in json_object
+        json_has_part_name = JSON_ELEMENT_PART_NAME in json_object
+
+        if json_has_part_name and json_has_part_uuid:
+            self.part_uuid = str(json_object[JSON_ELEMENT_PART_UUID]).replace("-", "_")
+            self.part_name = str(json_object[JSON_ELEMENT_PART_NAME]).replace("-", "_")
 
     def _parse_position_and_rotation_from_json(self, json_object):
         # the coordinate system between virtual satellite and FreeCAD seem
@@ -82,6 +87,9 @@ class AJsonProduct():
         self._parse_position_and_rotation_from_json(json_object)
         self.sheet = JsonSpreadSheet(self)
 
+        # Remember if the current project has children or not
+        self.has_children = len(list(json_object[JSON_ELEMNT_CHILDREN])) != 0
+
         return self
 
     def _create_or_update_freecad_part(self, active_document):
@@ -92,12 +100,12 @@ class AJsonProduct():
         assembly. In case the object already exists, nothing special will happen.
         '''
         import_part_file_name = self.get_part_unique_name()
-        import_product_part_name = self.get_unique_name()
+        import_part_name_in_product = self.get_unique_name()
         import_part_full_path = active_document.get_file_full_path(import_part_file_name)
         imported_product_part = importPartFromFile(
             active_document.app_active_document,
             import_part_full_path)
-        imported_product_part.Label = import_product_part_name
+        imported_product_part.Label = import_part_name_in_product
 
     def _set_freecad_name_and_color(self, active_document):
         pass
@@ -151,7 +159,7 @@ class AJsonProduct():
 
     def get_unique_name(self):
         '''
-        Returns the uniqe name of the current product
+        Returns the unique name of the current product
         '''
         return _get_combined_name_uuid(self.name, self.uuid)
 
@@ -160,3 +168,14 @@ class AJsonProduct():
         Returns the unique name of the referenced part
         '''
         return _get_combined_name_uuid(self.part_name, self.part_uuid)
+
+    def is_part_reference(self):
+        '''
+        This method checks for the existence of the properties partUuid and partName.
+        In case they are both present, the current product directly references a apart
+        '''
+        has_part_uuid = hasattr(self, "part_uuid")
+        has_part_name = hasattr(self, "part_name")
+
+        return has_part_uuid and has_part_name
+
