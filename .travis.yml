@@ -47,6 +47,9 @@ before_script:
   # -----------------------------------
   - metacity --sm-disable --replace 2> metacity.err &
   
+after_failure:
+  - cat FreeCad.log  
+  
 jobs:
   include:
     # --------------------------------------------
@@ -70,7 +73,7 @@ jobs:
       - curl -L --create-dirs -o ~/.FreeCAD/Mod/a2plus.tar.gz ${A2PLUS_REPO}/archive/${A2PLUS_VERSION}.tar.gz
       - tar -zxf ~/.FreeCAD/Mod/a2plus.tar.gz -C ~/.FreeCAD/Mod/
       # Execute FreeCAD tests
-      - freecad -M $(pwd) -t TestVirtualSatelliteApp
+      - freecad -M $(pwd) -t TestVirtualSatelliteApp -l --log-file "FreeCAD.log"
       
     - stage: test
       if: branch NOT IN (integration_snapshot, development_snapshot) 
@@ -87,7 +90,7 @@ jobs:
       - curl -L --create-dirs -o ~/.FreeCAD/Mod/a2plus.tar.gz ${A2PLUS_REPO}/archive/${A2PLUS_VERSION}.tar.gz
       - tar -zxf ~/.FreeCAD/Mod/a2plus.tar.gz -C ~/.FreeCAD/Mod/
       # Execute FreeCAD tests
-      - freecad -M $(pwd) -t 0
+      - freecad -M $(pwd) -t 0 -l --log-file "FreeCAD.log"
 
     # -----------------------------------------------------------
     # Deploy Jobs for unsecured Development.
