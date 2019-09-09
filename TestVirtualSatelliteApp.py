@@ -36,4 +36,4 @@ from test.json_io.parts.test_json_part_factory import TestJsonPartFactory # NOQA
 #from test.json_io.products.test_json_product import TestJsonProduct # NOQA
 #from test.json_io.products.test_json_product_assembly import TestJsonProductAssembly # NOQA
 #from test.json_io.products.test_json_product_child import TestJsonProductChild # NOQA
-#from test.freecad.test_actice_document import TestActiveDocument # NOQA
+from test.freecad.test_actice_document import TestActiveDocument # NOQA
