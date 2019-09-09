@@ -71,7 +71,8 @@ jobs:
       script:
       # Install A2plus dependency to FreeCAD
       - curl -L --create-dirs -o ~/.FreeCAD/Mod/a2plus.tar.gz ${A2PLUS_REPO}/archive/${A2PLUS_VERSION}.tar.gz
-      - tar -zxf ~/.FreeCAD/Mod/a2plus.tar.gz -C ~/.FreeCAD/Mod/
+      - mkdir ~/.FreeCAD/Mod/A2plus/
+      - tar -zxf ~/.FreeCAD/Mod/a2plus.tar.gz -C ~/.FreeCAD/Mod/A2plus/ --strip-components=1
       # Execute FreeCAD tests
       - freecad -M $(pwd) -t TestVirtualSatelliteApp -l --log-file "FreeCAD.log"
       
@@ -88,7 +89,8 @@ jobs:
       script:
       # Install A2plus dependency to FreeCAD
       - curl -L --create-dirs -o ~/.FreeCAD/Mod/a2plus.tar.gz ${A2PLUS_REPO}/archive/${A2PLUS_VERSION}.tar.gz
-      - tar -zxf ~/.FreeCAD/Mod/a2plus.tar.gz -C ~/.FreeCAD/Mod/
+      - mkdir ~/.FreeCAD/Mod/A2plus/
+      - tar -zxf ~/.FreeCAD/Mod/a2plus.tar.gz -C ~/.FreeCAD/Mod/A2plus/ --strip-components=1
       # Execute FreeCAD tests
       - freecad -M $(pwd) -t 0 -l --log-file "FreeCAD.log"
 
