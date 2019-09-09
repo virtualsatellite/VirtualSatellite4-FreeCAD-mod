@@ -48,7 +48,7 @@ before_script:
   - metacity --sm-disable --replace 2> metacity.err &
   
 after_failure:
-  - cat FreeCad.log  
+  - cat FreeCAD.log  
   
 jobs:
   include:
