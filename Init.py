@@ -27,16 +27,23 @@ import FreeCAD
 from os.path import isdir
 import sys
 
+
 # FreeCAD seems to load modules differently once they are stored in the User Home directory.
 # We try to load the whole folder if it exists
 freecad_user_home = FreeCAD.getUserAppDataDir()
 freecad_user_mod = freecad_user_home + "Mod"
 
-print("See if the directory " + freecad_user_mod + "exists...")
+Log = FreeCAD.Console.PrintLog
 
-if isdir(freecad_user_home):
-    print("Directory exists and will be appended to system path...")
-    sys.path.append(freecad_user_home)
+Log("See if the directory " + freecad_user_mod + "exists...")
+
+if isdir(freecad_user_mod):
+    Log("Directory Exists... Check if it is already on the path...")
+    if (freecad_user_mod in sys.path):
+        Log("Directory is already on the path...")
+    else:
+        Log("Directory will be appended to system path...")
+        sys.path.append(freecad_user_mod)
 
 # Finally register the unit test for being executed with all other FreeCAD tests
 FreeCAD.__unit_test__ += ["TestVirtualSatelliteApp"]
