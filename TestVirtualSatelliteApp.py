@@ -23,8 +23,6 @@
 #
 # SPDX-License-Identifier: LGPL-3.0-or-later
 #
-import os
-import sys
 
 from test.json_io.test_json_importer import TestJsonImporter  # NOQA 
 from test.json_io.test_json_spread_sheet import TestJsonSpreadSheet # NOQA
