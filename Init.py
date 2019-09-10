@@ -24,5 +24,12 @@
 # SPDX-License-Identifier: LGPL-3.0-or-later
 #
 import FreeCAD
+import sys
+
+# The Virtual Satellite Mod needs A2plus to be installed.
+# Therefore try to add it to the path
+freecad_home_path = FreeCAD.getHomePath()
+print("FreeCad Home Path: " + freecad_home_path)
+sys.path.append(freecad_home_path + "A2plus")
 
 FreeCAD.__unit_test__ += ["TestVirtualSatelliteApp"]

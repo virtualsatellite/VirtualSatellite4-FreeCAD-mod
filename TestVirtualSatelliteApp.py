@@ -23,6 +23,12 @@
 #
 # SPDX-License-Identifier: LGPL-3.0-or-later
 #
+import os
+import sys
+
+print("Current Python path:" + os.environ.get('PYTHONPATH', ''))
+print("Current Sys path:")
+print(sys.path)
 
 from test.json_io.test_json_importer import TestJsonImporter  # NOQA 
 from test.json_io.test_json_spread_sheet import TestJsonSpreadSheet # NOQA
