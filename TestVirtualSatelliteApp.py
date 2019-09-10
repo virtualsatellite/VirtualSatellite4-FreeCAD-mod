@@ -26,10 +26,6 @@
 import os
 import sys
 
-print("Current Python path:" + os.environ.get('PYTHONPATH', ''))
-print("Current Sys path:")
-print(sys.path)
-
 from test.json_io.test_json_importer import TestJsonImporter  # NOQA 
 from test.json_io.test_json_spread_sheet import TestJsonSpreadSheet # NOQA
 from test.json_io.parts.test_json_part import TestJsonPart  # NOQA 
