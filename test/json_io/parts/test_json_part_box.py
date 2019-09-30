@@ -31,6 +31,7 @@ from freecad.active_document import ActiveDocument
 import FreeCAD
 import FreeCADGui
 from json_io.parts.json_part_box import JsonPartBox
+from test.json_io.test_json_data import TEST_JSON_PART_BOX
 
 App = FreeCAD
 Gui = FreeCADGui
@@ -47,16 +48,7 @@ class TestJsonPartBox(AWorkingDirectoryTest):
         super().tearDown()
 
     def test_create_part_box(self):
-        json_data = """{
-            "color": 12632256,
-            "shape": "BOX",
-            "name": "Beam",
-            "lengthX": 0.04,
-            "lengthY": 0.02,
-            "lengthZ": 0.01,
-            "radius": 0.0,
-            "uuid": "6201a731-d703-43f8-ab37-6a0581dfe022"
-        }"""
+        json_data = TEST_JSON_PART_BOX
 
         active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("PartBox")
         json_object = json.loads(json_data)
