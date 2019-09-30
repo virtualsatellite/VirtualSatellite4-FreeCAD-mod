@@ -32,6 +32,8 @@ class Test(unittest.TestCase):
     def testName(self):
         self.assertTrue(True, "All Things are fine")
 
+    def testName2(self):
+        self.assertTrue(True, "All Things are fine again")
 
 if __name__ == "__main__":
     # import sys;sys.argv = ['', 'Test.testName']
