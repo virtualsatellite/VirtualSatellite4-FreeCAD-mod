@@ -33,6 +33,7 @@ import FreeCADGui
 from json_io.parts.json_part_geometry import JsonPartGeometry
 from module.environment import Environment
 from json_io.json_definitions import JSON_ELEMENT_STL_PATH
+from test.json_io.test_json_data import TEST_JSON_PART_GEOMETRY
 
 App = FreeCAD
 Gui = FreeCADGui
@@ -49,17 +50,7 @@ class TestJsonPartGeometry(AWorkingDirectoryTest):
         super().tearDown()
 
     def test_create_part_geometry(self):
-        json_data = """{
-            "color": 66280,
-            "shape": "GEOMETRY",
-            "name": "Geometry",
-            "lengthY": 1.0,
-            "lengthX": 0.0,
-            "radius": 1.0,
-            "lengthZ": 0.0,
-            "uuid": "38eae3a5-8338-4a51-b1df-5583058f9e77",
-            "stlPath": "Test.stl"
-        }"""
+        json_data = TEST_JSON_PART_GEOMETRY
 
         active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("PartGeometry")
         json_object = json.loads(json_data)

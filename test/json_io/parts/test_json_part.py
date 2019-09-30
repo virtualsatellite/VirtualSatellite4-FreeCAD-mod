@@ -31,6 +31,7 @@ from test.test_setup import AWorkingDirectoryTest
 from freecad.active_document import ActiveDocument
 import FreeCAD
 import FreeCADGui
+from test.json_io.test_json_data import TEST_JSON_PART_BOX
 
 App = FreeCAD
 Gui = FreeCADGui
@@ -47,16 +48,7 @@ class TestJsonPart(AWorkingDirectoryTest):
         super().tearDown()
 
     def test_parse(self):
-        json_data = """{
-            "name": "Beam",
-            "uuid": "6201a731-d703-43f8-ab37-6a0581dfe022",
-            "shape": "BOX",
-            "lengthX": 0.04,
-            "lengthY": 0.01,
-            "lengthZ": 0.3,
-            "radius": 0.0,
-            "color": 12632256
-        }"""
+        json_data = TEST_JSON_PART_BOX
 
         json_object = json.loads(json_data)
         json_part = AJsonPart().parse_from_json(json_object)
@@ -67,7 +59,7 @@ class TestJsonPart(AWorkingDirectoryTest):
 
         self.assertEqual(json_part.length, 40, "Property is correctly set")
         self.assertEqual(json_part.width,  10, "Property is correctly set")
-        self.assertEqual(json_part.height, 300, "Property is correctly set")
+        self.assertEqual(json_part.height, 30, "Property is correctly set")
         self.assertEqual(json_part.radius, 0, "Property is correctly set and")
 
         self.assertEqual(json_part.color, 12632256 << 8, "Property is correctly set")
