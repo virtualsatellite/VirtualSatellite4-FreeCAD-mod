@@ -4,9 +4,14 @@ Virtual Satellite 4 - FreeCAD Module is an extension for FreeCAD that allows to 
 
 ## Project Status
 
-Status [![Build Status](https://travis-ci.com/virtualsatellite/VirtualSatellite4-FreeCAD-mod.svg?branch=development)](https://travis-ci.com/virtualsatellite/VirtualSatellite4-FreeCAD-mod) for *Development* build.
+| Master | Development |
+|:------:|:-----------:|
+|[![Master][master-status]][master-builds]|[![Development][development-status]][development-builds]|
 
-Status [![Build Status](https://travis-ci.com/virtualsatellite/VirtualSatellite4-FreeCAD-mod.svg?branch=master)](https://travis-ci.com/virtualsatellite/VirtualSatellite4-FreeCAD-mod) for *Master* build.
+[master-status]: https://travis-ci.org/FreeCAD/FreeCAD.svg?branch=master
+[master-builds]: https://travis-ci.com/virtualsatellite/VirtualSatellite4-FreeCAD-mod
+[development-status]: https://travis-ci.com/virtualsatellite/VirtualSatellite4-FreeCAD-mod.svg?branch=development
+[development-builds]: https://travis-ci.com/virtualsatellite/VirtualSatellite4-FreeCAD-mod
 
 ## Purpose
 
