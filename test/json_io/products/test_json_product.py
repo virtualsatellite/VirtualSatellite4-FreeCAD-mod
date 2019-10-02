@@ -30,6 +30,7 @@ from test.test_setup import AWorkingDirectoryTest
 import FreeCAD
 import FreeCADGui
 from json_io.products.json_product import AJsonProduct
+from test.json_io.test_json_data import TEST_JSON_PRODUCT_WITHOUT_CHILDREN
 
 
 App = FreeCAD
@@ -47,21 +48,7 @@ class TestJsonProduct(AWorkingDirectoryTest):
         super().tearDown()
 
     def test_parse(self):
-        json_data = """{
-                "name": "BasePlateBottom",
-                "uuid": "e8794f3d-86ec-44c5-9618-8b7170c45484",
-                "partUuid": "3d3708fd-5c6c-4af9-b710-d68778466084",
-                "partName": "BasePlate",
-                "posX": 2.0,
-                "posY": 3.0,
-                "posZ": 4.0,
-                "rotX": 0.1,
-                "rotY": 0.2,
-                "rotZ": 0.3,
-                "children": [
-                ]
-            }
-            """
+        json_data = TEST_JSON_PRODUCT_WITHOUT_CHILDREN
 
         json_object = json.loads(json_data)
         json_product = AJsonProduct().parse_from_json(json_object)
@@ -72,32 +59,18 @@ class TestJsonProduct(AWorkingDirectoryTest):
         self.assertEqual(json_product.part_name, "BasePlate", "Property is correctly set")
         self.assertEqual(json_product.part_uuid, "3d3708fd_5c6c_4af9_b710_d68778466084", "Property is correctly set")
 
-        self.assertEqual(json_product.pos_x, 2000, "Property is correctly set")
-        self.assertEqual(json_product.pos_y, 3000, "Property is correctly set")
-        self.assertEqual(json_product.pos_z, 4000, "Property is correctly set")
+        self.assertEqual(json_product.pos_x, 20, "Property is correctly set")
+        self.assertEqual(json_product.pos_y, 30, "Property is correctly set")
+        self.assertEqual(json_product.pos_z, 40, "Property is correctly set")
 
-        self.assertEqual(json_product.rot_x, 5.729577951308233, "Property is correctly set")
-        self.assertEqual(json_product.rot_y, 11.459155902616466, "Property is correctly set")
-        self.assertEqual(json_product.rot_z, 17.188733853924695, "Property is correctly set")
+        self.assertAlmostEqual(json_product.rot_x, 20, 5, "Property is correctly set")
+        self.assertAlmostEqual(json_product.rot_y, 40, 5, "Property is correctly set")
+        self.assertAlmostEqual(json_product.rot_z, 60, 5, "Property is correctly set")
 
         self.assertFalse(json_product.has_children, "The defined product has an empty list of children")
 
     def test_get_unique_names(self):
-        json_data = """{
-                "name": "BasePlateBottom",
-                "uuid": "e8794f3d-86ec-44c5-9618-8b7170c45484",
-                "partUuid": "3d3708fd-5c6c-4af9-b710-d68778466084",
-                "partName": "BasePlate",
-                "posX": 2.0,
-                "posY": 3.0,
-                "posZ": 4.0,
-                "rotX": 0.1,
-                "rotY": 0.2,
-                "rotZ": 0.3,
-                "children": [
-                ]
-            }
-            """
+        json_data = TEST_JSON_PRODUCT_WITHOUT_CHILDREN
 
         json_object = json.loads(json_data)
         json_product = AJsonProduct().parse_from_json(json_object)
@@ -125,21 +98,8 @@ class TestJsonProduct(AWorkingDirectoryTest):
 
         self.assertFalse(json_product.is_part_reference(), "The current product does not reference a part")
 
-        json_data = """{
-                "name": "BasePlateBottom",
-                "uuid": "e8794f3d-86ec-44c5-9618-8b7170c45484",
-                "partUuid": "3d3708fd-5c6c-4af9-b710-d68778466084",
-                "partName": "BasePlate",
-                "posX": 2.0,
-                "posY": 3.0,
-                "posZ": 4.0,
-                "rotX": 0.1,
-                "rotY": 0.2,
-                "rotZ": 0.3,
-                "children": [
-                ]
-            }
-            """
+        json_data = TEST_JSON_PRODUCT_WITHOUT_CHILDREN
+
         json_object = json.loads(json_data)
         json_product = AJsonProduct().parse_from_json(json_object)
 

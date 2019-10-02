@@ -31,6 +31,8 @@ import FreeCAD
 import FreeCADGui
 from json_io.products.json_product_assembly import JsonProductAssembly
 from freecad.active_document import ActiveDocument
+from test.json_io.test_json_data import TEST_JSON_PRODUCT_WITH_CHILDREN,\
+    TEST_JSON_PRODUCT_WITHOUT_CHILDREN
 
 
 App = FreeCAD
@@ -39,49 +41,7 @@ Gui = FreeCADGui
 
 class TestJsonProductAssembly(AWorkingDirectoryTest):
 
-    json_data = """{
-            "name": "BasePlateBottom1",
-            "uuid": "e8794f3d-86ec-44c5-9618-8b7170c45484",
-            "partUuid": "3d3708fd-5c6c-4af9-b710-d68778466084",
-            "partName": "BasePlate",
-            "posX": 10.0,
-            "posY": 15.0,
-            "posZ": 20.0,
-            "rotX": 0.349,
-            "rotY": 0.698,
-            "rotZ": 1.046,
-            "children": [
-                {
-                    "posX": 0.0,
-                    "posY": 0.0,
-                    "posZ": 0.0,
-                    "rotX": 0.0,
-                    "children": [
-                    ],
-                    "rotZ": 0.0,
-                    "rotY": 0.0,
-                    "name": "BasePlateBottom2",
-                    "uuid": "e8794f3d-86ec-44c5-9618-8b7170c45484",
-                    "partUuid": "3d3708fd-5c6c-4af9-b710-d68778466084",
-                    "partName": "BasePlate"
-                },
-                {
-                    "posX": 0.0,
-                    "posY": 0.0,
-                    "posZ": 0.5,
-                    "rotX": 0.0,
-                    "children": [
-                    ],
-                    "rotZ": 0.0,
-                    "rotY": 0.0,
-                    "name": "BasePlateTop",
-                    "uuid": "a199e3bd-3bc1-426d-8321-e9bd829339b3",
-                    "partUuid": "3d3708fd-5c6c-4af9-b710-d68778466084",
-                    "partName": "BasePlate"
-                }
-            ]
-        }
-        """
+    json_data = TEST_JSON_PRODUCT_WITH_CHILDREN
 
     @classmethod
     def setUpClass(cls):
@@ -120,21 +80,7 @@ class TestJsonProductAssembly(AWorkingDirectoryTest):
         self.assertEqual(json_product_child_2.name, "BasePlateTop", "Parsed correct child")
 
     def test_parse_with_no_children(self):
-        json_data = """{
-                "name": "BasePlateBottom",
-                "uuid": "e8794f3d-86ec-44c5-9618-8b7170c45484",
-                "partUuid": "3d3708fd-5c6c-4af9-b710-d68778466084",
-                "partName": "BasePlate",
-                "posX": 2.0,
-                "posY": 3.0,
-                "posZ": 4.0,
-                "rotX": 0.1,
-                "rotY": 0.2,
-                "rotZ": 0.3,
-                "children": [
-                ]
-            }
-            """
+        json_data = TEST_JSON_PRODUCT_WITHOUT_CHILDREN
 
         json_object = json.loads(json_data)
         json_product = JsonProductAssembly().parse_from_json(json_object)
