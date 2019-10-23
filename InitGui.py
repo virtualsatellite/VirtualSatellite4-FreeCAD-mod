@@ -24,7 +24,6 @@
 # SPDX-License-Identifier: LGPL-3.0-or-later
 #
 
-
 class VirtualSatelliteWorkbench(Workbench):  # NOQA @UndefinedVariable
     '''
     This class initializes the Virtual Satellite Workbench in FreeCAD.
@@ -42,10 +41,14 @@ class VirtualSatelliteWorkbench(Workbench):  # NOQA @UndefinedVariable
         # Required method by FreeCAD framework
         # This import has to happen here, moving on the top does not
         # work as expected. This is due to some FreeCAD internals
-        import commands.example_command  # NOQA @UnusedImport
-        from commands.definitions import COMMAND_ID_HELLO_WORLD
-        self.appendToolbar('VirtualSatelliteMod', [COMMAND_ID_HELLO_WORLD])
-        self.appendMenu('VirtualSatelliteMod', [COMMAND_ID_HELLO_WORLD])
+        import commands.command_import  # NOQA @UnusedImport
+        import commands.command_export  # NOQA @UnusedImport
+        from commands.command_definitions import COMMAND_ID_EXPORT_2_VIRTUAL_SATELLITE
+        from commands.command_definitions import COMMAND_ID_IMPORT_2_FREECAD
+        self.appendToolbar('VirtualSatelliteMod', [COMMAND_ID_EXPORT_2_VIRTUAL_SATELLITE])
+        self.appendMenu('VirtualSatelliteMod', [COMMAND_ID_EXPORT_2_VIRTUAL_SATELLITE])
+        self.appendToolbar('VirtualSatelliteMod', [COMMAND_ID_IMPORT_2_FREECAD])
+        self.appendMenu('VirtualSatelliteMod', [COMMAND_ID_IMPORT_2_FREECAD])
 
     def GetClassName(self):
         # Required method by FreeCAD framework
