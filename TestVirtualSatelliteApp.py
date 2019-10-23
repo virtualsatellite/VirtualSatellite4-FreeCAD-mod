@@ -24,17 +24,16 @@
 # SPDX-License-Identifier: LGPL-3.0-or-later
 #
 
-import unittest
-
-
-class Test(unittest.TestCase):
-
-    def testName(self):
-        self.assertTrue(True, "All Things are fine")
-
-    def testName2(self):
-        self.assertTrue(True, "All Things are fine again")
-
-if __name__ == "__main__":
-    # import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()
+from test.json_io.test_json_importer import TestJsonImporter  # NOQA 
+from test.json_io.test_json_spread_sheet import TestJsonSpreadSheet # NOQA
+from test.json_io.parts.test_json_part import TestJsonPart  # NOQA 
+from test.json_io.parts.test_json_part_box import TestJsonPartBox  # NOQA 
+from test.json_io.parts.test_json_part_cone import TestJsonPartCone  # NOQA 
+from test.json_io.parts.test_json_part_cylinder import TestJsonPartCylinder  # NOQA 
+from test.json_io.parts.test_json_part_sphere import TestJsonPartSphere  # NOQA 
+from test.json_io.parts.test_json_part_geometry import TestJsonPartGeometry  # NOQA 
+from test.json_io.parts.test_json_part_factory import TestJsonPartFactory # NOQA
+from test.json_io.products.test_json_product import TestJsonProduct # NOQA
+from test.json_io.products.test_json_product_assembly import TestJsonProductAssembly # NOQA
+from test.json_io.products.test_json_product_child import TestJsonProductChild # NOQA
+from test.freecad.test_actice_document import TestActiveDocument # NOQA

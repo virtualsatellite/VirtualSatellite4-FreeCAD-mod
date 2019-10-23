@@ -26,21 +26,21 @@
 
 import FreeCAD
 import FreeCADGui
-from module.environment import Environment, ICON_WORKBENCH
-from commands.definitions import COMMAND_ID_HELLO_WORLD
+from module.environment import Environment, ICON_IMPORT
+from commands.command_definitions import COMMAND_ID_EXPORT_2_VIRTUAL_SATELLITE
 
 
-class CmdHelloWorld:
+class CommandExport:
     def Activated(self):
-        FreeCAD.Console.PrintMessage("Hello, World!\n")
+        FreeCAD.Console.PrintMessage("Calling the importer\n")
 
     def IsActive(self):
         return True
 
     def GetResources(self):
-        return {'Pixmap': Environment().get_icon_path(ICON_WORKBENCH),
-                'MenuText': 'Hello World',
-                'ToolTip': 'Print Hello World'}
+        return {'Pixmap': Environment().get_icon_path(ICON_IMPORT),
+                'MenuText': 'Import from Virtual Satellite',
+                'ToolTip': 'Open the dialog for the Virtual Satellite json import.'}
 
 
-FreeCADGui.addCommand(COMMAND_ID_HELLO_WORLD, CmdHelloWorld())  # @UndefinedVariable
+FreeCADGui.addCommand(COMMAND_ID_EXPORT_2_VIRTUAL_SATELLITE, CommandExport())  # @UndefinedVariable

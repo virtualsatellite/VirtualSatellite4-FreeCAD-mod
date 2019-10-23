@@ -23,27 +23,20 @@
 #
 # SPDX-License-Identifier: LGPL-3.0-or-later
 #
-import FreeCAD
-from os.path import isdir
-import sys
+
+from json_io.products.json_product import AJsonProduct
+from json_io.json_definitions import _get_combined_name_uuid
 
 
-# FreeCAD seems to load modules differently once they are stored in the User Home directory.
-# We try to load the whole folder if it exists
-freecad_user_home = FreeCAD.getUserAppDataDir()
-freecad_user_mod = freecad_user_home + "Mod"
+class JsonProductChild(AJsonProduct):
 
-Log = FreeCAD.Console.PrintLog
-
-Log("See if the directory " + freecad_user_mod + "exists...")
-
-if isdir(freecad_user_mod):
-    Log("Directory Exists... Check if it is already on the path...")
-    if (freecad_user_mod in sys.path):
-        Log("Directory is already on the path...")
-    else:
-        Log("Directory will be appended to system path...")
-        sys.path.append(freecad_user_mod)
-
-# Finally register the unit test for being executed with all other FreeCAD tests
-FreeCAD.__unit_test__ += ["TestVirtualSatelliteApp"]
+    def get_part_unique_name(self):
+        '''
+        Returns the unique name of the referenced part in case it has no children.
+        In case it has children, we know that this is a sub assembly or an assembly.
+        In this case the file name of the product has to be returned
+        '''
+        if self.has_children:
+            return _get_combined_name_uuid(self.name, self.uuid)
+        else:
+            return _get_combined_name_uuid(self.part_name, self.part_uuid)

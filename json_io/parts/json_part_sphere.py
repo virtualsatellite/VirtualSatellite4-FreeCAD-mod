@@ -23,27 +23,15 @@
 #
 # SPDX-License-Identifier: LGPL-3.0-or-later
 #
-import FreeCAD
-from os.path import isdir
-import sys
 
 
-# FreeCAD seems to load modules differently once they are stored in the User Home directory.
-# We try to load the whole folder if it exists
-freecad_user_home = FreeCAD.getUserAppDataDir()
-freecad_user_mod = freecad_user_home + "Mod"
+from json_io.parts.json_part import AJsonPart
 
-Log = FreeCAD.Console.PrintLog
 
-Log("See if the directory " + freecad_user_mod + "exists...")
+class JsonPartSphere(AJsonPart):
 
-if isdir(freecad_user_mod):
-    Log("Directory Exists... Check if it is already on the path...")
-    if (freecad_user_mod in sys.path):
-        Log("Directory is already on the path...")
-    else:
-        Log("Directory will be appended to system path...")
-        sys.path.append(freecad_user_mod)
+    def _set_freecad_properties(self, active_document):
+        object_name_and_type = self.get_shape_type()
+        sphere = active_document.app_active_document.getObject(object_name_and_type)
 
-# Finally register the unit test for being executed with all other FreeCAD tests
-FreeCAD.__unit_test__ += ["TestVirtualSatelliteApp"]
+        sphere.Radius = self.radius
