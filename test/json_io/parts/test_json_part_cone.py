@@ -31,6 +31,7 @@ from freecad.active_document import ActiveDocument
 from json_io.parts.json_part_cone import JsonPartCone
 import FreeCAD
 import FreeCADGui
+from test.json_io.test_json_data import TEST_JSON_PART_CONE
 
 App = FreeCAD
 Gui = FreeCADGui
@@ -47,16 +48,7 @@ class TestJsonPartCone(AWorkingDirectoryTest):
         super().tearDown()
 
     def test_create_part_cone(self):
-        json_data = """{
-            "name": "Beam",
-            "uuid": "6201a731-d703-43f8-ab37-6a0581dfe022",
-            "shape": "CONE",
-            "lengthX": 0.0,
-            "lengthY": 0.5,
-            "lengthZ": 0.0,
-            "radius": 0.2,
-            "color": 12632256
-        }"""
+        json_data = TEST_JSON_PART_CONE
 
         active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("PartCone")
         json_object = json.loads(json_data)

@@ -32,6 +32,8 @@ import FreeCADGui
 from json_io.products.json_product_child import JsonProductChild
 from freecad.active_document import ActiveDocument
 from json_io.json_definitions import get_product_name_uuid
+from test.json_io.test_json_data import TEST_JSON_PRODUCT_WITHOUT_CHILDREN,\
+    TEST_JSON_PRODUCT_WITH_ONE_CHILD
 
 
 App = FreeCAD
@@ -40,51 +42,8 @@ Gui = FreeCADGui
 
 class TestJsonProductChild(AWorkingDirectoryTest):
 
-    json_data = """{
-            "name": "BasePlateBottom",
-            "uuid": "e8794f3d-86ec-44c5-9618-8b7170c45484",
-            "partUuid": "3d3708fd-5c6c-4af9-b710-d68778466084",
-            "partName": "BasePlate",
-            "posX": 0.02,
-            "posY": 0.03,
-            "posZ": 0.04,
-            "rotX": 0.3490659,
-            "rotY": 0.6981317,
-            "rotZ": 1.0471976,
-            "children": [
-            ]
-        }
-        """
-
-    json_data_with_child = """{
-            "name": "BasePlateBottom",
-            "uuid": "e8794f3d-86ec-44c5-9618-8b7170c45484",
-            "partUuid": "3d3708fd-5c6c-4af9-b710-d68778466084",
-            "partName": "BasePlate",
-            "posX": 0.02,
-            "posY": 0.03,
-            "posZ": 0.04,
-            "rotX": 0.3490659,
-            "rotY": 0.6981317,
-            "rotZ": 1.0471976,
-            "children": [
-                {
-                    "posX": 0.0,
-                    "posY": 0.0,
-                    "posZ": 0.0,
-                    "rotX": 0.0,
-                    "children": [
-                    ],
-                    "rotZ": 0.0,
-                    "rotY": 0.0,
-                    "name": "BasePlateBottom",
-                    "uuid": "e8794f3d-86ec-44c5-9618-8b7170c45484",
-                    "partUuid": "3d3708fd-5c6c-4af9-b710-d68778466084",
-                    "partName": "BasePlate"
-                }
-            ]
-        }
-        """
+    json_data = TEST_JSON_PRODUCT_WITHOUT_CHILDREN
+    json_data_with_child = TEST_JSON_PRODUCT_WITH_ONE_CHILD
 
     @classmethod
     def setUpClass(cls):
