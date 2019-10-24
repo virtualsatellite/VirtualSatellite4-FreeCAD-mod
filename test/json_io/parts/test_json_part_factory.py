@@ -33,21 +33,15 @@ from json_io.parts.json_part_sphere import JsonPartSphere
 from json_io.parts.json_part_geometry import JsonPartGeometry
 from json_io.parts.json_part_cylinder import JsonPartCylinder
 from json_io.parts.json_part_cone import JsonPartCone
+from test.json_io.test_json_data import TEST_JSON_PART_BOX, TEST_JSON_PART_CONE,\
+    TEST_JSON_PART_CYLINDER, TEST_JSON_PART_SPHERE, TEST_JSON_PART_GEOMETRY,\
+    TEST_JSON_PART_NONE
 
 
 class TestJsonPartFactory(unittest.TestCase):
 
     def test_create_box(self):
-        json_data = """{
-            "name": "Beam",
-            "uuid": "6201a731-d703-43f8-ab37-6a0581dfe022",
-            "shape": "BOX",
-            "lengthX": 0.04,
-            "lengthY": 0.01,
-            "lengthZ": 0.3,
-            "radius": 0.0,
-            "color": 12632256
-        }"""
+        json_data = TEST_JSON_PART_BOX
 
         json_object = json.loads(json_data)
         json_part = JsonPartFactory().create_from_json(json_object)
@@ -55,16 +49,7 @@ class TestJsonPartFactory(unittest.TestCase):
         self.assertIsInstance(json_part, JsonPartBox, "Created correct object")
 
     def test_create_cone(self):
-        json_data = """{
-            "name": "Beam",
-            "uuid": "6201a731-d703-43f8-ab37-6a0581dfe022",
-            "shape": "CONE",
-            "lengthX": 0.04,
-            "lengthY": 0.01,
-            "lengthZ": 0.3,
-            "radius": 0.0,
-            "color": 12632256
-        }"""
+        json_data = TEST_JSON_PART_CONE
 
         json_object = json.loads(json_data)
         json_part = JsonPartFactory().create_from_json(json_object)
@@ -72,16 +57,7 @@ class TestJsonPartFactory(unittest.TestCase):
         self.assertIsInstance(json_part, JsonPartCone, "Created correct object")
 
     def test_create_cylinder(self):
-        json_data = """{
-            "name": "Beam",
-            "uuid": "6201a731-d703-43f8-ab37-6a0581dfe022",
-            "shape": "CYLINDER",
-            "lengthX": 0.04,
-            "lengthY": 0.01,
-            "lengthZ": 0.3,
-            "radius": 0.0,
-            "color": 12632256
-        }"""
+        json_data = TEST_JSON_PART_CYLINDER
 
         json_object = json.loads(json_data)
         json_part = JsonPartFactory().create_from_json(json_object)
@@ -89,16 +65,7 @@ class TestJsonPartFactory(unittest.TestCase):
         self.assertIsInstance(json_part, JsonPartCylinder, "Created correct object")
 
     def test_create_sphere(self):
-        json_data = """{
-            "name": "Beam",
-            "uuid": "6201a731-d703-43f8-ab37-6a0581dfe022",
-            "shape": "SPHERE",
-            "lengthX": 0.04,
-            "lengthY": 0.01,
-            "lengthZ": 0.3,
-            "radius": 0.0,
-            "color": 12632256
-        }"""
+        json_data = TEST_JSON_PART_SPHERE
 
         json_object = json.loads(json_data)
         json_part = JsonPartFactory().create_from_json(json_object)
@@ -106,17 +73,7 @@ class TestJsonPartFactory(unittest.TestCase):
         self.assertIsInstance(json_part, JsonPartSphere, "Created correct object")
 
     def test_create_geometry(self):
-        json_data = """{
-            "name": "Beam",
-            "uuid": "6201a731-d703-43f8-ab37-6a0581dfe022",
-            "shape": "GEOMETRY",
-            "lengthX": 0.04,
-            "lengthY": 0.01,
-            "lengthZ": 0.3,
-            "radius": 0.0,
-            "color": 12632256,
-            "stlPath" : "testfile.stl"
-        }"""
+        json_data = TEST_JSON_PART_GEOMETRY
 
         json_object = json.loads(json_data)
         json_part = JsonPartFactory().create_from_json(json_object)
@@ -124,17 +81,7 @@ class TestJsonPartFactory(unittest.TestCase):
         self.assertIsInstance(json_part, JsonPartGeometry, "Created correct object")
 
     def test_create_none(self):
-        json_data = """{
-            "name": "Beam",
-            "uuid": "6201a731-d703-43f8-ab37-6a0581dfe022",
-            "shape": "NONE",
-            "lengthX": 0.04,
-            "lengthY": 0.01,
-            "lengthZ": 0.3,
-            "radius": 0.0,
-            "color": 12632256,
-            "stlPath" : "testfile.stl"
-        }"""
+        json_data = TEST_JSON_PART_NONE
 
         json_object = json.loads(json_data)
         json_part = JsonPartFactory().create_from_json(json_object)
