@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<!DOCTYPE contributors
+[
+<!ELEMENT name (first?, middle?, last)>
+<!ELEMENT contributors (introduction, name+)>
+<!ELEMENT first (#PCDATA)>
+<!ELEMENT introduction (#PCDATA)>
+<!ELEMENT middle (#PCDATA)>
+<!ELEMENT last (#PCDATA)>
+]
+>
+
+<contributors>
+  <introduction>
+  These are some of the many people who have helped with this Ant Library.
+  </introduction>
+  <name>
+    <first>Alex</first>
+    <last>Rosen</last>
+  </name>
+  <name>
+    <first>Antoine</first>
+    <last>Levy-Lambert</last>
+  </name>
+  <name>
+    <first>Arnout</first>
+    <middle>J.</middle>
+    <last>Kuiper</last>
+  </name>
+  <name>
+    <first>Bart</first>
+    <last>Vanhaute</last>
+  </name>
+  <name>
+    <first>Brian</first>
+    <last>Deitte</last>
+  </name>
+  <name>
+    <first>Conor</first>
+    <last>MacNeill</last>
+  </name>
+  <name>
+    <first>Curt</first>
+    <last>Arnold</last>
+  </name>
+  <name>
+    <first>Dale</first>
+    <last>Sherwood</last>
+  </name>
+  <name>
+    <first>David</first>
+    <last>Rees</last>
+  </name>
+  <name>
+    <first>Don</first>
+    <last>Ferguson</last>
+  </name>
+  <name>
+    <first>Erik</first>
+    <last>Hatcher</last>
+  </name>
+  <name>
+    <first>Glenn</first>
+    <last>McAllister</last>
+  </name>
+  <name>
+    <first>Holger</first>
+    <last>Joest</last>
+  </name>
+  <name>
+    <first>James</first>
+    <middle>Duncan</middle>
+    <last>Davidson</last>
+  </name>
+  <name>
+    <first>Jan</first>
+    <last>Matèrne</last>
+  </name>
+  <name>
+    <first>Jason</first>
+    <last>Salter</last>
+  </name>
+  <name>
+    <first>Jeff</first>
+    <last>Martin</last>
+  </name>
+  <name>
+    <first>Jesse</first>
+    <last>Glick</last>
+  </name>
+  <name>
+    <first>Jon</first>
+    <last>Skeet</last>
+  </name>
+  <name>
+    <first>Jörg</first>
+    <last>Wassmer</last>
+  </name>
+  <name>
+    <first>Keiron</first>
+    <last>Liddle</last>
+  </name>
+  <name>
+    <first>Kevin</first>
+    <last>Jackson</last>
+  </name>
+  <name>
+    <first>Larry</first>
+    <last>Shatzer</last>
+  </name>
+  <name>
+    <first>Magesh</first>
+    <last>Umasankar</last>
+  </name>
+  <name>
+    <first>Martijn</first>
+    <last>Kruithof</last>
+  </name>
+  <name>
+    <first>Matt</first>
+    <last>Benson</last>
+  </name>
+  <name>
+    <first>Nico</first>
+    <last>Seessle</last>
+  </name>
+  <name>
+    <first>Pavan</first>
+    <last>Bayyapu</last>
+  </name>
+  <name>
+    <first>Peter</first>
+    <last>Donald</last>
+  </name>
+  <name>
+    <first>Peter</first>
+    <last>Janes</last>
+  </name>
+  <name>
+    <first>Peter</first>
+    <last>Reilly</last>
+  </name>
+  <name>
+    <first>Phil</first>
+    <last>Hanna</last>
+  </name>
+  <name>
+    <first>Remie</first>
+    <last>Bolte</last>
+  </name>
+  <name>
+    <first>Richard</first>
+    <last>Evans</last>
+  </name>
+  <name>
+    <first>Robert</first>
+    <last>Stupp</last>
+  </name>
+  <name>
+    <first>Sam</first>
+    <last>Ruby</last>
+  </name>
+  <name>
+    <first>Simone</first>
+    <last>Bordet</last>
+  </name>
+  <name>
+    <first>Stefan</first>
+    <last>Bodewig</last>
+  </name>
+  <name>
+    <first>Stefan</first>
+    <last>Heimann</last>
+  </name>
+  <name>
+    <first>Stefano</first>
+    <last>Mazzocchi</last>
+  </name>
+  <name>
+    <first>Stephane</first>
+    <last>Bailliez</last>
+  </name>
+  <name>
+    <first>Steve</first>
+    <last>Langley</last>
+  </name>
+  <name>
+    <first>Steve</first>
+    <last>Loughran</last>
+  </name>
+  <name>
+    <first>Takashi</first>
+    <last>Okamoto</last>
+  </name>
+  <name>
+    <first>Thomas</first>
+    <last>Aglassinger</last>
+  </name>
+  <name>
+    <first>William</first>
+    <last>Webber</last>
+  </name>
+</contributors>

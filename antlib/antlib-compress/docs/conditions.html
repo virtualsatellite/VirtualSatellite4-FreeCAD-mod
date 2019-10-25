@@ -1,0 +1,184 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+  <meta http-equiv="Content-Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <title>Conditions</title>
+</head>
+
+<body>
+
+  <h2>Conditions</h2>
+
+  <p>The conditions that are part of this Antlib can be used with the
+    core <a href="http://ant.apache.org/manual/CoreTasks/condition.html"><code>condition</code></a>
+    task or any other task that uses conditions,
+    like <a href="http://ant.apache.org/antlibs/antunit/">Apache
+      AntUnit's</a> <code>assertTrue</code> task.</p>
+
+  <p>The main purpose of these conditions is to support the Antlib's
+    own tests, but they may be useful outside of that scope as
+    well.</p>
+
+  <h2><a name="hasgroupid">HasGroupId</a></h2>
+
+  <p>Validates that the group id of a given archive entry matches an
+    expected value.</p>
+
+  <h3>Parameters</h3>
+  <table border="1" cellpadding="2" cellspacing="0">
+    <tr>
+      <td valign="top"><b>Attribute</b></td>
+      <td valign="top"><b>Description</b></td>
+      <td align="center" valign="top"><b>Required</b></td>
+    </tr>
+    <tr>
+      <td valign="top">id</td>
+      <td valign="top">the expected numeric group id.</td>
+      <td align="center" valign="top">Yes</td>
+    </tr>
+  </table>
+
+  <h3>Parameters specified as nested elements</h3>
+
+  <p>Exactly one
+    of <a href="http://ant.apache.org/manual/CoreTypes/resources.html#tarentry">a
+    core <code>tarentry</code></a> or
+    an <a href="entry.html#arentry"><code>arentry</code></a>, <a href="entry.html#cpioentry"><code>cpioentry</code></a>
+    or <a href="entry.html#tarentry"><code>tarentry</code></a> as
+    defined by this Antlib specifies the resource to check.</p>
+
+  <h2><a name="hasgroupname">HasGroupName</a></h2>
+
+  <p>Validates that the group name of a given archive entry matches an
+    expected value.</p>
+
+  <h3>Parameters</h3>
+  <table border="1" cellpadding="2" cellspacing="0">
+    <tr>
+      <td valign="top"><b>Attribute</b></td>
+      <td valign="top"><b>Description</b></td>
+      <td align="center" valign="top"><b>Required</b></td>
+    </tr>
+    <tr>
+      <td valign="top">name</td>
+      <td valign="top">the expected group name.</td>
+      <td align="center" valign="top">Yes</td>
+    </tr>
+  </table>
+
+  <h3>Parameters specified as nested elements</h3>
+
+  <p>Exactly one <code>tarentry</code>
+    of <a href="http://ant.apache.org/manual/CoreTypes/resources.html#tarentry">a
+    Ant's core</a> or as defined by <a href="entry.html#tarentry">this
+    Antlib</a> specifies the resource to check.</p>
+
+  <h2><a name="hasmode">HasMode</a></h2>
+
+  <p>Validates that the mode (or permissions) of a given archive entry
+    matches an expected value.</p>
+
+  <p>Archives store more than just the Unix permissions as a mode
+    flag.  In general the last twelve bit of the mode correspond to
+    the Unix permissions set (including sticky bits).  If
+    the <code>mode</code> attribute of this condition specifies a
+    number between 0 and 7777 (octal, inclusive) only the permissions
+    part of the mode will be compared, if it is bigger than 7777
+    (octal) the full mode value will be compared.</p>
+
+  <h3>Parameters</h3>
+  <table border="1" cellpadding="2" cellspacing="0">
+    <tr>
+      <td valign="top"><b>Attribute</b></td>
+      <td valign="top"><b>Description</b></td>
+      <td align="center" valign="top"><b>Required</b></td>
+    </tr>
+    <tr>
+      <td valign="top">mode</td>
+      <td valign="top">the expected mode as an octal number.</td>
+      <td align="center" valign="top">Yes</td>
+    </tr>
+  </table>
+
+  <h3>Parameters specified as nested elements</h3>
+
+  <p>Exactly one of a
+    core <a href="http://ant.apache.org/manual/CoreTypes/resources.html#tarentry"><code>tarentry</code></a>
+    or
+    <a href="http://ant.apache.org/manual/CoreTypes/resources.html#zipentry"><code>zipentry</code></a>
+    or any <a href="entry.html">archive entry</a> as defined by this
+    Antlib specifies the resource to check.</p>
+
+  <h2><a name="hasuserid">HasUserId</a></h2>
+
+  <p>Validates that the user id of a given archive entry matches an
+    expected value.</p>
+
+  <h3>Parameters</h3>
+  <table border="1" cellpadding="2" cellspacing="0">
+    <tr>
+      <td valign="top"><b>Attribute</b></td>
+      <td valign="top"><b>Description</b></td>
+      <td align="center" valign="top"><b>Required</b></td>
+    </tr>
+    <tr>
+      <td valign="top">id</td>
+      <td valign="top">the expected numeric user id.</td>
+      <td align="center" valign="top">Yes</td>
+    </tr>
+  </table>
+
+  <h3>Parameters specified as nested elements</h3>
+
+  <p>Exactly one
+    of <a href="http://ant.apache.org/manual/CoreTypes/resources.html#tarentry">a
+    core <code>tarentry</code></a> or
+    an <a href="entry.html#arentry"><code>arentry</code></a>, <a href="entry.html#cpioentry"><code>cpioentry</code></a>
+    or <a href="entry.html#tarentry"><code>tarentry</code></a> as
+    defined by this Antlib specifies the resource to check.</p>
+
+  <h2><a name="hasusername">HasUserName</a></h2>
+
+  <p>Validates that the user name of a given archive entry matches an
+    expected value.</p>
+
+  <h3>Parameters</h3>
+  <table border="1" cellpadding="2" cellspacing="0">
+    <tr>
+      <td valign="top"><b>Attribute</b></td>
+      <td valign="top"><b>Description</b></td>
+      <td align="center" valign="top"><b>Required</b></td>
+    </tr>
+    <tr>
+      <td valign="top">name</td>
+      <td valign="top">the expected user name.</td>
+      <td align="center" valign="top">Yes</td>
+    </tr>
+  </table>
+
+  <h3>Parameters specified as nested elements</h3>
+
+  <p>Exactly one <code>tarentry</code>
+    of <a href="http://ant.apache.org/manual/CoreTypes/resources.html#tarentry">a
+    Ant's core</a> or as defined by <a href="entry.html#tarentry">this
+    Antlib</a> specifies the resource to check.</p>
+
+</body>
+</html>

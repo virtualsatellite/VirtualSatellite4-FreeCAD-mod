@@ -1,0 +1,124 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+  <meta http-equiv="Content-Language" content="en-us">
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <title>Pack200Normalize</title>
+</head>
+
+<body>
+
+  <h2><a name="pack200normalize">Pack200Normalize</a></h2>
+  <h3>Description</h3>
+
+  <p>In general packing and unpacking a JAR changes its binary
+    representation which breaks any signature that has been used to
+    sign the initial JAR.  It is possible to "normalize" a JAR by
+    packing and unpacking it again so that any signature applied to
+    the "normalized" JAR will stay valid during another pack/unpack
+    cycle.
+    See <a href="http://download.oracle.com/javase/1.5.0/docs/api/java/util/jar/Pack200.Packer.html">Pack200.Packer's
+    javadocs</a> for more details.</p>
+
+  <p>This task can be used to normalize a JAR in-place or to create a
+    new normalized JAR separate from the original JAR.  The later
+    allows you to run <code>&lt;jar&gt;</code>
+    and <code>&lt;pack200normalize&gt;</code> in succession and the
+    "normalization" step wouldn't do anything unless the original jar
+    changed.</p>
+
+  <p>If you want to normalize the JAR in-place, you must set the force
+    attribute to true as any file will always be up-to-date when
+    compared to itself.</p>
+
+  <h3>Parameters</h3>
+  <table border="1" cellpadding="2" cellspacing="0">
+    <tr>
+      <td valign="top"><b>Attribute</b></td>
+      <td valign="top"><b>Description</b></td>
+      <td align="center" valign="top"><b>Required</b></td>
+    </tr>
+    <tr>
+      <td valign="top">srcfile</td>
+      <td valign="top">the file to normalize.</td>
+      <td align="center" valign="top">Yes.</td>
+    </tr>
+    <tr>
+      <td valign="top">destfile</td>
+      <td valign="top">the normalized archive.</td>
+      <td align="center" valign="top">No, defaults to the
+        srcfile.</td>
+    </tr>
+    <tr>
+      <td valign="top">force</td>
+      <td valign="top">Whether to normalize the archive even if the
+        destfile seems up-to-date.</td>
+      <td align="center" valign="top">No, defaults to <em>false</em></td>
+    </tr>
+  </table>
+
+  <h3>Parameters specified as nested elements</h3>
+
+  <h4>property</h4>
+
+  <p>Sets a property for the packer (see the Pack200 javadocs for
+    details).</p>
+
+  <p>Note this task implicitly sets the segment limit to -1.</p>
+
+  <table border="1" cellpadding="2" cellspacing="0">
+    <tr>
+      <td valign="top"><b>Attribute</b></td>
+      <td valign="top"><b>Description</b></td>
+      <td align="center" valign="top"><b>Required</b></td>
+    </tr>
+    <tr>
+      <td valign="top">key</td>
+      <td valign="top">Name of the property.</td>
+      <td align="center" valign="top">Yes.</td>
+    </tr>
+    <tr>
+      <td valign="top">value</td>
+      <td valign="top">Value of the property.</td>
+      <td align="center" valign="top">Yes.</td>
+    </tr>
+  </table>
+
+  <h3>Examples</h3>
+
+  <pre>
+    &lt;cmp:pack200normalize destfile="foo-normalized.jar"
+                 xmlns:cmp="antlib:org.apache.ant.compress"
+                 srcfile="foo.jar"&gt;
+      &lt;property key="pack.effort" value="9"/&gt;
+    &lt;/cmp:pack200normalize&gt;
+  </pre>
+  <p>Normalizes <i>foo.jar</i> where <i>foo-normalized.jar</i> is the
+    normalized archive.  As both the normalization step and the actual
+    packing must use the same parameters the normalization prepares
+    for better compression results by using above than normal
+    effort.</p>
+
+  <pre>
+    &lt;cmp:pack200normalize force="true"
+                 xmlns:cmp="antlib:org.apache.ant.compress"
+                 srcfile="foo.jar"/&gt;
+  </pre>
+  <p>Normalizes <i>foo.jar</i> in-place.</p>
+</body>

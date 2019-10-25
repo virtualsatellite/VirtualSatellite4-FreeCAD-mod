@@ -1,0 +1,185 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="style.css">
+<title>Archive Entries</title>
+</head>
+
+<body>
+
+<h2><a name="archiveentry">Archive Entries</h2>
+
+<p>For each of the supported archiving formats there is a
+  correspondig <code>entry</code> resource that represents a single
+  entry in such an archive.</p>
+
+<p>All of these resources need to know the archive the entry should be
+  read from, it can be specifed as either the archive attribute or a
+  nested single-element resource collection.</p>
+
+<p>The <code>entry</code> types share the following set of attributes:</p>
+
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">archive</td>
+    <td valign="top">The archive containing this resource</td>
+    <td align="center" valign="top">Yes, unless a nested resource
+    collection has been specified.</td>
+  </tr>
+  <tr>
+    <td valign="top">name</td>
+    <td valign="top">The name of the archived resource</td>
+    <td align="center" valign="top">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">encoding</td>
+    <td valign="top">The encoding of filenames inside the archive</td>
+    <td align="center" valign="top">No;
+      platform default used if unspecified.  Currently ignored by all
+      but <code>zipentry</code></td>
+  </tr>
+</table>
+
+<h2><a name="arentry">arentry</a></h2>
+
+<p>An <a href="#archiveentry">archive entry</a> representing an entry
+  in a AR archive.</p>
+
+<h4>Examples</h4>
+
+<pre>
+&lt;cmp:arentry xmlns:cmp="antlib:org.apache.ant.compress"
+    name="some-file.txt"&gt;
+  &lt;file file="some-archive.ar"/&gt;
+&lt;/cmp:arentry&gt;
+</pre>
+
+<h2><a name="arjentry">arjentry</a></h2>
+
+<p><em>Since Apache Compress Antlib 1.3</em>.</p>
+
+<p>An <a href="#archiveentry">archive entry</a> representing an entry
+  in a ARJ archive.</p>
+
+<h4>Examples</h4>
+
+<pre>
+&lt;cmp:arjentry xmlns:cmp="antlib:org.apache.ant.compress"
+    name="some-file.txt"&gt;
+  &lt;file file="some-archive.arj"/&gt;
+&lt;/cmp:arjentry&gt;
+</pre>
+
+<p>Represents the entry named some-file.txt in archive some-archive.arj.</p>
+
+<h2><a name="cpioentry">cpioentry</a></h2>
+
+<p>An <a href="#archiveentry">archive entry</a> representing an entry
+  in a CPIO archive.</p>
+
+<h4>Examples</h4>
+
+<pre>
+&lt;cmp:cpioentry xmlns:cmp="antlib:org.apache.ant.compress"
+    name="some-file.txt"&gt;
+  &lt;file file="some-archive.cpio"/&gt;
+&lt;/cmp:cpioentry&gt;
+</pre>
+
+<p>Represents the entry named some-file.txt in archive some-archive.cpio.</p>
+
+<h2><a name="dumpentry">dumpentry</a></h2>
+
+<p><em>Since Apache Compress Antlib 1.1</em>.</p>
+
+<p>An <a href="#archiveentry">archive entry</a> representing an entry
+  in a Unix dump archive.</p>
+
+<h4>Examples</h4>
+
+<pre>
+&lt;cmp:dumpentry xmlns:cmp="antlib:org.apache.ant.compress"
+    name="/some-file.txt"&gt;
+  &lt;file file="some-archive.dump"/&gt;
+&lt;/cmp:dumpentry&gt;
+</pre>
+
+<p>Represents the entry named /some-file.txt in archive some-archive.dump.</p>
+
+<h2><a name="sevenzentry">sevenzentry</a></h2>
+
+<p><em>Since Apache Compress Antlib 1.3</em>.</p>
+
+<p>An <a href="#archiveentry">archive entry</a> representing an entry
+  in a 7z archive.</p>
+
+<h4>Examples</h4>
+
+<pre>
+&lt;cmp:sevenzentry xmlns:cmp="antlib:org.apache.ant.compress"
+    name="some-file.txt"&gt;
+  &lt;file file="some-archive.7z"/&gt;
+&lt;/cmp:sevenzentry&gt;
+</pre>
+
+<p>Represents the entry named some-file.txt in archive some-archive.7z.</p>
+
+<h2><a name="tarentry">tarentry</a></h2>
+
+<p>An <a href="#archiveentry">archive entry</a> representing an entry
+  in a TAR archive.</p>
+
+<h4>Examples</h4>
+
+<pre>
+&lt;cmp:tarentry xmlns:cmp="antlib:org.apache.ant.compress"
+    name="some-file.txt"&gt;
+  &lt;file file="some-archive.tar"/&gt;
+&lt;/cmp:tarentry&gt;
+</pre>
+
+<p>Represents the entry named some-file.txt in archive some-archive.tar.</p>
+
+<h2><a name="zipentry">zipentry</a></h2>
+
+<p>An <a href="#archiveentry">archive entry</a> representing an entry
+  in a ZIP archive.</p>
+
+<p>Unlike
+  its <a href="http://ant.apache.org/manual/CoreTypes/resources.html#zipentry">counterpart
+  in Ant's core</a> this Antlib's <code>zipentry</code> can work on
+  archives that are not file system resources.</p>
+
+<h4>Examples</h4>
+
+<pre>
+&lt;cmp:zipentry xmlns:cmp="antlib:org.apache.ant.compress"
+    name="some-file.txt"&gt;
+  &lt;file file="some-archive.zip"/&gt;
+&lt;/cmp:zipentry&gt;
+</pre>
+
+<p>Represents the entry named some-file.txt in archive some-archive.zip.</p>
+

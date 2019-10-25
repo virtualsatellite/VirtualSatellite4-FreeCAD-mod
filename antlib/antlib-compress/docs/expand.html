@@ -1,0 +1,397 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<link rel="stylesheet" type="text/css" href="style.css">
+<title>Unarchiving Task</title>
+</head>
+
+<body>
+
+<h2><a name="expand">Unarchiving Tasks</a></h2>
+
+<p>For each of the supported archiving formats there is a
+  correspondig <code>unarchiving</code> task.  These tasks are based
+  on
+  their <a href="http://ant.apache.org/manual/CoreTasks/unzip.html">core
+  cousin tasks</a>.</p>
+
+<p><a href="http://ant.apache.org/manual/CoreTypes/patternset.html">PatternSet</a>s are used to select files to extract
+<I>from</I> the archive.  If no patternset is used, all files are extracted.
+</p>
+
+<p><a href="http://ant.apache.org/manual/CoreTypes/resources.html#collection">Resource
+Collection</a>s may be used to select archived files to perform
+unarchival upon.</p>
+
+<p>You can define filename transformations by using a
+nested <a href="http://ant.apache.org/manual/CoreTypes/mapper.html">mapper</a>
+element.  The default mapper is the
+<a href="http://ant.apache.org/manual/CoreTypes/mapper.html#identity-mapper">identity
+mapper</a>.</p>
+
+<p>File permissions will not be restored on extracted files.</p>
+
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">src</td>
+    <td valign="top">archive file to expand.</td>
+    <td align="center" valign="top">Yes, if filesets are not used.</td>
+  </tr>
+  <tr>
+    <td valign="top">dest</td>
+    <td valign="top">directory where to store the expanded files.</td>
+    <td align="center" valign="top">Yes</td>
+  </tr>
+  <tr>
+    <td valign="top">overwrite</td>
+    <td valign="top">Overwrite files, even if they are newer than the
+      corresponding entries in the archive (true or false, default is
+      true).</td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">failOnEmptyArchive</td>
+    <td valign="top">whether trying to extract an empty archive is an
+      error.</td>
+    <td valign="top" align="center">No, defaults to false</td>
+  </tr>
+  <tr>
+    <td valign="top">stripAbsolutePathSpec</td>
+    <td valign="top">whether Ant should remove leading '/' or '\'
+      characters from the extracted file name before extracing it.
+      Note that this changes the entry's name before applying
+      include/exclude patterns and before using the nested mappers (if
+      any).</td>
+    <td valign="top" align="center">No, defaults to false</td>
+  </tr>
+  <tr>
+    <td valign="top">skipUnreadableEntries</td>
+    <td valign="top">Sometimes archives may contain entries that use
+      features not (yet) supported by Apache Commons Compress,
+      encryption for example.  Trying to expand such an archive will
+      normally lead to an error.  Sometimes Commons Compress can
+      signal it doesn't know how to handle an entry and if you set 
+      <code>skipUnreadableEntries</code> to true, the Compress Antlib
+      will simply skip those entries, avoiding the error.
+      <br/><em>since Compress Antlib 1.1</em></td>
+    <td valign="top" align="center">No, defaults to false</td>
+  </tr>
+</table>
+
+<h3><a name="un7z">Un7z</a></h3>
+
+<p><em>Since Apache Compress Antlib 1.3</em>.</p>
+
+<p>An <a href="#expand">unarchiving task</a> for 7z archives.</p>
+
+<p>As of version 1.3 of the Compress Antlib this task can only work on
+  file based resources.</p>
+
+<h3><a name="unar">UnAr</a></h3>
+
+<p>An <a href="#expand">unarchiving task</a> for AR archives.</p>
+
+<p>Traditionally the AR format doesn't allow file names longer than 16
+  characters.  There are two variants that circumvent this limitation
+  in different ways, the GNU/SRV4 and the BSD variant; both of which
+  are transparently supported since Commons Compress 1.3.</p>
+
+<h3><a name="unarj">UnArj</a></h3>
+
+<p><em>Since Apache Compress Antlib 1.3</em>.</p>
+
+<p>An <a href="#expand">unarchiving task</a> for arj archives.</p>
+
+<p>In addition to the parameters above, the unarj tasks supports the
+  following attributes:</p>
+
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">encoding</td>
+    <td valign="top">
+    The character encoding that has been used for filenames
+    inside the arj file.  For a list of possible values see <a
+    href="http://java.sun.com/j2se/1.5.0/docs/guide/intl/encoding.doc.html">http://java.sun.com/j2se/1.5.0/docs/guide/intl/encoding.doc.html</a>.<br>
+    Defaults <code>native-encoding</code> which is the magic value for
+    the platform's default character encoding.<br/>
+    <em>since Compress Antlib 1.3</em></td>
+    <td align="center" valign="top">No</td>
+  </tr>
+</table>
+
+<h3><a name="uncpio">UnCpio</a></h3>
+
+<p>An <a href="#expand">unarchiving task</a> for CPIO archives.</p>
+
+<p>In addition to the parameters above, the uncpio tasks supports the
+  following attributes:</p>
+
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">encoding</td>
+    <td valign="top">
+    The character encoding that has been used for filenames
+    inside the cpio file.  For a list of possible values see <a
+    href="http://java.sun.com/j2se/1.5.0/docs/guide/intl/encoding.doc.html">http://java.sun.com/j2se/1.5.0/docs/guide/intl/encoding.doc.html</a>.<br>
+    Defaults <code>native-encoding</code> which is the magic value for
+    the platform's default character encoding.<br/>
+    <em>since Compress Antlib 1.3</em></td>
+    <td align="center" valign="top">No</td>
+  </tr>
+</table>
+
+<h3><a name="undump">UnDump</a></h3>
+
+<p><em>Since Apache Compress Antlib 1.1</em>.</p>
+
+<p>An <a href="#expand">unarchiving task</a> for Unix dump archives.</p>
+
+<p>In addition to the parameters above, the undump tasks supports the
+  following attributes:</p>
+
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">encoding</td>
+    <td valign="top">
+    The character encoding that has been used for filenames
+    inside the dump file.  For a list of possible values see <a
+    href="http://java.sun.com/j2se/1.5.0/docs/guide/intl/encoding.doc.html">http://java.sun.com/j2se/1.5.0/docs/guide/intl/encoding.doc.html</a>.<br>
+    Defaults <code>native-encoding</code> which is the magic value for
+    the platform's default character encoding.<br/>
+    <em>since Compress Antlib 1.3</em></td>
+    <td align="center" valign="top">No</td>
+  </tr>
+</table>
+
+<h3><a name="untar">UnTar</a></h3>
+
+<p>An <a href="#expand">unarchiving task</a> for TAR archives.</p>
+
+<p>In addition to the parameters above, the untar tasks supports the
+  following attributes:</p>
+
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">encoding</td>
+    <td valign="top">
+    The character encoding that has been used for filenames
+    inside the tar file.  For a list of possible values see <a
+    href="http://java.sun.com/j2se/1.5.0/docs/guide/intl/encoding.doc.html">http://java.sun.com/j2se/1.5.0/docs/guide/intl/encoding.doc.html</a>.<br>
+    Defaults <code>native-encoding</code> which is the magic value for
+    the platform's default character encoding.<br/>
+    <em>since Compress Antlib 1.2</em></td>
+    <td align="center" valign="top">No</td>
+  </tr>
+</table>
+
+<h3><a name="unzip">UnZip</a></h3>
+
+<p>An <a href="#expand">unarchiving task</a> for ZIP archives.</p>
+
+<p><b>Please note</b> that different ZIP tools handle timestamps
+differently when it comes to applying timezone offset calculations of
+files.  Some ZIP libraries will store the timestamps as they've been
+read from the filesystem while others will modify the timestamps both
+when reading and writing the files to make all timestamps use the same
+timezone.  A ZIP archive created by one library may extract files with
+"wrong timestamps" when extracted by another library.</p>
+
+<p>Apache Commons Compress' ZIP classes use the same algorithm as the
+InfoZIP tools and zlib (timestamps get adjusted), Windows' "compressed
+folders" function and WinZIP don't change the timestamps.  This means
+that using the unzip task on files created by Windows' compressed
+folders function may create files with timestamps that are "wrong",
+the same is true if you use Windows' functions to extract an Ant
+generated ZIP archive.</p>
+
+<p>Unlike its counterpart in Ant's core this Antlib's task can also
+  extract archives that are not file system resources.</p>
+
+<p>In addition to the parameters above, the unzip tasks supports the
+  following attributes:</p>
+
+<table border="1" cellpadding="2" cellspacing="0">
+  <tr>
+    <td valign="top"><b>Attribute</b></td>
+    <td valign="top"><b>Description</b></td>
+    <td align="center" valign="top"><b>Required</b></td>
+  </tr>
+  <tr>
+    <td valign="top">encoding</td>
+    <td valign="top">
+    The character encoding that has been used for filenames
+    inside the zip file.  For a list of possible values see <a
+    href="http://java.sun.com/j2se/1.5.0/docs/guide/intl/encoding.doc.html">http://java.sun.com/j2se/1.5.0/docs/guide/intl/encoding.doc.html</a>.<br>
+    Defaults to &quot;UTF8&quot;, use the magic value
+    <code>native-encoding</code> for the platform's default character
+    encoding.
+      <br/>See also the <a href="http://ant.apache.org/manual/CoreTasks/zip.html#encoding">discussion in the
+      zip task page</a></td>
+    <td align="center" valign="top">No</td>
+  </tr>
+  <tr>
+    <td valign="top">scanForUnicodeExtraFields</td>
+    <td valign="top">
+      If the archive contains uncode extra fields then use them to set
+      the file names, ignoring the specified encoding.
+      <br/>See also the <a href="http://ant.apache.org/manual/CoreTasks/zip.html#encoding">discussion in the
+      zip task page</a></td>
+    <td align="center" valign="top">No, defaults to true</td>
+  </tr>
+</table>
+
+<h3>Examples</h3>
+<pre>
+&lt;cmp:unzip src=&quot;${tomcat_src}/tools-src.zip&quot;
+    dest=&quot;${tools.home}&quot;
+    xmlns:cmp="antlib:org.apache.ant.compress"/&gt;
+</pre>
+<p>
+<pre>
+&lt;cmp:gunzip src=&quot;tools.tar.gz&quot; xmlns:cmp="antlib:org.apache.ant.compress"/&gt;
+&lt;cmp:untar src=&quot;tools.tar&quot; dest=&quot;${tools.home}&quot;
+    xmlns:cmp="antlib:org.apache.ant.compress"/&gt;
+</pre>
+<pre>
+&lt;cmp:unzip src=&quot;${tomcat_src}/tools-src.zip&quot;
+       xmlns:cmp="antlib:org.apache.ant.compress"
+       dest=&quot;${tools.home}&quot;&gt;
+    &lt;patternset&gt;
+        &lt;include name=&quot;**/*.java&quot;/&gt;
+        &lt;exclude name=&quot;**/Test*.java&quot;/&gt;
+    &lt;/patternset&gt;
+&lt;/cmp:unzip&gt;
+</pre>
+<p>
+<pre>
+&lt;cmp:unzip dest=&quot;${tools.home} xmlns:cmp="antlib:org.apache.ant.compress"&quot;&gt;
+    &lt;patternset&gt;
+        &lt;include name=&quot;**/*.java&quot;/&gt;
+        &lt;exclude name=&quot;**/Test*.java&quot;/&gt;
+    &lt;/patternset&gt;
+    &lt;fileset dir=&quot;.&quot;&gt;
+        &lt;include name=&quot;**/*.zip&quot;/&gt;
+        &lt;exclude name=&quot;**/tmp*.zip&quot;/&gt;
+    &lt;/fileset&gt;
+&lt;/cmp:unzip&gt;
+</pre>
+<p>
+<pre>
+&lt;cmp:unzip src=&quot;apache-ant-bin.zip&quot;
+    dest=&quot;${tools.home}&quot;
+    xmlns:cmp="antlib:org.apache.ant.compress"&gt;
+    &lt;patternset&gt;
+        &lt;include name=&quot;apache-ant/lib/ant.jar&quot;/&gt;
+    &lt;/patternset&gt;
+    &lt;mapper type=&quot;flatten&quot;/&gt;
+&lt;/cmp:unzip&gt;
+</pre>
+
+<pre>
+&lt;cmp:unzip src=&quot;${ant.home}/lib/ant.jar&quot;
+    dest=&quot;...&quot; xmlns:cmp="antlib:org.apache.ant.compress"&gt;
+  &lt;patternset&gt;
+    &lt;include name=&quot;images/&quot;/&gt;
+  &lt;/patternset&gt;
+&lt;/cmp:unzip&gt;
+</pre>
+<p>This extracts all images from <tt>ant.jar</tt> which are stored in the <tt>images</tt> directory
+of the Jar (or somewhere under it). While extracting the directory structure (<tt>images</tt>)
+will be taken.</p>
+
+<pre>
+&lt;cmp:unzip src=&quot;${ant.home}/lib/ant.jar&quot;
+    dest=&quot;...&quot; xmlns:cmp="antlib:org.apache.ant.compress"&gt;
+  &lt;patternset&gt;
+    &lt;include name=&quot;**/ant_logo_large.gif&quot;/&gt;
+    &lt;include name=&quot;**/LICENSE.txt&quot;/&gt;
+  &lt;/patternset&gt;
+&lt;/cmp:unzip&gt;
+</pre>
+<p>This extracts the two files <tt>ant_logo_large.gif</tt> and <tt>LICENSE.txt</tt> from the
+<tt>ant.jar</tt>. More exactly: it extracts all files with these names from anywhere in the source file. While extracting the directory structure will be taken.</p>
+
+<h3>Related tasks</h3>
+
+<pre>
+&lt;cmp:unzip src="some-archive" dest="some-dir" xmlns:cmp="antlib:org.apache.ant.compress"&gt;
+  &lt;patternset&gt;
+    &lt;include name="some-pattern"/&gt;
+  &lt;/patternset&gt;
+  &lt;mapper type=&quot;some-mapper&quot;/&gt;
+&lt;/cmp:unzip&gt;
+</pre>
+
+is identical to
+
+<pre>
+&lt;copy todir="some-dir" preservelastmodified="true"&gt;
+  &lt;cmp:zipfileset src="some-archive" xmlns:cmp="antlib:org.apache.ant.compress"&gt;
+    &lt;patternset&gt;
+      &lt;include name="some-pattern"/&gt;
+    &lt;/patternset&gt;
+  &lt;/cmp:zipfileset&gt;
+  &lt;mapper type=&quot;some-mapper&quot;/&gt;
+&lt;/copy&gt;
+</pre>
+
+<p>The same is also true for <code>&lt;untar&gt;</code> and
+<code>&lt;tarfileset&gt;</code>.  <code>&lt;copy&gt;</code> offers
+additional features
+like <a href="http://ant.apache.org/manual/CoreTypes/filterchain.html">filtering
+files</a> on the fly, allowing a file to be mapped to multiple
+destinations or a configurable file system timestamp granularity.</p>
+
+<pre>&lt;cmp:zip destfile=&quot;new.jar&quot; xmlns:cmp="antlib:org.apache.ant.compress"&gt;
+  &lt;cmp:zipfileset src=&quot;old.jar&quot;&gt;
+    &lt;exclude name=&quot;do/not/include/this/class&quot;/&gt;
+  &lt;/cmp:zipfileset&gt;
+&lt;/cmp:zip&gt;
+</pre>
+<p>&quot;Deletes&quot; files from a zipfile.</p>
+
+</body>
+</html>
