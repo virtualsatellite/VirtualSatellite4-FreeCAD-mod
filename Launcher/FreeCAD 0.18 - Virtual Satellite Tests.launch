@@ -4,7 +4,7 @@
 <listAttribute key="org.eclipse.debug.ui.favoriteGroups">
 <listEntry value="org.eclipse.ui.externaltools.launchGroup"/>
 </listAttribute>
-<stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="C:\Program Files\FreeCAD 0.18\bin\FreeCAD.exe"/>
-<stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="-M &quot;${workspace_loc:virsat4-freecad-mod/}&quot; -t TestVirtualSatelliteApp -l --log-file &quot;${workspace_loc:virsat4-freecad-mod/}/FreeCAD.log&quot;"/>
-<stringAttribute key="org.eclipse.ui.externaltools.ATTR_WORKING_DIRECTORY" value="C:\Program Files\FreeCAD 0.18"/>
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_LOCATION" value="C:\tmp\FreeCad\bin\FreeCAD.exe"/>
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_TOOL_ARGUMENTS" value="-M &quot;${workspace_loc:virsat4-freecad-mod/}/VirtualSatelliteCAD&quot; -t TestVirtualSatelliteApp -l --log-file &quot;${workspace_loc:virsat4-freecad-mod/}/FreeCAD.log&quot;"/>
+<stringAttribute key="org.eclipse.ui.externaltools.ATTR_WORKING_DIRECTORY" value="C:\tmp\FreeCad"/>
 </launchConfiguration>
