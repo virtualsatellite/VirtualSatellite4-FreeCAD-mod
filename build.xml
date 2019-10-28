@@ -46,7 +46,7 @@
 		<get src="${freeCad.release.windows}" dest="${freeCad.7z}" verbose="true"/>
 	</target>
 
-	<target name="UnzipFreeCADWindows" depends="DownloadFreeCADWindows">
+	<target name="UnzipFreeCADWindows" if="isWindows" depends="DownloadFreeCADWindows">
 		<comp:un7z xmlns:comp="antlib:org.apache.ant.compress" src="${freeCad.7z}" dest="${freeCad.7z.path}" />
 	</target>
 
@@ -55,7 +55,7 @@
 		<get src="${freeCad.release.linux}" dest="${freeCad.AppImage}" verbose="true"/>
 	</target>
 
-	<target name="MakeExecuteableCADLinux" depends="DownloadFreeCADLinux">
+	<target name="MakeExecuteableCADLinux" if="isUnix" depends="DownloadFreeCADLinux">
 		<chmod file="${freeCad.AppImage}" perm="a+x"/>
 	</target>
 
