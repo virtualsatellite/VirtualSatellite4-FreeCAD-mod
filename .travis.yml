@@ -74,7 +74,7 @@ jobs:
       if: branch NOT IN (integration_snapshot, development_snapshot) 
       name: Test - FreeCAD Module Tests
       script:
-      - ant build
+      - ant Main
       # WIP: # Install A2plus dependency to FreeCAD
       # WIP: - curl -L --create-dirs -o ~/.FreeCAD/Mod/a2plus.tar.gz ${A2PLUS_REPO}/archive/${A2PLUS_VERSION}.tar.gz
       # WIP: - mkdir ~/.FreeCAD/Mod/A2plus/
