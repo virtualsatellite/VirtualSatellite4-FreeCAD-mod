@@ -1,4 +1,4 @@
-<project name="SetupIDE" default="DownloadFreeCADWindows" basedir=".">
+<project name="SetupIDE" default="Main" basedir=".">
 	<description>Setup IDE for FreeCAD development</description>
 
 	<property name="freeCad.release.windows" value="https://github.com/FreeCAD/FreeCAD/releases/download/0.18.3/FreeCAD-0.18.16131.3129ae4-WIN-x64-portable.7z" />
@@ -10,12 +10,13 @@
 	<property name="freeCad.7z" value="${freeCad.path}/FreeCAD.7z" />
 	<property name="freeCad.patch.src" value="freecad_patch.py" />
 	<property name="freeCad.patch.dest" value="${freeCad.mod.path}/Test/TestApp.py" />
-	
+
 	<property name="a2plus.repo" value="https://github.com/kbwbe/A2plus"/>
 	<property name="a2plus.version" value="0.4.26"/>
 	<property name="a2plus.path" value="${freeCad.mod.path}/A2plus"/>
 	<property name="a2plus.zip" value="${freeCad.mod.path}/a2plus.zip"/>
-	
+	<property name="a2plus.unzipped" value="${freeCad.mod.path}/A2plus-${a2plus.version}"/>
+
 	<taskdef 
 		        uri="antlib:org.apache.ant.compress"
 		        resource="org/apache/ant/compress/antlib.xml">
@@ -26,34 +27,58 @@
 		</classpath>
 	</taskdef>
 
+	<target name="Main" depends="Cleanup">
+		<echo message="Main target of build script executed" />
+	</target>
+	
+	<condition property="isWindows">
+		<os family="windows" />
+	</condition>
 
-	<target name="DownloadFreeCADWindows">
+	<condition property="isUnix">
+		<os family="unix" />
+	</condition>
+
+	<target name="DownloadFreeCADWindows" if="isWindows">
+		<echo message="Found Windows OS" />
 		<get src="${freeCad.release.windows}" dest="${freeCad.7z}" verbose="true"/>
 	</target>
-	
-	<target name="DownloadFreeCADLinux">
+
+	<target name="DownloadFreeCADLinux" if="isUnix">
+		<echo message="Found Unix OS" />
 		<get src="${freeCad.release.linux}" dest="${freeCad.7z}" verbose="true"/>
+		<echo message="linux" />
+	</target>
+	
+	<!-- join -->
+	<target name="DownloadedFreeCAD" depends="DownloadFreeCADWindows, DownloadFreeCADLinux">
+		<echo message="FreeCAD downloaded" />
 	</target>
 
-	<target name="UnzipFreeCAD">
+	<target name="UnzipFreeCAD" depends="DownloadedFreeCAD">
 		<comp:un7z xmlns:comp="antlib:org.apache.ant.compress" src="${freeCad.7z}" dest="${freeCad.7z.path}" />
 	</target>
-	
-	<target name="PatchFreeCAD">
+
+	<target name="PatchFreeCAD" depends="UnzipFreeCAD">
 		<copy file="${freeCad.patch.src}" tofile="${freeCad.patch.dest}"/>
 	</target>
-	
-	<target name="DownloadA2plus">
+
+	<target name="DownloadA2plus" depends="DownloadedFreeCAD">
 		<get src="${a2plus.repo}/archive/v${a2plus.version}.zip" dest="${a2plus.zip}" verbose="true"/>
 	</target>
-	
-	<target name="UnzipA2plus">
+
+	<target name="UnzipA2plus" depends="DownloadA2plus">
 		<unzip src="${a2plus.zip}" dest="${freeCad.mod.path}"/>
 		<!--rename the root directory after unzipping-->
 		<move todir="${a2plus.path}">
-		   <fileset dir="${freeCad.mod.path}/A2plus-${a2plus.version}"/>
+			<fileset dir="${a2plus.unzipped}"/>
 		</move>
-		<delete dir="${freeCad.mod.path}/A2plus-${a2plus.version}"/>
+		<delete dir="${a2plus.unzipped}"/>
 	</target>
 
+	<target name="Cleanup" depends="PatchFreeCAD, UnzipA2plus">
+		<delete file="${freeCad.7z}" />
+		<delete file="${a2plus.zip}"/>
+	</target>
+	
 </project>

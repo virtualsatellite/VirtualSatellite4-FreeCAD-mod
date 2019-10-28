@@ -13,11 +13,11 @@ addons:
   # needed for the SWTBOT UI tests
   # ---------------------------------------------------------------
   apt:
-    sources:
-    - sourceline: "ppa:freecad-maintainers/freecad-stable"
+    # WIP: sources:
+    # WIP: - sourceline: "ppa:freecad-maintainers/freecad-stable"
     packages:
     - metacity
-    - freecad
+    # WIP: - freecad
 
 install:
 - true 
@@ -34,12 +34,17 @@ stages:
 env:
   global:
   - VERSION=4.9.0
-  - A2PLUS_REPO=https://github.com/kbwbe/A2plus
-  - A2PLUS_VERSION=v0.4.26
+  # WIP: - A2PLUS_REPO=https://github.com/kbwbe/A2plus
+  # WIP: - A2PLUS_VERSION=v0.4.26
+  
   # ---------------------------------------------
   # API Token for access to github
   # ---------------------------------------------
   - secure: "EjN6DgVHJ8urI5vaahXVx0bBkA5pKVnoNJQUM0R7QMj14BNz+zmLamdFTjqjBY0BGxATd+qyTJLy/Eo/lqGzHhU0XNvKlXee8fn3d7k74kupK4kf/j997b8LQarXph3NhK8pr5sTzPpnutvbJ42VraVAkRBI46CKwaQoS/+W1NkZbAmcd19rnn18Mu69RdQRa/qLXfOvbptO9dIOZiz/chEBmuYJcsMy55We6BNcc2U1ubofNhqsVKnEvzukPAGdOxfqt1pWuoMb6FoY/RJhFmBJ7qeqdnPRkDMUJVcwPSET5bi+t+Sla3TWzfvzacprx6TjB5mYIN4Lkjdu6ZS0BD8mBTojFs4waQnGnjlqyBG5TyHDtzNiztYhOK3QROngyuTvebLZ7Nvvy9lpSQdGspAou/u650ZlfBFOptv9r7VQ95wipmwRKZenT8y1yhNpsDXAxEaDK7bS/RyuqJiMsnDpQEFaXxM8SrgFzT3Ne/FGEwbVgeKhJBAlf7okBfHwqaTHA1fCwaqJJ/ADB2GKok+cvLYienWxoGrZD2mmmBFGhY8+F0hoMpIIS2dKHa6CXE3aUOx2g8iJ5xDow3Z7mKQLxqPRvLlne9uL67SUylTrixWKRt20+ZixXeg+NkwnFmKlfrD6jn/7PA8RxxhrgltkAWrRX0C35HBZTDIgMxg="
+
+# WIP: run ant script at some point
+# language: java
+# script: ant build
 
 before_script:
   # -----------------------------------
@@ -69,10 +74,11 @@ jobs:
       if: branch NOT IN (integration_snapshot, development_snapshot) 
       name: Test - FreeCAD Module Tests
       script:
-      # Install A2plus dependency to FreeCAD
-      - curl -L --create-dirs -o ~/.FreeCAD/Mod/a2plus.tar.gz ${A2PLUS_REPO}/archive/${A2PLUS_VERSION}.tar.gz
-      - mkdir ~/.FreeCAD/Mod/A2plus/
-      - tar -zxf ~/.FreeCAD/Mod/a2plus.tar.gz -C ~/.FreeCAD/Mod/A2plus/ --strip-components=1
+      - ant build
+      # WIP: # Install A2plus dependency to FreeCAD
+      # WIP: - curl -L --create-dirs -o ~/.FreeCAD/Mod/a2plus.tar.gz ${A2PLUS_REPO}/archive/${A2PLUS_VERSION}.tar.gz
+      # WIP: - mkdir ~/.FreeCAD/Mod/A2plus/
+      # WIP: - tar -zxf ~/.FreeCAD/Mod/a2plus.tar.gz -C ~/.FreeCAD/Mod/A2plus/ --strip-components=1
       # Execute FreeCAD tests
       - freecad -M $(pwd) -t TestVirtualSatelliteApp -l --log-file "FreeCAD.log"
       
@@ -87,10 +93,11 @@ jobs:
       if: branch NOT IN (integration_snapshot, development_snapshot) 
       name: Test - FreeCAD All Tests
       script:
-      # Install A2plus dependency to FreeCAD
-      - curl -L --create-dirs -o ~/.FreeCAD/Mod/a2plus.tar.gz ${A2PLUS_REPO}/archive/${A2PLUS_VERSION}.tar.gz
-      - mkdir ~/.FreeCAD/Mod/A2plus/
-      - tar -zxf ~/.FreeCAD/Mod/a2plus.tar.gz -C ~/.FreeCAD/Mod/A2plus/ --strip-components=1
+      - ant build
+      # WIP: # Install A2plus dependency to FreeCAD
+      # WIP: - curl -L --create-dirs -o ~/.FreeCAD/Mod/a2plus.tar.gz ${A2PLUS_REPO}/archive/${A2PLUS_VERSION}.tar.gz
+      # WIP: - mkdir ~/.FreeCAD/Mod/A2plus/
+      # WIP: - tar -zxf ~/.FreeCAD/Mod/a2plus.tar.gz -C ~/.FreeCAD/Mod/A2plus/ --strip-components=1
       # Execute FreeCAD tests
       - freecad -M $(pwd) -t 0 -l --log-file "FreeCAD.log"
 
