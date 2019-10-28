@@ -4,11 +4,17 @@
 	<property name="freeCad.release.windows" value="https://github.com/FreeCAD/FreeCAD/releases/download/0.18.3/FreeCAD-0.18.16131.3129ae4-WIN-x64-portable.7z" />
 	<property name="freeCad.release.linux" value="https://github.com/FreeCAD/FreeCAD/releases/download/0.18.3/FreeCAD-0.18.16131.3129ae4-WIN-x64-portable.7z" />
 	<property name="freeCad.path" value="FreeCAD" />
+	<property name="freeCad.mod.path" value="${freeCad.path}/Mod" />
 	<!--Extracting into the current directory will unzip into the folder "FreeCAD", existing files will not be deleted-->
 	<property name="freeCad.7z.path" value="." />
 	<property name="freeCad.7z" value="${freeCad.path}/FreeCAD.7z" />
 	<property name="freeCad.patch.src" value="freecad_patch.py" />
-	<property name="freeCad.patch.dest" value="${freeCad.path}/Mod/Test/TestApp.py" />
+	<property name="freeCad.patch.dest" value="${freeCad.mod.path}/Test/TestApp.py" />
+	
+	<property name="a2plus.repo" value="https://github.com/kbwbe/A2plus"/>
+	<property name="a2plus.version" value="0.4.26"/>
+	<property name="a2plus.path" value="${freeCad.mod.path}/A2plus"/>
+	<property name="a2plus.zip" value="${freeCad.mod.path}/a2plus.zip"/>
 	
 	<taskdef 
 		        uri="antlib:org.apache.ant.compress"
@@ -35,6 +41,19 @@
 	
 	<target name="PatchFreeCAD">
 		<copy file="${freeCad.patch.src}" tofile="${freeCad.patch.dest}"/>
+	</target>
+	
+	<target name="DownloadA2plus">
+		<get src="${a2plus.repo}/archive/v${a2plus.version}.zip" dest="${a2plus.zip}" verbose="true"/>
+	</target>
+	
+	<target name="UnzipA2plus">
+		<unzip src="${a2plus.zip}" dest="${freeCad.mod.path}"/>
+		<!--rename the root directory after unzipping-->
+		<move todir="${a2plus.path}">
+		   <fileset dir="${freeCad.mod.path}/A2plus-${a2plus.version}"/>
+		</move>
+		<delete dir="${freeCad.mod.path}/A2plus-${a2plus.version}"/>
 	</target>
 
 </project>
