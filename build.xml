@@ -2,12 +2,13 @@
 	<description>Setup IDE for FreeCAD development</description>
 
 	<property name="freeCad.release.windows" value="https://github.com/FreeCAD/FreeCAD/releases/download/0.18.3/FreeCAD-0.18.16131.3129ae4-WIN-x64-portable.7z" />
-	<property name="freeCad.release.linux" value="https://github.com/FreeCAD/FreeCAD/releases/download/0.18.3/FreeCAD-0.18.16131.3129ae4-WIN-x64-portable.7z" />
+	<property name="freeCad.release.linux" value="https://github.com/FreeCAD/FreeCAD/releases/download/0.18.3/FreeCAD_0.18-16131-Linux-Conda_Py3Qt5_glibc2.12-x86_64.AppImage" />
 	<property name="freeCad.path" value="FreeCAD" />
 	<property name="freeCad.mod.path" value="${freeCad.path}/Mod" />
 	<!--Extracting into the current directory will unzip into the folder "FreeCAD", existing files will not be deleted-->
 	<property name="freeCad.7z.path" value="." />
 	<property name="freeCad.7z" value="${freeCad.path}/FreeCAD.7z" />
+	<property name="freeCad.AppImage" value="${freeCad.path}/FreeCAD.AppImage" />
 	<property name="freeCad.patch.src" value="freecad_patch.py" />
 	<property name="freeCad.patch.dest" value="${freeCad.mod.path}/Test/TestApp.py" />
 
@@ -30,7 +31,8 @@
 	<target name="Main" depends="Cleanup">
 		<echo message="Main target of build script executed" />
 	</target>
-	
+
+	<!--targets for different OS-->
 	<condition property="isWindows">
 		<os family="windows" />
 	</condition>
@@ -44,26 +46,29 @@
 		<get src="${freeCad.release.windows}" dest="${freeCad.7z}" verbose="true"/>
 	</target>
 
-	<target name="DownloadFreeCADLinux" if="isUnix">
-		<echo message="Found Unix OS" />
-		<get src="${freeCad.release.linux}" dest="${freeCad.7z}" verbose="true"/>
-		<echo message="linux" />
-	</target>
-	
-	<!-- join -->
-	<target name="DownloadedFreeCAD" depends="DownloadFreeCADWindows, DownloadFreeCADLinux">
-		<echo message="FreeCAD downloaded" />
-	</target>
-
-	<target name="UnzipFreeCAD" depends="DownloadedFreeCAD">
+	<target name="UnzipFreeCADWindows" depends="DownloadFreeCADWindows">
 		<comp:un7z xmlns:comp="antlib:org.apache.ant.compress" src="${freeCad.7z}" dest="${freeCad.7z.path}" />
 	</target>
 
-	<target name="PatchFreeCAD" depends="UnzipFreeCAD">
+	<target name="DownloadFreeCADLinux" if="isUnix">
+		<echo message="Found Unix OS" />
+		<get src="${freeCad.release.linux}" dest="${freeCad.AppImage}" verbose="true"/>
+	</target>
+
+	<target name="MakeExecuteableCADLinux" depends="DownloadFreeCADLinux">
+		<chmod file="${freeCad.AppImage}" perm="a+x"/>
+	</target>
+
+	<!-- join -->
+	<target name="InstalledFreeCAD" depends="UnzipFreeCADWindows, MakeExecuteableCADLinux">
+		<echo message="FreeCAD downloaded" />
+	</target>
+
+	<target name="PatchFreeCAD" depends="InstalledFreeCAD">
 		<copy file="${freeCad.patch.src}" tofile="${freeCad.patch.dest}"/>
 	</target>
 
-	<target name="DownloadA2plus" depends="DownloadedFreeCAD">
+	<target name="DownloadA2plus" depends="InstalledFreeCAD">
 		<get src="${a2plus.repo}/archive/v${a2plus.version}.zip" dest="${a2plus.zip}" verbose="true"/>
 	</target>
 
@@ -80,5 +85,5 @@
 		<delete file="${freeCad.7z}" />
 		<delete file="${a2plus.zip}"/>
 	</target>
-	
+
 </project>

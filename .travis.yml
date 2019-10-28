@@ -80,7 +80,7 @@ jobs:
       # WIP: - mkdir ~/.FreeCAD/Mod/A2plus/
       # WIP: - tar -zxf ~/.FreeCAD/Mod/a2plus.tar.gz -C ~/.FreeCAD/Mod/A2plus/ --strip-components=1
       # Execute FreeCAD tests
-      - ./FreeCAD/bin/FreeCAD.exe -M $(pwd) -t TestVirtualSatelliteApp -l --log-file "FreeCAD.log"
+      - ./FreeCAD/bin/FreeCAD.AppImage -M $(pwd) -t TestVirtualSatelliteApp -l --log-file "FreeCAD.log"
       
     - stage: test
       if: branch NOT IN (integration_snapshot, development_snapshot) 
@@ -100,7 +100,7 @@ jobs:
       # WIP: - mkdir ~/.FreeCAD/Mod/A2plus/
       # WIP: - tar -zxf ~/.FreeCAD/Mod/a2plus.tar.gz -C ~/.FreeCAD/Mod/A2plus/ --strip-components=1
       # Execute FreeCAD tests
-      - ./FreeCAD/bin/FreeCAD.exe -M $(pwd) -t 0 -l --log-file "FreeCAD.log"
+      - ./FreeCAD/bin/FreeCAD.AppImage -M $(pwd) -t 0 -l --log-file "FreeCAD.log"
 
     # -----------------------------------------------------------
     # Deploy Jobs for unsecured Development.
