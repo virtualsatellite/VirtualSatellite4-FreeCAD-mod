@@ -3,10 +3,13 @@
 
 	<property name="freeCad.release.windows" value="https://github.com/FreeCAD/FreeCAD/releases/download/0.18.3/FreeCAD-0.18.16131.3129ae4-WIN-x64-portable.7z" />
 	<property name="freeCad.release.linux" value="https://github.com/FreeCAD/FreeCAD/releases/download/0.18.3/FreeCAD-0.18.16131.3129ae4-WIN-x64-portable.7z" />
+	<property name="freeCad.path" value="FreeCAD" />
 	<!--Extracting into the current directory will unzip into the folder "FreeCAD", existing files will not be deleted-->
-	<property name="freeCad.path" value="." />
-	<property name="freeCad.7z" value="FreeCAD/FreeCAD.7z" />
-
+	<property name="freeCad.7z.path" value="." />
+	<property name="freeCad.7z" value="${freeCad.path}/FreeCAD.7z" />
+	<property name="freeCad.patch.src" value="freecad_patch.py" />
+	<property name="freeCad.patch.dest" value="${freeCad.path}/Mod/Test/TestApp.py" />
+	
 	<taskdef 
 		        uri="antlib:org.apache.ant.compress"
 		        resource="org/apache/ant/compress/antlib.xml">
@@ -27,9 +30,11 @@
 	</target>
 
 	<target name="UnzipFreeCAD">
-
-		<comp:un7z xmlns:comp="antlib:org.apache.ant.compress" src="${freeCad.7z}" dest="${freeCad.path}" />
-
+		<comp:un7z xmlns:comp="antlib:org.apache.ant.compress" src="${freeCad.7z}" dest="${freeCad.7z.path}" />
+	</target>
+	
+	<target name="PatchFreeCAD">
+		<copy file="${freeCad.patch.src}" tofile="${freeCad.patch.dest}"/>
 	</target>
 
 </project>
