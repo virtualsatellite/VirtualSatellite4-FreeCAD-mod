@@ -8,7 +8,9 @@
 	<!--Extracting into the current directory will unzip into the folder "FreeCAD", existing files will not be deleted-->
 	<property name="freeCad.7z.path" value="." />
 	<property name="freeCad.7z" value="${freeCad.path}/FreeCAD.7z" />
-	<property name="freeCad.AppImage" value="${freeCad.path}/FreeCAD.AppImage" />
+	<property name="freeCad.appimage" value="${freeCad.path}/FreeCAD.AppImage" />
+	<property name="freeCad.appimage.root" value="${freeCad.path}/squashfs-root" />
+	<property name="freeCad.appimage.usr" value="${freeCad.appimage.user}/usr" />
 	<property name="freeCad.patch.src" value="freecad_patch.py" />
 	<property name="freeCad.patch.dest" value="${freeCad.mod.path}/Test/TestApp.py" />
 
@@ -52,16 +54,24 @@
 
 	<target name="DownloadFreeCADLinux" if="isUnix">
 		<echo message="Found Unix OS" />
-		<get src="${freeCad.release.linux}" dest="${freeCad.AppImage}" verbose="true"/>
+		<get src="${freeCad.release.linux}" dest="${freeCad.appimage}" verbose="true"/>
 	</target>
 
-	<target name="MakeExecuteableCADLinux" if="isUnix" depends="DownloadFreeCADLinux">
-		<chmod file="${freeCad.AppImage}" perm="a+x"/>
+	<target name="ExtractCADLinux" if="isUnix" depends="DownloadFreeCADLinux">
+		<chmod file="${freeCad.appimage}" perm="+x" verbose="true"/>
+		<!--extract the appimage into the folder "squashfs-root"-->
+		<exec executable="${freeCad.appimage}">
+			<arg line="--appimage-extract"/>
+		</exec>
+		<move todir="${freeCad.path}">
+			<fileset dir="${freeCad.appimage.usr}"/>
+		</move>
+		<chmod file="${freeCad.path}/bin/FreeCAD" perm="+x" verbose="true"/>
 	</target>
 
-	<!-- join -->
-	<target name="InstalledFreeCAD" depends="UnzipFreeCADWindows, MakeExecuteableCADLinux">
-		<echo message="FreeCAD downloaded" />
+	<!--join-->
+	<target name="InstalledFreeCAD" depends="UnzipFreeCADWindows, ExtractCADLinux">
+		<echo message="FreeCAD installed" />
 	</target>
 
 	<target name="PatchFreeCAD" depends="InstalledFreeCAD">
@@ -82,7 +92,9 @@
 	</target>
 
 	<target name="Cleanup" depends="PatchFreeCAD, UnzipA2plus">
-		<delete file="${freeCad.7z}" />
+		<delete file="${freeCad.7z}"/>
+		<delete file="${freeCad.appimage}"/>
+		<delete file="${freeCad.appimage.root}"/>
 		<delete file="${a2plus.zip}"/>
 	</target>
 
