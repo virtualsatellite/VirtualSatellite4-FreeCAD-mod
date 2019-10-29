@@ -63,6 +63,14 @@
 		<exec executable="${freeCad.appimage}">
 			<arg line="--appimage-extract"/>
 		</exec>
+		<!--can't find .usr directory, so get some debug output-->
+		<dirset id="fc.contents" dir="${freeCad.path}" includes="*"/> 
+		<property name="prop.fc.contents" refid="fc.contents"/>
+		<echo>${prop.fc.contents}</echo>
+		<dirset id="root.contents" dir="${freeCad.appimage.root}" includes="*"/> 
+		<property name="prop.root.contents" refid="root.contents"/>
+		<echo>${prop.root.contents}</echo>
+
 		<move todir="${freeCad.path}">
 			<fileset dir="${freeCad.appimage.usr}"/>
 		</move>
