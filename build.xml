@@ -10,7 +10,7 @@
 	<property name="freeCad.7z" value="${freeCad.path}/FreeCAD.7z" />
 	<property name="freeCad.appimage" value="${freeCad.path}/FreeCAD.AppImage" />
 	<property name="freeCad.appimage.root" value="${freeCad.path}/squashfs-root" />
-	<property name="freeCad.appimage.usr" value="${freeCad.appimage.user}/usr" />
+	<property name="freeCad.appimage.usr" value="${freeCad.appimage.root}/usr" />
 	<property name="freeCad.patch.src" value="freecad_patch.py" />
 	<property name="freeCad.patch.dest" value="${freeCad.mod.path}/Test/TestApp.py" />
 
