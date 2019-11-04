@@ -64,6 +64,7 @@
 			<arg line="--appimage-extract"/>
 		</exec>
 
+		<!--debug output-->
 		<dirset id="cwd.contents" dir="." includes="*"/> 
 		<property name="prop.cwd.contents" refid="cwd.contents"/>
 		<echo>${prop.cwd.contents}</echo>
@@ -71,8 +72,9 @@
 		<move todir="${freeCad.path}">
 			<fileset dir="${freeCad.appimage.usr}"/>
 		</move>
+		
 		<!--debug output-->
-		<fileset id="fc.contents" dir="${freeCad.path}" includes="*"/> 
+		<dirset id="fc.contents" dir="${freeCad.path}" includes="*"/> 
 		<property name="prop.fc.contents" refid="fc.contents"/>
 		<echo>${prop.fc.contents}</echo>
 		
@@ -85,7 +87,7 @@
 	</target>
 
 	<target name="PatchFreeCAD" depends="InstalledFreeCAD">
-		<copy file="${freeCad.patch.src}" tofile="${freeCad.patch.dest}"/>
+		<copy file="${freeCad.patch.src}" tofile="${freeCad.patch.dest}" verbose="true"/>
 	</target>
 
 	<target name="DownloadA2plus" depends="InstalledFreeCAD">
