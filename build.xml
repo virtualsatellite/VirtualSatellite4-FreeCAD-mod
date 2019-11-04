@@ -63,11 +63,14 @@
 		<exec executable="${freeCad.appimage}">
 			<arg line="--appimage-extract"/>
 		</exec>
-		<!--can't find .usr directory, so get some debug output-->
-		<dirset id="fc.contents" dir="${freeCad.path}" includes="*"/> 
+		<!--can't find squashfs-root directory, so get some debug output-->
+		<dirset id="cwd.contents" dir="." includes="*"/> 
+		<property name="prop.cwd.contents" refid="cwd.contents"/>
+		<echo>${prop.cwd.contents}</echo>
+		<fileset id="fc.contents" dir="${freeCad.path}" includes="*"/> 
 		<property name="prop.fc.contents" refid="fc.contents"/>
 		<echo>${prop.fc.contents}</echo>
-		<dirset id="root.contents" dir="${freeCad.appimage.root}" includes="*"/> 
+		<fileset id="root.contents" dir="$./squashfs-root" includes="*"/> 
 		<property name="prop.root.contents" refid="root.contents"/>
 		<echo>${prop.root.contents}</echo>
 
