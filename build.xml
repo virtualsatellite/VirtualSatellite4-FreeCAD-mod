@@ -9,7 +9,7 @@
 	<property name="freeCad.7z.path" value="." />
 	<property name="freeCad.7z" value="${freeCad.path}/FreeCAD.7z" />
 	<property name="freeCad.appimage" value="${freeCad.path}/FreeCAD.AppImage" />
-	<property name="freeCad.appimage.root" value="${freeCad.path}/squashfs-root" />
+	<property name="freeCad.appimage.root" value="squashfs-root" />
 	<property name="freeCad.appimage.usr" value="${freeCad.appimage.root}/usr" />
 	<property name="freeCad.patch.src" value="freecad_patch.py" />
 	<property name="freeCad.patch.dest" value="${freeCad.mod.path}/Test/TestApp.py" />
@@ -63,20 +63,19 @@
 		<exec executable="${freeCad.appimage}">
 			<arg line="--appimage-extract"/>
 		</exec>
-		<!--can't find squashfs-root directory, so get some debug output-->
+
 		<dirset id="cwd.contents" dir="." includes="*"/> 
 		<property name="prop.cwd.contents" refid="cwd.contents"/>
 		<echo>${prop.cwd.contents}</echo>
-		<fileset id="fc.contents" dir="${freeCad.path}" includes="*"/> 
-		<property name="prop.fc.contents" refid="fc.contents"/>
-		<echo>${prop.fc.contents}</echo>
-		<fileset id="root.contents" dir="$./squashfs-root" includes="*"/> 
-		<property name="prop.root.contents" refid="root.contents"/>
-		<echo>${prop.root.contents}</echo>
 
 		<move todir="${freeCad.path}">
 			<fileset dir="${freeCad.appimage.usr}"/>
 		</move>
+		<!--debug output-->
+		<fileset id="fc.contents" dir="${freeCad.path}" includes="*"/> 
+		<property name="prop.fc.contents" refid="fc.contents"/>
+		<echo>${prop.fc.contents}</echo>
+		
 		<chmod file="${freeCad.path}/bin/FreeCAD" perm="+x" verbose="true"/>
 	</target>
 
