@@ -17,6 +17,8 @@ addons:
     # WIP: - sourceline: "ppa:freecad-maintainers/freecad-stable"
     packages:
     - metacity
+    - libfreeimage3 
+    - libfreeimage-dev
     # WIP: - freecad
 
 install:
