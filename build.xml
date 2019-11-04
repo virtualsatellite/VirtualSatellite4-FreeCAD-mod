@@ -87,7 +87,7 @@
 	</target>
 
 	<target name="PatchFreeCAD" depends="InstalledFreeCAD">
-		<copy file="${freeCad.patch.src}" tofile="${freeCad.patch.dest}" verbose="true"/>
+		<copy file="${freeCad.patch.src}" tofile="${freeCad.patch.dest}" overwrite="true" verbose="true"/>
 	</target>
 
 	<target name="DownloadA2plus" depends="InstalledFreeCAD">
