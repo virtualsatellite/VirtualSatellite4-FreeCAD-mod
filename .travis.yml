@@ -80,7 +80,7 @@ jobs:
       # WIP: - mkdir ~/.FreeCAD/Mod/A2plus/
       # WIP: - tar -zxf ~/.FreeCAD/Mod/a2plus.tar.gz -C ~/.FreeCAD/Mod/A2plus/ --strip-components=1
       # Execute FreeCAD tests
-      - ./FreeCAD/bin/FreeCAD -M $(pwd) -t TestVirtualSatelliteApp -l --log-file "FreeCAD.log"
+      - ./FreeCAD/bin/FreeCAD -M $(pwd)/VirtualSatelliteCAD -t TestVirtualSatelliteApp -l --log-file "FreeCAD.log"
       
     - stage: test
       if: branch NOT IN (integration_snapshot, development_snapshot) 
@@ -94,7 +94,7 @@ jobs:
       if: branch NOT IN (integration_snapshot, development_snapshot) 
       name: Test - FreeCAD All Tests
       script:
-      - ant Main
+      # - ant Main
       # WIP: # Install A2plus dependency to FreeCAD
       # WIP: - curl -L --create-dirs -o ~/.FreeCAD/Mod/a2plus.tar.gz ${A2PLUS_REPO}/archive/${A2PLUS_VERSION}.tar.gz
       # WIP: - mkdir ~/.FreeCAD/Mod/A2plus/
