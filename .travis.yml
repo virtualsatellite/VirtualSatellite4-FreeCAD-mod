@@ -17,9 +17,9 @@ addons:
     # WIP: - sourceline: "ppa:freecad-maintainers/freecad-stable"
     packages:
     - metacity
-    - libfreeimage3 
-    - libfreeimage-dev
-    - libjsoncpp-dev
+    # - libfreeimage3 
+    # - libfreeimage-dev
+    # - libjsoncpp-dev
     # WIP: - freecad
 
 install:
@@ -37,6 +37,7 @@ stages:
 env:
   global:
   - VERSION=4.9.0
+  - QT_XKB_CONFIG_ROOT="./FreeCAD/usr/lib"
   # WIP: - A2PLUS_REPO=https://github.com/kbwbe/A2plus
   # WIP: - A2PLUS_VERSION=v0.4.26
   
