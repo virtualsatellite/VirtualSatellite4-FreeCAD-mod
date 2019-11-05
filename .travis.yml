@@ -19,6 +19,7 @@ addons:
     - metacity
     - libfreeimage3 
     - libfreeimage-dev
+    - libjsoncpp-dev
     # WIP: - freecad
 
 install:
@@ -97,7 +98,7 @@ jobs:
       name: Test - FreeCAD All Tests
       script:
       - ant Main
-      - sudo ldconfig
+      # - sudo ldconfig
       # WIP: # Install A2plus dependency to FreeCAD
       # WIP: - curl -L --create-dirs -o ~/.FreeCAD/Mod/a2plus.tar.gz ${A2PLUS_REPO}/archive/${A2PLUS_VERSION}.tar.gz
       # WIP: - mkdir ~/.FreeCAD/Mod/A2plus/
