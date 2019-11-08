@@ -37,7 +37,7 @@ stages:
 env:
   global:
   - VERSION=4.9.0
-  - QT_XKB_CONFIG_ROOT="./FreeCAD/lib"
+  - QT_XKB_CONFIG_ROOT="$(pwd)/FreeCAD/lib"
   # WIP: - A2PLUS_REPO=https://github.com/kbwbe/A2plus
   # WIP: - A2PLUS_VERSION=v0.4.26
   
