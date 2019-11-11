@@ -110,14 +110,14 @@
 	<target name="WindowsPatchFreeCAD" if="isWindows" depends="WindowsUnzipFreeCAD">
 		<copy file="${freeCad.patch.src}" tofile="${freeCad.windows.patch.dest}" overwrite="true" verbose="true"/>
 	</target>
-	<target name="LinuxPatchFreeCAD" if="isLinux" depends="LinuxExtractFreeCAD">
+	<target name="LinuxPatchFreeCAD" if="isUnix" depends="LinuxExtractFreeCAD">
 		<copy file="${freeCad.patch.src}" tofile="${freeCad.linux.patch.dest}" overwrite="true" verbose="true"/>
 	</target>
 
 	<target name="WindowsDownloadA2plus" if="isWindows" depends="WindowsPatchFreeCAD">
 		<get src="${a2plus.repo}/archive/v${a2plus.version}.zip" dest="${a2plus.windows.zip}" verbose="true"/>
 	</target>
-	<target name="LinuxDownloadA2plus" if="isLinux" depends="LinuxPatchFreeCAD">
+	<target name="LinuxDownloadA2plus" if="isUnix" depends="LinuxPatchFreeCAD">
 		<get src="${a2plus.repo}/archive/v${a2plus.version}.zip" dest="${a2plus.linux.zip}" verbose="true"/>
 	</target>
 
@@ -129,7 +129,7 @@
 		</move>
 		<delete dir="${a2plus.windows.unzipped}"/>
 	</target>
-	<target name="LinuxUnzipA2plus" if="isLinux" depends="LinuxDownloadA2plus">
+	<target name="LinuxUnzipA2plus" if="isUnix" depends="LinuxDownloadA2plus">
 		<unzip src="${a2plus.linux.zip}" dest="${freeCad.linux.mod}"/>
 		<!--rename the root directory after unzipping-->
 		<move todir="${a2plus.linux.path}">
