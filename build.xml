@@ -85,25 +85,6 @@
 		<exec executable="${freeCad.linux.appimage}">
 			<arg line="--appimage-extract"/>
 		</exec>
-
-		<!--debug output
-		<dirset id="cwd.contents" dir="." includes="*"/> 
-		<property name="prop.cwd.contents" refid="cwd.contents"/>
-		<echo>${prop.cwd.contents}</echo>
-
-		<move todir="${freeCad.path}">
-			<fileset dir="${freeCad.appimage.usr}"/>
-		</move>
-		
-		<dirset id="fc.contents" dir="${freeCad.path}" includes="*"/> 
-		<property name="prop.fc.contents" refid="fc.contents"/>
-		<echo>${prop.fc.contents}</echo-->
-		
-		<!-- rename squashfs-root to FreeCAD -->
-		<!--move file="${freeCad.linux.appimage.root}" tofile="${freeCad.path}" overwrite="true"/-->
-		
-		<!-- Appimage? -->
-		<!--chmod file="${freeCad.path}/bin/FreeCAD" perm="+x" verbose="true"/-->
 	</target>
 
 	<!-- Same operation on different paths for OS-->
@@ -144,7 +125,6 @@
 		<delete file="${freeCad.linux.appimage}"/>
 		<delete file="${a2plus.windows.zip}"/>
 		<delete file="${a2plus.linux.zip}"/>
-		<echo message="" />
 	</target>
 
 </project>
