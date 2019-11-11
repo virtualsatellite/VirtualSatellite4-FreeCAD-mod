@@ -80,9 +80,9 @@
 	</target>
 
 	<target name="LinuxExtractFreeCAD" if="isUnix" depends="LinuxDownloadFreeCAD">
-		<chmod file="${freeCad.appimage}" perm="+x" verbose="true"/>
+		<chmod file="${freeCad.linux.appimage}" perm="+x" verbose="true"/>
 		<!--extract the appimage into the folder "squashfs-root"-->
-		<exec executable="${freeCad.appimage}">
+		<exec executable="${freeCad.linux.appimage}">
 			<arg line="--appimage-extract"/>
 		</exec>
 
