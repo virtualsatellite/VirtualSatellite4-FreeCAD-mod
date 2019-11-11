@@ -1,25 +1,45 @@
 <project name="SetupIDE" default="Main" basedir=".">
 	<description>Setup IDE for FreeCAD development</description>
-
-	<property name="freeCad.release.windows" value="https://github.com/FreeCAD/FreeCAD/releases/download/0.18.3/FreeCAD-0.18.16131.3129ae4-WIN-x64-portable.7z" />
-	<property name="freeCad.release.linux" value="https://github.com/FreeCAD/FreeCAD/releases/download/0.18.3/FreeCAD_0.18-16131-Linux-Conda_Py3Qt5_glibc2.12-x86_64.AppImage" />
+	
+	<!--=================================-->
+	<!--OS version independent properties-->
+	
 	<property name="freeCad.path" value="FreeCAD" />
-	<property name="freeCad.mod.path" value="${freeCad.path}/Mod" />
-	<!--Extracting into the current directory will unzip into the folder "FreeCAD", existing files will not be deleted-->
-	<property name="freeCad.7z.path" value="." />
-	<property name="freeCad.7z" value="${freeCad.path}/FreeCAD.7z" />
-	<property name="freeCad.appimage" value="${freeCad.path}/FreeCAD.AppImage" />
-	<property name="freeCad.appimage.root" value="squashfs-root" />
-	<property name="freeCad.appimage.usr" value="${freeCad.appimage.root}/usr" />
 	<property name="freeCad.patch.src" value="freecad_patch.py" />
-	<property name="freeCad.patch.dest" value="${freeCad.mod.path}/Test/TestApp.py" />
-
 	<property name="a2plus.repo" value="https://github.com/kbwbe/A2plus"/>
-	<property name="a2plus.version" value="0.4.26"/>
-	<property name="a2plus.path" value="${freeCad.mod.path}/A2plus"/>
-	<property name="a2plus.zip" value="${freeCad.mod.path}/a2plus.zip"/>
-	<property name="a2plus.unzipped" value="${freeCad.mod.path}/A2plus-${a2plus.version}"/>
+	<property name="a2plus.version" value="0.4.26" />
+	
+	<!--=================================-->
+	<!--OS version dependent properties-->
+	
+	<property name="freeCad.windows.release" value="https://github.com/FreeCAD/FreeCAD/releases/download/0.18.3/FreeCAD-0.18.16131.3129ae4-WIN-x64-portable.7z" />
+	<property name="freeCad.linux.release" value="https://github.com/FreeCAD/FreeCAD/releases/download/0.18.3/FreeCAD_0.18-16131-Linux-Conda_Py3Qt5_glibc2.12-x86_64.AppImage" />
+	
+	<!--On windows the 7z will be extracted into the FreeCAD dir-->
+	<property name="freeCad.windows.path" value="FreeCAD" />
+	<!--Extracting into the current directory will unzip into the folder "FreeCAD", existing files will not be deleted-->
+	<property name="freeCad.windows.7z.folder" value="." />
+	<property name="freeCad.windows.7z.file" value="${freeCad.path}/FreeCAD.7z" />
+	
+	<!--On linux the AppImage will be extracted, but it's file structure has to stay intact so the corresponding files will be under FreeCAD/squashfs-root/usr-->
+	<property name="freeCad.linux.appimage" value="${freeCad.path}/FreeCAD.AppImage" />
+	<property name="freeCad.linux.appimage.root" value="${freeCad.path}/squashfs-root" />
+	<property name="freeCad.linux.path" value="${freeCad.appimage.root}/usr" />
+	
+	<property name="freeCad.windows.mod" value="${freeCad.windows.path}/Mod" />
+	<property name="freeCad.linux.mod" value="${freeCad.linux.path}/Mod" />
+	
+	<property name="freeCad.windows.patch.dest" value="${freeCad.windows.mod}/Test/TestApp.py" />
+	<property name="freeCad.linux.patch.dest" value="${freeCad.linux.mod}/Test/TestApp.py" />
+	
+	<property name="a2plus.windows.path" value="${freeCad.windows.mod}/A2plus"/>
+	<property name="a2plus.windows.zip" value="${freeCad.windows.mod}/a2plus.zip"/>
+	<property name="a2plus.windows.unzipped" value="${freeCad.windows.mod}/A2plus-${a2plus.version}"/>
+	<property name="a2plus.linux.path" value="${freeCad.linux.mod}/A2plus"/>
+	<property name="a2plus.linux.zip" value="${freeCad.linux.mod}/a2plus.zip"/>
+	<property name="a2plus.linux.unzipped" value="${freeCad.linux.mod}/A2plus-${a2plus.version}"/>
 
+	<!--=================================-->
 	<taskdef 
 		        uri="antlib:org.apache.ant.compress"
 		        resource="org/apache/ant/compress/antlib.xml">
@@ -34,7 +54,7 @@
 		<echo message="Main target of build script executed" />
 	</target>
 
-	<!--targets for different OS-->
+	<!--Targets for different OS-->
 	<condition property="isWindows">
 		<os family="windows" />
 	</condition>
@@ -43,28 +63,30 @@
 		<os family="unix" />
 	</condition>
 
-	<target name="DownloadFreeCADWindows" if="isWindows">
+	<!--Windows entry point-->
+	<target name="WindowsDownloadFreeCAD" if="isWindows">
 		<echo message="Found Windows OS" />
-		<get src="${freeCad.release.windows}" dest="${freeCad.7z}" verbose="true"/>
+		<get src="${freeCad.windows.release}" dest="${freeCad.windows.7z.file}" verbose="true"/>
 	</target>
 
-	<target name="UnzipFreeCADWindows" if="isWindows" depends="DownloadFreeCADWindows">
-		<comp:un7z xmlns:comp="antlib:org.apache.ant.compress" src="${freeCad.7z}" dest="${freeCad.7z.path}" />
+	<target name="WindowsUnzipFreeCAD" if="isWindows" depends="WindowsDownloadFreeCAD">
+		<comp:un7z xmlns:comp="antlib:org.apache.ant.compress" src="${freeCad.windows.7z.file}" dest="${freeCad.windows.7z.folder}" />
 	</target>
 
-	<target name="DownloadFreeCADLinux" if="isUnix">
+	<!--Linux entry point-->
+	<target name="LinuxDownloadFreeCAD" if="isUnix">
 		<echo message="Found Unix OS" />
-		<get src="${freeCad.release.linux}" dest="${freeCad.appimage}" verbose="true"/>
+		<get src="${freeCad.linux.release}" dest="${freeCad.linux.appimage}" verbose="true"/>
 	</target>
 
-	<target name="ExtractCADLinux" if="isUnix" depends="DownloadFreeCADLinux">
+	<target name="LinuxExtractFreeCAD" if="isUnix" depends="LinuxDownloadFreeCAD">
 		<chmod file="${freeCad.appimage}" perm="+x" verbose="true"/>
 		<!--extract the appimage into the folder "squashfs-root"-->
 		<exec executable="${freeCad.appimage}">
 			<arg line="--appimage-extract"/>
 		</exec>
 
-		<!--debug output-->
+		<!--debug output
 		<dirset id="cwd.contents" dir="." includes="*"/> 
 		<property name="prop.cwd.contents" refid="cwd.contents"/>
 		<echo>${prop.cwd.contents}</echo>
@@ -73,41 +95,53 @@
 			<fileset dir="${freeCad.appimage.usr}"/>
 		</move>
 		
-		<!--debug output-->
 		<dirset id="fc.contents" dir="${freeCad.path}" includes="*"/> 
 		<property name="prop.fc.contents" refid="fc.contents"/>
-		<echo>${prop.fc.contents}</echo>
+		<echo>${prop.fc.contents}</echo-->
 		
-		<chmod file="${freeCad.path}/bin/FreeCAD" perm="+x" verbose="true"/>
+		<!-- Appimage? -->
+		<!--chmod file="${freeCad.path}/bin/FreeCAD" perm="+x" verbose="true"/-->
+	</target>
+
+	<!-- Same operation on different paths for OS-->
+	<target name="WindowsPatchFreeCAD" if="isWindows" depends="WindowsUnzipFreeCAD">
+		<copy file="${freeCad.patch.src}" tofile="${freeCad.windows.patch.dest}" overwrite="true" verbose="true"/>
+	</target>
+	<target name="LinuxPatchFreeCAD" if="isLinux" depends="LinuxExtractFreeCAD">
+		<copy file="${freeCad.patch.src}" tofile="${freeCad.linux.patch.dest}" overwrite="true" verbose="true"/>
+	</target>
+
+	<target name="WindowsDownloadA2plus" if="isWindows" depends="WindowsPatchFreeCAD">
+		<get src="${a2plus.repo}/archive/v${a2plus.version}.zip" dest="${a2plus.windows.zip}" verbose="true"/>
+	</target>
+	<target name="LinuxDownloadA2plus" if="isLinux" depends="LinuxPatchFreeCAD">
+		<get src="${a2plus.repo}/archive/v${a2plus.version}.zip" dest="${a2plus.linux.zip}" verbose="true"/>
+	</target>
+
+	<target name="WindowsUnzipA2plus" if="isWindows" depends="WindowsDownloadA2plus">
+		<unzip src="${a2plus.windows.zip}" dest="${freeCad.windows.mod}"/>
+		<!--rename the root directory after unzipping-->
+		<move todir="${a2plus.windows.path}">
+			<fileset dir="${a2plus.windows.unzipped}"/>
+		</move>
+		<delete dir="${a2plus.windows.unzipped}"/>
+	</target>
+	<target name="LinuxUnzipA2plus" if="isLinux" depends="LinuxDownloadA2plus">
+		<unzip src="${a2plus.linux.zip}" dest="${freeCad.linux.mod}"/>
+		<!--rename the root directory after unzipping-->
+		<move todir="${a2plus.linux.path}">
+			<fileset dir="${a2plus.linux.unzipped}"/>
+		</move>
+		<delete dir="${a2plus.linux.unzipped}"/>
 	</target>
 
 	<!--join-->
-	<target name="InstalledFreeCAD" depends="UnzipFreeCADWindows, ExtractCADLinux">
-		<echo message="FreeCAD installed" />
-	</target>
-
-	<target name="PatchFreeCAD" depends="InstalledFreeCAD">
-		<copy file="${freeCad.patch.src}" tofile="${freeCad.patch.dest}" overwrite="true" verbose="true"/>
-	</target>
-
-	<target name="DownloadA2plus" depends="InstalledFreeCAD">
-		<get src="${a2plus.repo}/archive/v${a2plus.version}.zip" dest="${a2plus.zip}" verbose="true"/>
-	</target>
-
-	<target name="UnzipA2plus" depends="DownloadA2plus">
-		<unzip src="${a2plus.zip}" dest="${freeCad.mod.path}"/>
-		<!--rename the root directory after unzipping-->
-		<move todir="${a2plus.path}">
-			<fileset dir="${a2plus.unzipped}"/>
-		</move>
-		<delete dir="${a2plus.unzipped}"/>
-	</target>
-
-	<target name="Cleanup" depends="PatchFreeCAD, UnzipA2plus">
-		<delete file="${freeCad.7z}"/>
-		<delete file="${freeCad.appimage}"/>
-		<delete file="${freeCad.appimage.root}"/>
-		<delete file="${a2plus.zip}"/>
+	<target name="Cleanup" depends="WindowsUnzipA2plus, LinuxUnzipA2plus">
+		<delete file="${freeCad.windows.7z.file}"/>
+		<delete file="${freeCad.linux.appimage}"/>
+		<delete file="${a2plus.windows.zip}"/>
+		<delete file="${a2plus.linux.zip}"/>
+		<echo message="" />
 	</target>
 
 </project>
