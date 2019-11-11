@@ -23,8 +23,8 @@
 	
 	<!--On linux the AppImage will be extracted, but it's file structure has to stay intact so the corresponding files will be under FreeCAD/squashfs-root/usr-->
 	<property name="freeCad.linux.appimage" value="${freeCad.path}/FreeCAD.AppImage" />
-	<property name="freeCad.linux.appimage.root" value="${freeCad.path}/squashfs-root" />
-	<property name="freeCad.linux.path" value="${freeCad.appimage.root}/usr" />
+	<property name="freeCad.linux.appimage.root" value="squashfs-root" />
+	<property name="freeCad.linux.path" value="${freeCad.path}/usr" />
 	
 	<property name="freeCad.windows.mod" value="${freeCad.windows.path}/Mod" />
 	<property name="freeCad.linux.mod" value="${freeCad.linux.path}/Mod" />
@@ -98,6 +98,9 @@
 		<dirset id="fc.contents" dir="${freeCad.path}" includes="*"/> 
 		<property name="prop.fc.contents" refid="fc.contents"/>
 		<echo>${prop.fc.contents}</echo-->
+		
+		<!-- rename squashfs-root to FreeCAD -->
+		<move file="${freeCad.linux.appimage.root}" tofile="${freeCad.path}" overwrite="true"/>
 		
 		<!-- Appimage? -->
 		<!--chmod file="${freeCad.path}/bin/FreeCAD" perm="+x" verbose="true"/-->
