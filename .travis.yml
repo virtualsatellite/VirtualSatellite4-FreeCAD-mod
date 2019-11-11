@@ -95,8 +95,8 @@ jobs:
       - echo "Version ${VERSION} (Build $(date +"%Y%m%d%H%M%S"d)-${TRAVIS_BUILD_NUMBER})" > BUILD.txt
       - pushd .
       - cd ..  
-      - zip -r VirtualSatellite4_FreeCAD_mod_Development.zip VirtualSatellite4-FreeCAD-mod -x "*/.*"
-      - tar --exclude="*/.*" -czvf VirtualSatellite4_FreeCAD_mod_Development.tar.gz VirtualSatellite4-FreeCAD-mod
+      - zip -r VirtualSatellite4_FreeCAD_mod_Development.zip VirtualSatellite4-FreeCAD-mod/VirtualSatelliteCAD -x "*/.*"
+      - tar --exclude="*/.*" -czvf VirtualSatellite4_FreeCAD_mod_Development.tar.gz VirtualSatellite4-FreeCAD-mod/VirtualSatelliteCAD
       - popd 
       before_deploy:
         # -----------------------------------------------------------
@@ -140,8 +140,8 @@ jobs:
       - echo "Version ${VERSION} (Build $(date +"%Y%m%d%H%M%S"i)-${TRAVIS_BUILD_NUMBER})" > BUILD.txt  
       - pushd .
       - cd ..
-      - zip -r VirtualSatellite4_FreeCAD_mod_Integration_${VERSION}.zip VirtualSatellite4-FreeCAD-mod -x "*/.*"
-      - tar --exclude="*/.*" -czvf VirtualSatellite4_FreeCAD_mod_Integration_${VERSION}.tar.gz VirtualSatellite4-FreeCAD-mod
+      - zip -r VirtualSatellite4_FreeCAD_mod_Integration_${VERSION}.zip VirtualSatellite4-FreeCAD-mod/VirtualSatelliteCAD -x "*/.*"
+      - tar --exclude="*/.*" -czvf VirtualSatellite4_FreeCAD_mod_Integration_${VERSION}.tar.gz VirtualSatellite4-FreeCAD-mod/VirtualSatelliteCAD
       - popd
       before_deploy:
         # -----------------------------------------------------------
@@ -185,8 +185,8 @@ jobs:
       - echo "Version ${VERSION} (Build $(date +"%Y%m%d%H%M%S"r)-${TRAVIS_BUILD_NUMBER})" > BUILD.txt
       - pushd .
       - cd ..  
-      - zip -r VirtualSatellite4_FreeCAD_mod_Release_${VERSION}_${TRAVIS_BUILD_NUMBER}.zip VirtualSatellite4-FreeCAD-mod -x "*/.*"
-      - tar --exclude="*/.*" -czvf VirtualSatellite4_FreeCAD_mod_Release_${VERSION}_${TRAVIS_BUILD_NUMBER}.tar.gz VirtualSatellite4-FreeCAD-mod
+      - zip -r VirtualSatellite4_FreeCAD_mod_Release_${VERSION}_${TRAVIS_BUILD_NUMBER}.zip VirtualSatellite4-FreeCAD-mod/VirtualSatelliteCAD -x "*/.*"
+      - tar --exclude="*/.*" -czvf VirtualSatellite4_FreeCAD_mod_Release_${VERSION}_${TRAVIS_BUILD_NUMBER}.tar.gz VirtualSatellite4-FreeCAD-mod/VirtualSatelliteCAD
       - popd
       deploy:
         # -----------------------------------------------------------
