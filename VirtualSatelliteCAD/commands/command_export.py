@@ -26,21 +26,21 @@
 
 import FreeCAD
 import FreeCADGui
-from module.environment import Environment, ICON_IMPORT
+from module.environment import Environment, ICON_EXPORT
 from commands.command_definitions import COMMAND_ID_EXPORT_2_VIRTUAL_SATELLITE
 
 
 class CommandExport:
     def Activated(self):
-        FreeCAD.Console.PrintMessage("Calling the importer\n")
+        FreeCAD.Console.PrintMessage("Calling the exporter\n")
 
     def IsActive(self):
         return True
 
     def GetResources(self):
-        return {'Pixmap': Environment().get_icon_path(ICON_IMPORT),
-                'MenuText': 'Import from Virtual Satellite',
-                'ToolTip': 'Open the dialog for the Virtual Satellite json import.'}
+        return {'Pixmap': Environment().get_icon_path(ICON_EXPORT),
+                'MenuText': 'Export from Virtual Satellite',
+                'ToolTip': 'Open the dialog for the Virtual Satellite json export.'}
 
 
 FreeCADGui.addCommand(COMMAND_ID_EXPORT_2_VIRTUAL_SATELLITE, CommandExport())  # @UndefinedVariable

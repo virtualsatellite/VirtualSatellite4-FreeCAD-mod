@@ -28,19 +28,32 @@ import FreeCAD
 import FreeCADGui
 from module.environment import Environment, ICON_IMPORT
 from commands.command_definitions import COMMAND_ID_IMPORT_2_FREECAD
+from PySide2.QtWidgets import QFileDialog
 
 
-class CommandExport:
+class CommandImport:
     def Activated(self):
-        FreeCAD.Console.PrintMessage("Calling the json_io\n")
+        FreeCAD.Console.PrintMessage("Calling the importer\n")
+
+        path = FreeCAD.ConfigGet("UserAppData")
+
+        # call pyqt dialog: returns (filename, filter)
+        filename = QFileDialog.getOpenFileName(
+            None,  # ui parent
+            "Open JSON file",  # dialog caption
+            path,
+            "JSON(*.json)")[0]  # filter
+
+        if filename != '':
+            FreeCAD.Console.PrintMessage(f"Successful read file '{filename}'\n")
 
     def IsActive(self):
         return True
 
     def GetResources(self):
         return {'Pixmap': Environment().get_icon_path(ICON_IMPORT),
-                'MenuText': 'Export to Virtual Satellite',
-                'ToolTip': 'Open the dialog for the Virtual Satellite json export.'}
+                'MenuText': 'Import to Virtual Satellite',
+                'ToolTip': 'Open the dialog for the Virtual Satellite json import.'}
 
 
-FreeCADGui.addCommand(COMMAND_ID_IMPORT_2_FREECAD, CommandExport())  # @UndefinedVariable
+FreeCADGui.addCommand(COMMAND_ID_IMPORT_2_FREECAD, CommandImport())  # @UndefinedVariable
