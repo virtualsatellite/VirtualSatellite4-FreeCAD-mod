@@ -278,3 +278,13 @@ class TestJsonImporter(AWorkingDirectoryTest):
         self.assertIsNone(App.ActiveDocument.getObject("Geometry"), "Removed previous object")
         self.assertIsNotNone(App.ActiveDocument.getObject("Cone"), "Got correct object")
         App.closeDocument("Beam_6201a731_d703_43f8_ab37_6a7171dfe022")
+
+    def test_full_import(self):
+
+        json_test_resource_path = Environment.get_test_resource_path("VisCube2.json")
+        json_importer = JsonImporter(self._WORKING_DIRECTORY)
+        json_importer.full_import(json_test_resource_path)
+
+        # Check the file got created
+        # test_file_name = self._WORKING_DIRECTORY + "Beam_6201a731_d703_43f8_ab37_6a0581dfe022" + FREECAD_FILE_EXTENSION
+        # self.assertTrue(os.path.isfile(test_file_name), "File exists on drive")

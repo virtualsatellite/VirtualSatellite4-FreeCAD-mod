@@ -30,6 +30,9 @@ from freecad.active_document import ActiveDocument
 from json_io.parts.json_part_factory import JsonPartFactory
 from json_io.json_definitions import get_part_name_uuid
 
+import json
+from freecad.active_document import FREECAD_FILE_EXTENSION
+
 App = FreeCAD
 Gui = FreeCADGui
 Log = FreeCAD.Console.PrintLog
@@ -50,6 +53,9 @@ class JsonImporter(object):
         Log("Creating or Updating a part...\n")
         json_part = JsonPartFactory().create_from_json(json_object)
 
+        part_file_name = ""
+
+        # for: create each part
         if json_part is not None:
             # Use the name to create the part document
             # should be careful in case the name already exists.
@@ -65,3 +71,22 @@ class JsonImporter(object):
             Log("Saved part to file: " + part_file_name + "\n")
         else:
             Log("Visualization shape is most likely NONE, therefore no file is created\n")
+
+        # json assembly with json product object
+        # goal: instead of a part open the product assembly
+
+        return part_file_name
+
+    def full_import(self, filepath):
+        '''
+        '''
+
+        with open(filepath, 'r') as f:
+            json_object = json.load(f)
+
+        json_parts = json_object['Parts']
+        part_file_name = self.create_or_update_part(json_parts[0])
+
+        # TODO: return the path (or at least the name) of the std in create_or_update_part?
+        test_file_name = self.working_output_directory + part_file_name + FREECAD_FILE_EXTENSION
+        FreeCAD.open(test_file_name)
