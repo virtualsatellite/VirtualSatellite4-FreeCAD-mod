@@ -29,6 +29,11 @@ import FreeCADGui
 from module.environment import Environment, ICON_IMPORT
 from commands.command_definitions import COMMAND_ID_IMPORT_2_FREECAD
 from PySide2.QtWidgets import QFileDialog
+import json
+from json_io.json_importer import JsonImporter
+
+from json_io.json_definitions import get_part_name_uuid
+from freecad.active_document import FREECAD_FILE_EXTENSION
 
 
 class CommandImport:
@@ -46,6 +51,18 @@ class CommandImport:
 
         if filename != '':
             FreeCAD.Console.PrintMessage(f"Successful read file '{filename}'\n")
+
+            with open(filename, 'r') as f:
+                json_object = json.load(f)
+
+            # TODO: where do we save the created FCstd files? AppData?
+            # maybe create an subdir in AppData for VirSat stds?
+            json_importer = JsonImporter(path)
+            json_importer.create_or_update_part(json_object)
+
+            # TODO: return the path (or at least the name) of the std in create_or_update_part?
+            test_file_name = path + get_part_name_uuid(json_object) + FREECAD_FILE_EXTENSION
+            FreeCAD.open(test_file_name)
 
     def IsActive(self):
         return True
