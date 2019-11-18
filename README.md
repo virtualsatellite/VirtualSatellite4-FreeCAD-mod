@@ -24,6 +24,12 @@ If you just want to use Virtual Satellite feel free to download it from the [Rel
 
 ## Quickstart for developers
 
+You can use the Apache Ant script *build.xml* on Windows and Linux systems to install and setup FreeCAD. 
+The Ant script will:
+1. Install FreeCAD.
+2. Install the A2plus Workbench.
+
+If you have FreeCAD installed, you can:
 1. Create a new folder in the _mod_ subdirectory of FreeCAD.
 2. Copy the zip file from the releases into this directory.
 3. Unzip the file.
@@ -60,6 +66,15 @@ Once you are an authorized committer feel free to contribute. We will not activa
 3. Create a pull-request of your change to our development branch.
 
 To increase chance that we accept your pull-request, make sure all tests are working. The best indicator is the Travis CI job. Next we will review your pull-request, give comments and maybe accept it.
+
+## Third party dependencies
+
+The Apache Ant script for the build process has following third party dependencies:
+- Apache Compress Ant Library: [Apache License 2.0](http://www.apache.org/licenses/)
+- Apache Commons Compress: [Apache License 2.0](http://www.apache.org/licenses/)
+- XZ for Java: public domain
+
+The final FreeCAD Module (see [Releases](https://github.com/virtualsatellite/VirtualSatellite4-FreeCAD-mod/releases)) does NOT have those third party dependencies.
 
 ## License
 
