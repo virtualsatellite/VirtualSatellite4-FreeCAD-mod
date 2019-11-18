@@ -1,4 +1,4 @@
-<project name="SetupIDE" default="Setup environment" basedir=".">
+<project name="SetupIDE" default="SetupEnvironment" basedir=".">
 	<description>Setup IDE for FreeCAD development</description>
 	
 	<!--=================================-->
@@ -57,7 +57,7 @@
 		"WindowsDownloadFreeCAD" for Windows and "LinuxDownloadFreeCAD" for Linux
 		- only the code of the targets depending on the current OS will be executed
 	-->
-	<target name="Setup environment" depends="WindowsCleanup, LinuxCleanup">
+	<target name="SetupEnvironment" depends="WindowsCleanup, LinuxCleanup">
 		<echo message="Main target of build script executed successful" />
 	</target>
 
