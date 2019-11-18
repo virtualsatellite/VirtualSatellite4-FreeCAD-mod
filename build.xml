@@ -1,4 +1,4 @@
-<project name="SetupIDE" default="Main" basedir=".">
+<project name="SetupIDE" default="Setup environment" basedir=".">
 	<description>Setup IDE for FreeCAD development</description>
 	
 	<!--=================================-->
@@ -50,11 +50,18 @@
 		</classpath>
 	</taskdef>
 
-	<target name="Main" depends="Cleanup">
-		<echo message="Main target of build script executed" />
+	<!--Entry point/default target of the ant script:
+		- the ant script provides targets for Windows and Linux OS
+		- this target depends on the last target of each OS ("WindowsCleanup" and "LinuxCleanup")
+		- the ant script will automatically build a dependency tree and resolve it, starting with the leaf dependencie(s):
+		"WindowsDownloadFreeCAD" for Windows and "LinuxDownloadFreeCAD" for Linux
+		- only the code of the targets depending on the current OS will be executed
+	-->
+	<target name="Setup environment" depends="WindowsCleanup, LinuxCleanup">
+		<echo message="Main target of build script executed successful" />
 	</target>
 
-	<!--Targets for different OS-->
+	<!--Conditions for different OS-->
 	<condition property="isWindows">
 		<os family="windows" />
 	</condition>
@@ -81,7 +88,7 @@
 
 	<target name="LinuxExtractFreeCAD" if="isUnix" depends="LinuxDownloadFreeCAD">
 		<chmod file="${freeCad.linux.appimage}" perm="+x" verbose="true"/>
-		<!--extract the appimage into the folder "squashfs-root"-->
+		<!--Extract the appimage into the folder "squashfs-root"-->
 		<exec executable="${freeCad.linux.appimage}">
 			<arg line="--appimage-extract"/>
 		</exec>
@@ -104,7 +111,7 @@
 
 	<target name="WindowsUnzipA2plus" if="isWindows" depends="WindowsDownloadA2plus">
 		<unzip src="${a2plus.windows.zip}" dest="${freeCad.windows.mod}"/>
-		<!--rename the root directory after unzipping-->
+		<!--Rename the root directory after unzipping-->
 		<move todir="${a2plus.windows.path}">
 			<fileset dir="${a2plus.windows.unzipped}"/>
 		</move>
@@ -112,19 +119,20 @@
 	</target>
 	<target name="LinuxUnzipA2plus" if="isUnix" depends="LinuxDownloadA2plus">
 		<unzip src="${a2plus.linux.zip}" dest="${freeCad.linux.mod}"/>
-		<!--rename the root directory after unzipping-->
+		<!--Rename the root directory after unzipping-->
 		<move todir="${a2plus.linux.path}">
 			<fileset dir="${a2plus.linux.unzipped}"/>
 		</move>
 		<delete dir="${a2plus.linux.unzipped}"/>
 	</target>
 
-	<!--join-->
-	<target name="Cleanup" depends="WindowsUnzipA2plus, LinuxUnzipA2plus">
+	<target name="WindowsCleanup" depends="WindowsUnzipA2plus">
 		<delete file="${freeCad.windows.7z.file}"/>
-		<delete file="${freeCad.linux.appimage}"/>
 		<delete file="${a2plus.windows.zip}"/>
-		<delete file="${a2plus.linux.zip}"/>
 	</target>
+	<target name="LinuxCleanup" depends="LinuxUnzipA2plus">
+			<delete file="${freeCad.linux.appimage}"/>
+			<delete file="${a2plus.linux.zip}"/>
+		</target>
 
 </project>
