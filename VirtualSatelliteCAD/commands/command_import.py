@@ -51,7 +51,7 @@ class CommandImport:
             # TODO: where do we save the created FCstd files? AppData?
             # maybe create an subdir in AppData for VirSat stds?
             json_importer = JsonImporter(path)
-            json_importer.fullImport(filename)
+            json_importer.full_import(filename)
 
     def IsActive(self):
         return True

@@ -283,8 +283,42 @@ class TestJsonImporter(AWorkingDirectoryTest):
 
         json_test_resource_path = Environment.get_test_resource_path("VisCube2.json")
         json_importer = JsonImporter(self._WORKING_DIRECTORY)
-        json_importer.full_import(json_test_resource_path)
+        part_file_names, json_product, active_document = json_importer.full_import(json_test_resource_path)
 
-        # Check the file got created
-        # test_file_name = self._WORKING_DIRECTORY + "Beam_6201a731_d703_43f8_ab37_6a0581dfe022" + FREECAD_FILE_EXTENSION
-        # self.assertTrue(os.path.isfile(test_file_name), "File exists on drive")
+        # =========================
+        # Check parts
+
+        # Check that the right number of parts was found
+        self.assertEqual(len(part_file_names), 7, "Found 7 files")
+
+        # Check each part
+        for part_file_name in part_file_names:
+            test_file_name = self._WORKING_DIRECTORY + part_file_name + FREECAD_FILE_EXTENSION
+            # print(f"{test_file_name}\n")
+
+            # Check the file got created
+            self.assertTrue(os.path.isfile(test_file_name), "File exists on drive")
+
+        # =========================
+        # Check product
+
+        # Check that the right number of children and root objects got created
+        self.assertEquals(len(json_product.children), 5, "correct amount of children")
+        self.assertEquals(len(active_document.app_active_document.RootObjects), 10, "Found correct amount of root objects 5 objects plus 5 sheets")
+
+        # Check the product root
+        product_part_name = json_product.get_unique_name()
+        product_object = active_document.app_active_document.getObjectsByLabel(product_part_name)
+        self.assertIsNotNone(product_object, "Found an object under the given part name")
+
+        # Get the names of all children of the product
+        product_child_part_names = [child.get_unique_name() for child in json_product.children]
+
+        # Check that for each child a file exists
+        for product_child_part_name in product_child_part_names:
+            product_object = active_document.app_active_document.getObjectsByLabel(product_child_part_name)
+            self.assertIsNotNone(product_object, "Found an object under the given part name")
+
+        # TODO: Check children of children? they seem to not be created atm
+
+    # TODO: Check double import of the cube: manually double importing creates a wrong vis atm
