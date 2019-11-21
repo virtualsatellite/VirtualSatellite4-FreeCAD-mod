@@ -1,12 +1,23 @@
-# Virtual Satellite 4 - FreeCAD Module
+# Virtual Satellite 4 - FreeCAD Module - Alpha
 
-Virtual Satellite 4 - FreeCAD Module is an extension for FreeCAD that allows to create a round-trip engineering workflow with Virtual Satellite.
+Virtual Satellite 4 - FreeCAD Module is an extension for [FreeCAD](https://freecadweb.org/), an Open Source 3D Parametric Modeler.
+This extension allows to create a round-trip engineering workflow with Virtual Satellite.
+
+**Note:** This extension is still under development. It is not ready for productive use and is subject to constant change.
 
 ## Project Status
 
-Status [![Build Status](https://travis-ci.com/virtualsatellite/VirtualSatellite4-FreeCAD-mod.svg?branch=development)](https://travis-ci.com/virtualsatellite/VirtualSatellite4-FreeCAD-mod) for *Development* build.
+| Master | Development | 
+|:------:|:-----------:| 
+|[![Master][master-status]][master-builds]|[![Development][development-status]][development-builds]| 
 
-Status [![Build Status](https://travis-ci.com/virtualsatellite/VirtualSatellite4-FreeCAD-mod.svg?branch=master)](https://travis-ci.com/virtualsatellite/VirtualSatellite4-FreeCAD-mod) for *Master* build.
+[master-status]: https://travis-ci.com/virtualsatellite/VirtualSatellite4-FreeCAD-mod.svg?branch=master 
+
+[master-builds]: https://travis-ci.com/virtualsatellite/VirtualSatellite4-FreeCAD-mod 
+
+[development-status]: https://travis-ci.com/virtualsatellite/VirtualSatellite4-FreeCAD-mod.svg?branch=development 
+
+[development-builds]: https://travis-ci.com/virtualsatellite/VirtualSatellite4-FreeCAD-mod
 
 ## Purpose
 
@@ -17,29 +28,36 @@ Virtual Satellite 4 FreeCAD Module is an extension to FreeCAD. FreeCAD is an ope
 This program is based on FreeCAD and Python. The following infrastructure is required:
  - FreeCAD 0.18 and higher (64bit)
  - A2plus Workbench 0.4.26 and higher
+ - Virtual Satellite 4
  
-## Quickstart for users
+## Quickstart for Users
 
 If you just want to use Virtual Satellite feel free to download it from the [Releases](https://github.com/virtualsatellite/VirtualSatellite4-FreeCAD-mod/releases) section here on GitHub.
 
-## Quickstart for developers
+## Quickstart for Developers
 
-You can use the Apache Ant script *build.xml* on Windows and Linux systems to install and setup FreeCAD. 
-The Ant script will:
+To set up your Eclipse IDE, run the Apache ANT *build.xml*. It works for Windows and Linux systems.  
+The Ant script is performing the following steps:
 1. Install FreeCAD.
 2. Install the A2plus Workbench.
+3. Apply need patches (To fix some interim bugs in FreeCAD)
 
-If you have FreeCAD installed, you can:
-1. Create a new folder in the _mod_ subdirectory of FreeCAD.
-2. Copy the zip file from the releases into this directory.
-3. Unzip the file.
-4. Start FreeCAD.
+If you have FreeCAD already installed and you only want to install this extension, please follow these steps:
+1. Find the default configuration path to FreeCAD (e.g. `~/.FreeCAD/` on Linux)   
+2. Type `cd path/to/your/.FreeCAD/Mod` to change directory  to your default configuration _Mod_ subdirectory.   
+3. Download the extension zip file (from [Releases](https://github.com/virtualsatellite/VirtualSatellite4-FreeCAD-mod/releases)) into this directory and unzip it.   
+4. Start or Restart FreeCAD.
+
+**Note:** You can get the configuration directory by using the FreeCAD's python console: `FreeCAD.ConfigGet("UserAppData")` 
+
+**Note:** A `git clone` method compared to copying and unzipping is preferred. Updates are conveniently done with a simple `git fetch` instead of needing to re-download the zip file and unzipping it.  
+
 
 The Virtual Satellite Workbench is now available in FreeCAD
 
 ## Travis CI and Releases
 
-Tarvis CI is set-up to start a build job for every branch and every new commit to the repository. It executes all relevant tests. Making a successful pull-request into development requires all tests to pass.
+Travis CI is set-up to start a build job for every branch and every new commit to the repository. It executes all relevant tests. Making a successful pull-request into development requires all tests to pass.
 
 Starting a Travis CI job on development deploys all relevant artifacts.
 
@@ -48,10 +66,10 @@ For creating a new release, create a tag starting with *Release_* on the *master
 ## Provided Features
 
 - A new Virtual Satellite Workbench
-- Functionality to uplaod a design to Virtual Satellite.
+- Functionality to upload a design to Virtual Satellite.
 - Functionality to download a design from Virtual Satellite.
 
-## Contribution
+## Contributing
 
 We are happy to receive your contributions. Nevertheless in such a big project there is a lot to respect and to obey. 
 One thing to respect are legal requirements such as authorship rights and privacy protection. 
