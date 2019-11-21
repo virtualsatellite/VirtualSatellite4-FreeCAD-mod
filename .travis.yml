@@ -13,11 +13,8 @@ addons:
   # needed for the SWTBOT UI tests
   # ---------------------------------------------------------------
   apt:
-    sources:
-    - sourceline: "ppa:freecad-maintainers/freecad-stable"
     packages:
     - metacity
-    - freecad
 
 install:
 - true 
@@ -34,8 +31,7 @@ stages:
 env:
   global:
   - VERSION=4.9.0
-  - A2PLUS_REPO=https://github.com/kbwbe/A2plus
-  - A2PLUS_VERSION=v0.4.26
+  
   # ---------------------------------------------
   # API Token for access to github
   # ---------------------------------------------
@@ -69,30 +65,25 @@ jobs:
       if: branch NOT IN (integration_snapshot, development_snapshot) 
       name: Test - FreeCAD Module Tests
       script:
-      # Install A2plus dependency to FreeCAD
-      - curl -L --create-dirs -o ~/.FreeCAD/Mod/a2plus.tar.gz ${A2PLUS_REPO}/archive/${A2PLUS_VERSION}.tar.gz
-      - mkdir ~/.FreeCAD/Mod/A2plus/
-      - tar -zxf ~/.FreeCAD/Mod/a2plus.tar.gz -C ~/.FreeCAD/Mod/A2plus/ --strip-components=1
+      - ant SetupEnvironment
       # Execute FreeCAD tests
-      - freecad -M $(pwd) -t TestVirtualSatelliteApp -l --log-file "FreeCAD.log"
+      - ./squashfs-root/AppRun -M $(pwd)/VirtualSatelliteCAD -t TestVirtualSatelliteApp -l --log-file "FreeCAD.log"
       
     - stage: test
       if: branch NOT IN (integration_snapshot, development_snapshot) 
       name: Test - FreeCAD Module flake8
       script:
       - python3 -m pip install flake8
-      - flake8 . --count --show-source --statistics
+      # flake should should only check our code
+      - flake8 ./VirtualSatelliteCAD --count --show-source --statistics
       
     - stage: test
       if: branch NOT IN (integration_snapshot, development_snapshot) 
       name: Test - FreeCAD All Tests
       script:
-      # Install A2plus dependency to FreeCAD
-      - curl -L --create-dirs -o ~/.FreeCAD/Mod/a2plus.tar.gz ${A2PLUS_REPO}/archive/${A2PLUS_VERSION}.tar.gz
-      - mkdir ~/.FreeCAD/Mod/A2plus/
-      - tar -zxf ~/.FreeCAD/Mod/a2plus.tar.gz -C ~/.FreeCAD/Mod/A2plus/ --strip-components=1
+      - ant SetupEnvironment
       # Execute FreeCAD tests
-      - freecad -M $(pwd) -t 0 -l --log-file "FreeCAD.log"
+      - ./squashfs-root/AppRun -M $(pwd) -t 0 -l --log-file "FreeCAD.log"
 
     # -----------------------------------------------------------
     # Deploy Jobs for unsecured Development.
@@ -104,8 +95,8 @@ jobs:
       - echo "Version ${VERSION} (Build $(date +"%Y%m%d%H%M%S"d)-${TRAVIS_BUILD_NUMBER})" > BUILD.txt
       - pushd .
       - cd ..  
-      - zip -r VirtualSatellite4_FreeCAD_mod_Development.zip VirtualSatellite4-FreeCAD-mod -x "*/.*"
-      - tar --exclude="*/.*" -czvf VirtualSatellite4_FreeCAD_mod_Development.tar.gz VirtualSatellite4-FreeCAD-mod
+      - zip -r VirtualSatellite4_FreeCAD_mod_Development.zip VirtualSatellite4-FreeCAD-mod/VirtualSatelliteCAD -x "*/.*"
+      - tar --exclude="*/.*" -czvf VirtualSatellite4_FreeCAD_mod_Development.tar.gz VirtualSatellite4-FreeCAD-mod/VirtualSatelliteCAD
       - popd 
       before_deploy:
         # -----------------------------------------------------------
@@ -149,8 +140,8 @@ jobs:
       - echo "Version ${VERSION} (Build $(date +"%Y%m%d%H%M%S"i)-${TRAVIS_BUILD_NUMBER})" > BUILD.txt  
       - pushd .
       - cd ..
-      - zip -r VirtualSatellite4_FreeCAD_mod_Integration_${VERSION}.zip VirtualSatellite4-FreeCAD-mod -x "*/.*"
-      - tar --exclude="*/.*" -czvf VirtualSatellite4_FreeCAD_mod_Integration_${VERSION}.tar.gz VirtualSatellite4-FreeCAD-mod
+      - zip -r VirtualSatellite4_FreeCAD_mod_Integration_${VERSION}.zip VirtualSatellite4-FreeCAD-mod/VirtualSatelliteCAD -x "*/.*"
+      - tar --exclude="*/.*" -czvf VirtualSatellite4_FreeCAD_mod_Integration_${VERSION}.tar.gz VirtualSatellite4-FreeCAD-mod/VirtualSatelliteCAD
       - popd
       before_deploy:
         # -----------------------------------------------------------
@@ -194,8 +185,8 @@ jobs:
       - echo "Version ${VERSION} (Build $(date +"%Y%m%d%H%M%S"r)-${TRAVIS_BUILD_NUMBER})" > BUILD.txt
       - pushd .
       - cd ..  
-      - zip -r VirtualSatellite4_FreeCAD_mod_Release_${VERSION}_${TRAVIS_BUILD_NUMBER}.zip VirtualSatellite4-FreeCAD-mod -x "*/.*"
-      - tar --exclude="*/.*" -czvf VirtualSatellite4_FreeCAD_mod_Release_${VERSION}_${TRAVIS_BUILD_NUMBER}.tar.gz VirtualSatellite4-FreeCAD-mod
+      - zip -r VirtualSatellite4_FreeCAD_mod_Release_${VERSION}_${TRAVIS_BUILD_NUMBER}.zip VirtualSatellite4-FreeCAD-mod/VirtualSatelliteCAD -x "*/.*"
+      - tar --exclude="*/.*" -czvf VirtualSatellite4_FreeCAD_mod_Release_${VERSION}_${TRAVIS_BUILD_NUMBER}.tar.gz VirtualSatellite4-FreeCAD-mod/VirtualSatelliteCAD
       - popd
       deploy:
         # -----------------------------------------------------------

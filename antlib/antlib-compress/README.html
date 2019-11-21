@@ -1,0 +1,66 @@
+<body>
+<h1>Changes in 1.5</h1>
+<h2>Changes that Could Break Older Environments:</h2>
+<ul>
+<li>
+        The coordinates inside the Ivy file have been changed to match
+        those of the POM.
+      </li>
+<li>
+        The Apache Compress Antlib now requires Apache Commons
+        Compress 1.14 or later for 7z, DEFLATE, LZ4 and write support
+        for LZMA and Snappy.
+        XZ for Java 1.6 or later is required for write support for LZMA.
+        Brotli dec 0.1.2 or later is required for Brotli support.
+        As a side effect the Compress Antlib now requires Java 7 at
+        runtime as this is required by Commons Compress 1.14.
+      </li>
+</ul>
+<h2>Fixed Bugs:</h2>
+<ul></ul>
+<h2>Other Changes:</h2>
+<ul>
+<li>
+        The coordinates inside the Ivy file have been changed to match
+        those of the POM.
+      </li>
+<li>
+        The Apache Compress Antlib now requires Apache Commons
+        Compress 1.14 or later for 7z, DEFLATE, LZ4 and write support
+        for LZMA and Snappy.
+        XZ for Java 1.6 or later is required for write support for LZMA.
+        Brotli dec 0.1.2 or later is required for Brotli support.
+        As a side effect the Compress Antlib now requires Java 7 at
+        runtime as this is required by Commons Compress 1.14.
+      </li>
+<li>
+        A new keepCompression flag can be used to keep the content
+        compression methods the same they have been when updating a 7z
+        archive or adding entries from a sevenzfileset.
+      </li>
+<li>
+        Multiple content compression/encryption/filter methods can now
+        be specified via nested elements of the sevenz task.
+      </li>
+<li>
+        The gzip task has a new attribute that controls the level of
+        compression.
+      <a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=52414">BugZilla Issue 52414</a>
+</li>
+<li>
+        Added write support for the LZMA format.
+      </li>
+<li>
+        Added support for the DEFLATE format with and without ZLIB headers.
+      </li>
+<li>
+        Added write support for the Snappy format.
+      </li>
+<li>
+        Added support for the LZ4 format.
+      </li>
+<li>
+        Added read-only support for the Brotli format.
+      </li>
+</ul>
+</body>
