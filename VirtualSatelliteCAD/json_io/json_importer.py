@@ -32,8 +32,6 @@ from json_io.products.json_product_assembly import JsonProductAssembly
 from json_io.json_definitions import get_part_name_uuid
 
 import json
-import os
-# from freecad.active_document import FREECAD_FILE_EXTENSION
 
 App = FreeCAD
 Gui = FreeCADGui
@@ -89,18 +87,18 @@ class JsonImporter(object):
         for part in json_parts:
             part_file_names.append(self.create_or_update_part(part))
 
-        reduced_name = os.path.split(filepath)[1][:-5]
-
         # json assembly with json product object
-        active_document = ActiveDocument(self.working_output_directory).open_set_and_get_document(reduced_name)
         json_product = JsonProductAssembly().parse_from_json(json_object['Products'])
+        freecad_name = json_product.name
 
+        # if there is a root document with the same name open already:
+        # assume that all changes of the current import are valid (CRUD)
+        # so clear the document
+        ActiveDocument(self.working_output_directory).clear_if_open_document(freecad_name)
+
+        active_document = ActiveDocument(self.working_output_directory).open_set_and_get_document(freecad_name)
         json_product.write_to_freecad(active_document)
 
-        active_document.save_as(reduced_name)
-
-        # TODO: return the path (or at least the name) of the std in create_or_update_part?
-        # test_file_name = self.working_output_directory + part_file_name + FREECAD_FILE_EXTENSION
-        # FreeCAD.open(test_file_name)
+        active_document.save_as(freecad_name)
 
         return part_file_names, json_product, active_document

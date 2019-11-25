@@ -306,11 +306,6 @@ class TestJsonImporter(AWorkingDirectoryTest):
         self.assertEquals(len(json_product.children), 5, "Correct amount of children")
         self.assertEquals(len(active_document.app_active_document.RootObjects), 14, "Found correct amount of root objects 7 plus 7 sheets")
 
-        # Check the product root
-        product_part_name = json_product.get_unique_name()
-        product_object = active_document.app_active_document.getObjectsByLabel(product_part_name)
-        self.assertIsNotNone(product_object, "Found an object under the given part name")
-
         # Check that for each child a file exists
         for child in json_product.children:
             product_object = active_document.app_active_document.getObjectsByLabel(child.get_unique_name())
@@ -369,7 +364,35 @@ class TestJsonImporter(AWorkingDirectoryTest):
 
     def test_full_import_again_with_changes(self):
         """
-        If two files with the same name get imported all elements of the second file should overwrite the elements of the first file,
-        but elements existing in the first file (but not in the second file) won't be changed
+        If two files with the same name get imported: we assume that the VirSat side used CRUD, that means:
+        - new parts/products could be created, so add them
+        - old parts/products could be replaced/updated, so use the new information
+        - old parts/products could be deleted, so delete all not updated files
+        -> this means instead of merging, simply the information of the old files get replaced be the newer ones
         """
-        pass
+
+        json_importer = JsonImporter(self._WORKING_DIRECTORY)
+
+        # =========================
+        # First import
+        json_test_resource_path = Environment.get_test_resource_path("VisCube2.json")
+        part_file_names, json_product, active_document = json_importer.full_import(json_test_resource_path)
+
+        # Check that the right number of parts was found
+        self.assertEqual(len(part_file_names), 7, "Found 7 files")
+
+        # Check that the right number of children and root objects got created
+        self.assertEqual(len(json_product.children), 5, "Correct amount of children")
+        self.assertEqual(len(active_document.app_active_document.RootObjects), 14, "Found correct amount of root objects 7 plus 7 sheets")
+
+        # =========================
+        # Second import
+        json_test_resource_path2 = Environment.get_test_resource_path("VisCube2_update.json")
+        part_file_names2, json_product2, active_document2 = json_importer.full_import(json_test_resource_path2)
+
+        # Check that the right number of parts was found
+        self.assertEqual(len(part_file_names2), 1, "Found 1 files")
+
+        # Check that the right number of children and root objects got created
+        self.assertEquals(len(json_product2.children), 1, "Correct amount of children")
+        self.assertEquals(len(active_document2.app_active_document.RootObjects), 2, "Found correct amount of root objects 1 plus 1 sheets")
