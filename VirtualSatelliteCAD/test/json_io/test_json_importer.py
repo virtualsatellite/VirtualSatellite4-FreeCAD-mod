@@ -303,22 +303,24 @@ class TestJsonImporter(AWorkingDirectoryTest):
         # Check product
 
         # Check that the right number of children and root objects got created
-        self.assertEquals(len(json_product.children), 5, "correct amount of children")
-        self.assertEquals(len(active_document.app_active_document.RootObjects), 10, "Found correct amount of root objects 5 objects plus 5 sheets")
+        self.assertEquals(len(json_product.children), 5, "Correct amount of children")
+        self.assertEquals(len(active_document.app_active_document.RootObjects), 14, "Found correct amount of root objects 7 plus 7 sheets")
 
         # Check the product root
         product_part_name = json_product.get_unique_name()
         product_object = active_document.app_active_document.getObjectsByLabel(product_part_name)
         self.assertIsNotNone(product_object, "Found an object under the given part name")
 
-        # Get the names of all children of the product
-        product_child_part_names = [child.get_unique_name() for child in json_product.children]
-
         # Check that for each child a file exists
-        for product_child_part_name in product_child_part_names:
-            product_object = active_document.app_active_document.getObjectsByLabel(product_child_part_name)
+        for child in json_product.children:
+            product_object = active_document.app_active_document.getObjectsByLabel(child.get_unique_name())
             self.assertIsNotNone(product_object, "Found an object under the given part name")
+            if(child.name == "BeamStructure"):
+                # Check that two sub children are found
+                self.assertEquals(len(child.children), 2, "Correct amount of children")
+                for subchild in child.children:
+                    product_object = active_document.app_active_document.getObjectsByLabel(subchild.get_unique_name())
+                    self.assertIsNotNone(product_object, "Found an object under the given part name")
 
-        # TODO: Check children of children? they seem to not be created atm
-
-    # TODO: Check double import of the cube: manually double importing creates a wrong vis atm
+        # TODO: Propagate coordinate values from parent to child
+        # TODO: Check double import of the cube: manually double importing creates a wrong vis atm

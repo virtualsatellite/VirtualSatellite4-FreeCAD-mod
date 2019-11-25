@@ -26,6 +26,7 @@
 
 from json_io.products.json_product import AJsonProduct
 from json_io.json_definitions import _get_combined_name_uuid
+from json_io.json_definitions import JSON_ELEMNT_CHILDREN
 
 
 class JsonProductChild(AJsonProduct):
@@ -40,3 +41,32 @@ class JsonProductChild(AJsonProduct):
             return _get_combined_name_uuid(self.name, self.uuid)
         else:
             return _get_combined_name_uuid(self.part_name, self.part_uuid)
+
+    def parse_from_json(self, json_object):
+
+        super().parse_from_json(json_object)
+        if self.has_children:
+            # Get all children from the json and try to parse them
+            # into JsonProductChild objects
+            json_object_children = list(json_object[JSON_ELEMNT_CHILDREN])
+
+            self.children = []
+            for json_object_child in json_object_children:
+
+                json_product_child = JsonProductChild().parse_from_json(json_object_child)
+                self.children.append(json_product_child)
+
+        return self
+
+    def write_to_freecad(self, active_document):
+        # This assembly may refer to a part as well
+        # hence if there is a partUuid and if there is a part name, than
+        # it should be written to the FreeCAD document as well.
+        if self.is_part_reference():
+            super().write_to_freecad(active_document)
+
+        # And now write the children, they decide on their own if they reference
+        # part or a product
+        if self.has_children:
+            for child in self.children:
+                child.write_to_freecad(active_document)

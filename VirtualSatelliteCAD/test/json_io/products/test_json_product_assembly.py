@@ -32,7 +32,7 @@ import FreeCADGui
 from json_io.products.json_product_assembly import JsonProductAssembly
 from freecad.active_document import ActiveDocument
 from test.json_io.test_json_data import TEST_JSON_PRODUCT_WITH_CHILDREN,\
-    TEST_JSON_PRODUCT_WITHOUT_CHILDREN
+    TEST_JSON_PRODUCT_WITHOUT_CHILDREN, TEST_JSON_PRODUCT_WITH_CHILD_WITH_CHILD
 
 
 App = FreeCAD
@@ -77,6 +77,21 @@ class TestJsonProductAssembly(AWorkingDirectoryTest):
         json_product_child_2 = json_product.children[1]
 
         self.assertEqual(json_product_child_1.name, "BasePlateBottom2", "Parsed correct child")
+        self.assertEqual(json_product_child_2.name, "BasePlateTop", "Parsed correct child")
+
+    def test_parse_with_child_with_child(self):
+        # Same json as in test_parse_with_children, but BasePlateTop is now child of BasePlateBottom2
+
+        json_object = json.loads(TEST_JSON_PRODUCT_WITH_CHILD_WITH_CHILD)
+        json_product = JsonProductAssembly().parse_from_json(json_object)
+
+        # Check for the children
+        self.assertEquals(len(json_product.children), 1, "Parsed one children")
+
+        json_product_child_1 = json_product.children[0]
+        self.assertEqual(json_product_child_1.name, "BasePlateBottom2", "Parsed correct child")
+
+        json_product_child_2 = json_product_child_1.children[0]
         self.assertEqual(json_product_child_2.name, "BasePlateTop", "Parsed correct child")
 
     def test_parse_with_no_children(self):
