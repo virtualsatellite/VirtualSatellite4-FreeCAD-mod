@@ -54,6 +54,7 @@ class JsonProductChild(AJsonProduct):
             for json_object_child in json_object_children:
 
                 json_product_child = JsonProductChild().parse_from_json(json_object_child)
+                json_product_child.propagate_pos_and_rot_from_parent(self)
                 self.children.append(json_product_child)
 
         return self
@@ -70,3 +71,25 @@ class JsonProductChild(AJsonProduct):
         if self.has_children:
             for child in self.children:
                 child.write_to_freecad(active_document)
+
+    def propagate_pos_and_rot_from_parent(self, parent):
+        """
+        TODO:
+        This function propagates position and rotation parameters from the parent:
+        Doing this the pos and rot of an object become absolute not relative, which could result
+        in overhead when parsing back.
+        The question occurs how we handle this problems:
+        - Does a product hold its relative and absolute position?
+        - if yes how do we keep them in sync
+        - ideal would be to only show relative positions to the FreeCAD user and compute them
+         to absolute positions internally
+        - is that possible with freecad? it seems to only accept absolute positions and no inheritance
+        - constraints???
+        """
+        self.pos_x += parent.pos_x
+        self.pos_y += parent.pos_y
+        self.pos_z += parent.pos_z
+
+        self.rot_x += parent.rot_x
+        self.rot_y += parent.rot_y
+        self.rot_z += parent.rot_z

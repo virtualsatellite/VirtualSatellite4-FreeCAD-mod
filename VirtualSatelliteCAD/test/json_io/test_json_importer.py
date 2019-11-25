@@ -324,7 +324,9 @@ class TestJsonImporter(AWorkingDirectoryTest):
                     product_object = active_document.app_active_document.getObjectsByLabel(subchild.get_unique_name())
                     self.assertIsNotNone(product_object, "Found an object under the given part name")
 
-        # TODO: Check: Should it propagate coordinate values from parent to child or is there a bug in virsat export?
+                    # Check propagation
+                    # poz_z of -500 should be propagated from "BeamStructure"
+                    self.assertEqual(subchild.pos_z, 500.0, "Z position got propagated correctly")
 
     def test_full_import_again(self):
         """
@@ -363,7 +365,11 @@ class TestJsonImporter(AWorkingDirectoryTest):
 
         for i, child1 in enumerate(json_product.children):
             child2 = json_product2.children[i]
-            child1.hasEqualValues(child2)
+            child1.has_equal_values(child2)
 
     def test_full_import_again_with_changes(self):
+        """
+        If two files with the same name get imported all elements of the second file should overwrite the elements of the first file,
+        but elements existing in the first file (but not in the second file) won't be changed
+        """
         pass

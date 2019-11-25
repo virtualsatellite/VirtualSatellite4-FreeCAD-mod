@@ -70,6 +70,7 @@ class JsonProductAssembly(AJsonProduct):
         self.children = []
         for json_object_child in json_object_children:
             json_product_child = JsonProductChild().parse_from_json(json_object_child)
+            json_product_child.propagate_pos_and_rot_from_parent(self)
             self.children.append(json_product_child)
 
         # Don't hand back an assembly if there are no children

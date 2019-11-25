@@ -129,6 +129,8 @@ class AJsonProduct():
 
         product_part = active_document.app_active_document.getObjectsByLabel(product_part_name)[0]
 
+        # TODO: check if the same bug as below applies
+        # TODO: Add testcases in test_product
         # First translate than rotate around X, Y and Z
         vector_translation = active_document.app.Vector(self.pos_x, self.pos_y, self.pos_z)
         vector_rotation_zero = active_document.app.Rotation(VECTOR_ZERO, 0)
@@ -195,7 +197,7 @@ class AJsonProduct():
 
         return has_part_uuid and has_part_name
 
-    def hasEqualValues(self, other):
+    def has_equal_values(self, other):
         """
         Compares values with another AJsonProduct
         """
