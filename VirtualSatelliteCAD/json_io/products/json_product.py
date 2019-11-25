@@ -32,6 +32,7 @@ from json_io.json_definitions import JSON_ELEMENT_NAME, JSON_ELEMENT_UUID,\
 from json_io.json_spread_sheet import JsonSpreadSheet
 from A2plus.a2p_importpart import importPartFromFile
 from freecad.active_document import VECTOR_X, VECTOR_Y, VECTOR_Z, VECTOR_ZERO
+from FreeCAD import Placement
 
 
 class AJsonProduct():
@@ -57,6 +58,9 @@ class AJsonProduct():
         self.rot_x = 0.0
         self.rot_y = 0.0
         self.rot_z = 0.0
+
+        self.name = None
+        self.uuid = None
 
     def _parse_name_and_uuid_from_json(self, json_object):
         self.name = str(json_object[JSON_ELEMENT_NAME])
@@ -99,14 +103,24 @@ class AJsonProduct():
         the assembly. E.g. A BasePlate will be added as BasePlateBottom to the
         assembly. In case the object already exists, nothing special will happen.
         '''
+        # TODO: overwrite in case it already exists?
         import_part_file_name = self.get_part_unique_name()
         import_part_name_in_product = self.get_unique_name()
         import_part_full_path = active_document.get_file_full_path(import_part_file_name)
-        imported_product_part = importPartFromFile(
-            active_document.app_active_document,
-            import_part_full_path)
-        imported_product_part.Label = import_part_name_in_product
+        import_part_ref = active_document.app_active_document.getObjectsByLabel(import_part_name_in_product)
 
+        # If the part doesn't exists (the returned list is not empty) update it
+        if import_part_ref:
+            # TODO: Update it
+            print(f"Found existing part '{import_part_name_in_product}'")
+        # Else create it
+        else:
+            imported_product_part = importPartFromFile(
+                active_document.app_active_document,
+                import_part_full_path)
+            imported_product_part.Label = import_part_name_in_product
+
+    # TODO: remove?
     def _set_freecad_name_and_color(self, active_document):
         pass
 
@@ -122,7 +136,9 @@ class AJsonProduct():
         vector_rotation_y = active_document.app.Rotation(VECTOR_Y, self.rot_y)
         vector_rotation_z = active_document.app.Rotation(VECTOR_Z, self.rot_z)
 
-        placement = product_part.Placement
+        # TODO: using the original placement causes misbehavior when importing the same json twice
+        # placement = product_part.Placement
+        placement = Placement()
 
         placement_translation = active_document.app.Placement(
             vector_translation,
@@ -178,3 +194,22 @@ class AJsonProduct():
         has_part_name = hasattr(self, "part_name")
 
         return has_part_uuid and has_part_name
+
+    def hasEqualValues(self, other):
+        """
+        Compares values with another AJsonProduct
+        """
+        if(isinstance(other, AJsonProduct)):
+            return (
+                self.pos_x == other.pos_x and
+                self.pos_y == other.pos_y and
+                self.pos_z == other.pos_z and
+
+                self.rot_x == other.rot_x and
+                self.rot_y == other.rot_y and
+                self.rot_z == other.rot_z and
+
+                self.name == other.name and
+                self.uuid == other.uuid)
+
+        return NotImplemented

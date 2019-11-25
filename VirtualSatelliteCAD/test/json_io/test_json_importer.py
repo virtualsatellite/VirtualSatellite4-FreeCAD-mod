@@ -314,7 +314,9 @@ class TestJsonImporter(AWorkingDirectoryTest):
         # Check that for each child a file exists
         for child in json_product.children:
             product_object = active_document.app_active_document.getObjectsByLabel(child.get_unique_name())
-            self.assertIsNotNone(product_object, "Found an object under the given part name")
+            # An empty list in python gets asserted to true
+            # TODO: this was assertNotNone, which returned true all the time, so xcheck if this mistake was made somewhere else
+            self.assertTrue(product_object, "Found an object under the given part name")
             if(child.name == "BeamStructure"):
                 # Check that two sub children are found
                 self.assertEquals(len(child.children), 2, "Correct amount of children")
@@ -322,5 +324,46 @@ class TestJsonImporter(AWorkingDirectoryTest):
                     product_object = active_document.app_active_document.getObjectsByLabel(subchild.get_unique_name())
                     self.assertIsNotNone(product_object, "Found an object under the given part name")
 
-        # TODO: Propagate coordinate values from parent to child
+        # TODO: Check: Should it propagate coordinate values from parent to child or is there a bug in virsat export?
+
+    def test_full_import_again(self):
+        """
+        importing the same file again should not result in changes
+        """
+        pass
         # TODO: Check double import of the cube: manually double importing creates a wrong vis atm
+        json_test_resource_path = Environment.get_test_resource_path("VisCube2.json")
+        json_importer = JsonImporter(self._WORKING_DIRECTORY)
+
+        # =========================
+        # First import
+        part_file_names, json_product, active_document = json_importer.full_import(json_test_resource_path)
+
+        # Check that the right number of parts was found
+        self.assertEqual(len(part_file_names), 7, "Found 7 files")
+
+        # Check that the right number of children and root objects got created
+        self.assertEqual(len(json_product.children), 5, "Correct amount of children")
+        self.assertEqual(len(active_document.app_active_document.RootObjects), 14, "Found correct amount of root objects 7 plus 7 sheets")
+
+        # =========================
+        # Second import
+        part_file_names2, json_product2, active_document2 = json_importer.full_import(json_test_resource_path)
+
+        # Check that the right number of parts was found
+        self.assertEqual(len(part_file_names2), 7, "Found 7 files")
+
+        # Check that the right number of children and root objects got created
+        self.assertEqual(len(json_product2.children), 5, "Correct amount of children")
+        self.assertEqual(len(active_document2.app_active_document.RootObjects), 14, "Found correct amount of root objects 7 plus 7 sheets")
+
+        # =========================
+        # Check equality
+        self.assertEquals(part_file_names, part_file_names2)
+
+        for i, child1 in enumerate(json_product.children):
+            child2 = json_product2.children[i]
+            child1.hasEqualValues(child2)
+
+    def test_full_import_again_with_changes(self):
+        pass

@@ -32,6 +32,7 @@ from json_io.products.json_product_assembly import JsonProductAssembly
 from json_io.json_definitions import get_part_name_uuid
 
 import json
+import os
 # from freecad.active_document import FREECAD_FILE_EXTENSION
 
 App = FreeCAD
@@ -44,7 +45,7 @@ Wrn = FreeCAD.Console.PrintWarning
 
 class JsonImporter(object):
     '''
-    classdocs
+    TODO: classdocs
     '''
 
     def __init__(self, working_ouput_directory):
@@ -56,7 +57,6 @@ class JsonImporter(object):
 
         part_file_name = ""
 
-        # for: create each part
         if json_part is not None:
             # Use the name to create the part document
             # should be careful in case the name already exists.
@@ -73,13 +73,11 @@ class JsonImporter(object):
         else:
             Log("Visualization shape is most likely NONE, therefore no file is created\n")
 
-        # json assembly with json product object
-        # goal: instead of a part open the product assembly
-
         return part_file_name
 
     def full_import(self, filepath):
         '''
+        Import a whole json file's products and parts into a FreeCAD document
         '''
 
         with open(filepath, 'r') as f:
@@ -88,19 +86,18 @@ class JsonImporter(object):
         json_parts = json_object['Parts']
 
         part_file_names = []
-        # for: create each part
         for part in json_parts:
             part_file_names.append(self.create_or_update_part(part))
 
+        reduced_name = os.path.split(filepath)[1][:-5]
+
         # json assembly with json product object
-        # goal: instead of a part open the product assembly
-        active_document = ActiveDocument(self.working_output_directory).open_set_and_get_document("ProductAssemblyRootPart")
+        active_document = ActiveDocument(self.working_output_directory).open_set_and_get_document(reduced_name)
         json_product = JsonProductAssembly().parse_from_json(json_object['Products'])
-        # active_document.save_as("ProductAssemblyRootPart")
 
         json_product.write_to_freecad(active_document)
 
-        active_document.save_as("ProductAssemblyRootPart")
+        active_document.save_as(reduced_name)
 
         # TODO: return the path (or at least the name) of the std in create_or_update_part?
         # test_file_name = self.working_output_directory + part_file_name + FREECAD_FILE_EXTENSION
