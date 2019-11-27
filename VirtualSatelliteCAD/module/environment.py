@@ -39,7 +39,7 @@ PATH_TEST_RESOURCE = "Tests"
 class Environment:
     '''
     This class helps to understand the environment where the module is executed in.
-    E.g. knwoing which is the directory of the module and so on
+    E.g. knowing which is the directory of the module and so on
     '''
 
     @classmethod
@@ -90,3 +90,10 @@ class Environment:
         '''
         path = os.path.join(cls.get_tests_resource_path(), test_resource_name)
         return path
+
+    @classmethod
+    def get_appdata_module_path(cls):
+        '''
+        This method hands back the module path of the local Appdata directory.
+        '''
+        return Init.APPDATA_DIR

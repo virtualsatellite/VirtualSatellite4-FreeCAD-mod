@@ -280,6 +280,9 @@ class TestJsonImporter(AWorkingDirectoryTest):
         App.closeDocument("Beam_6201a731_d703_43f8_ab37_6a7171dfe022")
 
     def test_full_import(self):
+        """
+        Full JSON import test
+        """
 
         json_test_resource_path = Environment.get_test_resource_path("VisCube2.json")
         json_importer = JsonImporter(self._WORKING_DIRECTORY)
@@ -294,7 +297,6 @@ class TestJsonImporter(AWorkingDirectoryTest):
         # Check each part
         for part_file_name in part_file_names:
             test_file_name = self._WORKING_DIRECTORY + part_file_name + FREECAD_FILE_EXTENSION
-            # print(f"{test_file_name}\n")
 
             # Check the file got created
             self.assertTrue(os.path.isfile(test_file_name), "File exists on drive")
@@ -310,7 +312,6 @@ class TestJsonImporter(AWorkingDirectoryTest):
         for child in json_product.children:
             product_object = active_document.app_active_document.getObjectsByLabel(child.get_unique_name())
             # An empty list in python gets asserted to true
-            # TODO: this was assertNotNone, which returned true all the time, so xcheck if this mistake was made somewhere else
             self.assertTrue(product_object, "Found an object under the given part name")
             if(child.name == "BeamStructure"):
                 # Check that two sub children are found
@@ -325,10 +326,9 @@ class TestJsonImporter(AWorkingDirectoryTest):
 
     def test_full_import_again(self):
         """
-        importing the same file again should not result in changes
+        Importing the same file again should not result in changes
         """
-        pass
-        # TODO: Check double import of the cube: manually double importing creates a wrong vis atm
+
         json_test_resource_path = Environment.get_test_resource_path("VisCube2.json")
         json_importer = JsonImporter(self._WORKING_DIRECTORY)
 
@@ -368,7 +368,7 @@ class TestJsonImporter(AWorkingDirectoryTest):
         - new parts/products could be created, so add them
         - old parts/products could be replaced/updated, so use the new information
         - old parts/products could be deleted, so delete all not updated files
-        -> this means instead of merging, simply the information of the old files get replaced be the newer ones
+        -> this means instead of merging, simply the information of the old files get replaced by the newer one
         """
 
         json_importer = JsonImporter(self._WORKING_DIRECTORY)

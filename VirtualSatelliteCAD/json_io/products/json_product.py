@@ -101,36 +101,27 @@ class AJsonProduct():
         This method imports the part referenced by the product.
         The referenced part will be placed under the product part name into
         the assembly. E.g. A BasePlate will be added as BasePlateBottom to the
-        assembly. In case the object already exists, nothing special will happen.
+        assembly. In case the object already exists, it will be recreated.
         '''
-        # TODO: overwrite in case it already exists?
         import_part_file_name = self.get_part_unique_name()
         import_part_name_in_product = self.get_unique_name()
         import_part_full_path = active_document.get_file_full_path(import_part_file_name)
         import_part_ref = active_document.app_active_document.getObjectsByLabel(import_part_name_in_product)
 
-        # If the part doesn't exists (the returned list is not empty) update it
+        # If the part doesn't exists (the returned list is not empty) update (delete and recreate) it
         if import_part_ref:
-            # TODO: Update it
-            print(f"Found existing part '{import_part_name_in_product}'")
-        # Else create it
-        else:
-            imported_product_part = importPartFromFile(
-                active_document.app_active_document,
-                import_part_full_path)
-            imported_product_part.Label = import_part_name_in_product
+            active_document.app_active_document.removeObject(import_part_ref[0].Name)
 
-    # TODO: remove?
-    def _set_freecad_name_and_color(self, active_document):
-        pass
+        imported_product_part = importPartFromFile(
+            active_document.app_active_document,
+            import_part_full_path)
+        imported_product_part.Label = import_part_name_in_product
 
     def _set_freecad_position_and_rotation(self, active_document):
         product_part_name = self.get_unique_name()
 
         product_part = active_document.app_active_document.getObjectsByLabel(product_part_name)[0]
 
-        # TODO: check if the same bug as below applies
-        # TODO: Add testcases in test_product
         # First translate than rotate around X, Y and Z
         vector_translation = active_document.app.Vector(self.pos_x, self.pos_y, self.pos_z)
         vector_rotation_zero = active_document.app.Rotation(VECTOR_ZERO, 0)
@@ -138,8 +129,6 @@ class AJsonProduct():
         vector_rotation_y = active_document.app.Rotation(VECTOR_Y, self.rot_y)
         vector_rotation_z = active_document.app.Rotation(VECTOR_Z, self.rot_z)
 
-        # TODO: using the original placement causes misbehavior when importing the same json twice
-        # placement = product_part.Placement
         placement = Placement()
 
         placement_translation = active_document.app.Placement(

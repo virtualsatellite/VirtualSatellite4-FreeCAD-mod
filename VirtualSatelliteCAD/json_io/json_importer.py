@@ -43,11 +43,11 @@ Wrn = FreeCAD.Console.PrintWarning
 
 class JsonImporter(object):
     '''
-    TODO: classdocs
+    Provides functionality to import a JSON created by Virtual Satellite into FreeCAD
     '''
 
-    def __init__(self, working_ouput_directory):
-        self.working_output_directory = working_ouput_directory
+    def __init__(self, working_output_directory):
+        self.working_output_directory = working_output_directory
 
     def create_or_update_part(self, json_object):
         Log("Creating or Updating a part...\n")
@@ -77,9 +77,15 @@ class JsonImporter(object):
         '''
         Import a whole json file's products and parts into a FreeCAD document
         '''
+        Log(f"Importing JSON file '{filepath}'\n")
 
         with open(filepath, 'r') as f:
-            json_object = json.load(f)
+            try:
+                json_object = json.load(f)
+            except ValueError as error:
+                Log(f"ERROR: Invalid JSON found: '{error}'\n")
+                Log("Please provide a valid JSON\n")
+                return
 
         json_parts = json_object['Parts']
 
@@ -89,9 +95,11 @@ class JsonImporter(object):
 
         # json assembly with json product object
         json_product = JsonProductAssembly().parse_from_json(json_object['Products'])
+
+        # name the freecad document after the root product
         freecad_name = json_product.name
 
-        # if there is a root document with the same name open already:
+        # If there is a root document with the same name open already:
         # assume that all changes of the current import are valid (CRUD)
         # so clear the document
         ActiveDocument(self.working_output_directory).clear_if_open_document(freecad_name)
@@ -100,5 +108,7 @@ class JsonImporter(object):
         json_product.write_to_freecad(active_document)
 
         active_document.save_as(freecad_name)
+
+        Log(f"Import successful\n")
 
         return part_file_names, json_product, active_document

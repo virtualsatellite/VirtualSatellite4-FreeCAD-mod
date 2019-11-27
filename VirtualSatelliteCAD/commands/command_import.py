@@ -30,27 +30,24 @@ from module.environment import Environment, ICON_IMPORT
 from commands.command_definitions import COMMAND_ID_IMPORT_2_FREECAD
 from PySide2.QtWidgets import QFileDialog
 from json_io.json_importer import JsonImporter
+import os
 
 
 class CommandImport:
     def Activated(self):
         FreeCAD.Console.PrintMessage("Calling the importer\n")
 
-        path = FreeCAD.ConfigGet("UserAppData")
-
         # call pyqt dialog: returns (filename, filter)
         filename = QFileDialog.getOpenFileName(
             None,  # ui parent
             "Open JSON file",  # dialog caption
-            path,
+            Environment.get_appdata_module_path(),
             "JSON(*.json)")[0]  # filter
 
         if filename != '':
-            FreeCAD.Console.PrintMessage(f"Successful read file '{filename}'\n")
+            FreeCAD.Console.PrintMessage(f"Selected file '{filename}'\n")
 
-            # TODO: where do we save the created FCstd files? AppData?
-            # maybe create an subdir in AppData for VirSat stds?
-            json_importer = JsonImporter(path)
+            json_importer = JsonImporter(Environment.get_appdata_module_path() + os.sep)
             json_importer.full_import(filename)
 
     def IsActive(self):
