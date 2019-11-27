@@ -27,7 +27,8 @@ import FreeCAD
 import os
 import sys
 
-APPDATA_DIR = os.path.join(FreeCAD.ConfigGet("UserAppData"), "Mod", "VirtualSatelliteCAD")
+MOD_DIR = os.path.join(FreeCAD.ConfigGet("UserAppData"), "Mod")
+APPDATA_DIR = os.path.join(MOD_DIR, "VirtualSatelliteCAD")
 
 # FreeCAD seems to load modules differently once they are stored in the User Home directory.
 # We try to load the whole folder if it exists
@@ -47,6 +48,8 @@ if os.path.isdir(freecad_user_mod):
         sys.path.append(freecad_user_mod)
 
 # Create an appdata directory
+if not os.path.isdir(MOD_DIR):
+    os.mkdir(MOD_DIR)
 if not os.path.isdir(APPDATA_DIR):
     os.mkdir(APPDATA_DIR)
 
