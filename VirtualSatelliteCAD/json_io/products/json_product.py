@@ -108,6 +108,8 @@ class AJsonProduct():
         import_part_full_path = active_document.get_file_full_path(import_part_file_name)
         import_part_ref = active_document.app_active_document.getObjectsByLabel(import_part_name_in_product)
 
+        print(f"Called with '{import_part_name_in_product}'")
+        # TODO:
         # If the part doesn't exists (the returned list is not empty) update (delete and recreate) it
         if import_part_ref:
             active_document.app_active_document.removeObject(import_part_ref[0].Name)
@@ -129,7 +131,7 @@ class AJsonProduct():
         vector_rotation_y = active_document.app.Rotation(VECTOR_Y, self.rot_y)
         vector_rotation_z = active_document.app.Rotation(VECTOR_Z, self.rot_z)
 
-        placement = Placement()
+        placement = product_part.Placement  # Placement()
 
         placement_translation = active_document.app.Placement(
             vector_translation,

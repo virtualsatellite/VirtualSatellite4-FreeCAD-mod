@@ -35,6 +35,7 @@ from test.test_setup import AWorkingDirectoryTest
 from freecad.active_document import FREECAD_FILE_EXTENSION
 from module.environment import Environment
 from json_io.json_definitions import JSON_ELEMENT_STL_PATH
+import unittest
 
 App = FreeCAD
 Gui = FreeCADGui
@@ -279,6 +280,7 @@ class TestJsonImporter(AWorkingDirectoryTest):
         self.assertIsNotNone(App.ActiveDocument.getObject("Cone"), "Got correct object")
         App.closeDocument("Beam_6201a731_d703_43f8_ab37_6a7171dfe022")
 
+    @unittest.SkipTest
     def test_full_import(self):
         """
         Full JSON import test
@@ -324,6 +326,7 @@ class TestJsonImporter(AWorkingDirectoryTest):
                     # poz_z of -500 should be propagated from "BeamStructure"
                     self.assertEqual(subchild.pos_z, 500.0, "Z position got propagated correctly")
 
+    @unittest.SkipTest
     def test_full_import_again(self):
         """
         Importing the same file again should not result in changes
@@ -362,6 +365,7 @@ class TestJsonImporter(AWorkingDirectoryTest):
             child2 = json_product2.children[i]
             child1.has_equal_values(child2)
 
+    @unittest.SkipTest
     def test_full_import_again_with_changes(self):
         """
         If two files with the same name get imported: we assume that the VirSat side used CRUD, that means:

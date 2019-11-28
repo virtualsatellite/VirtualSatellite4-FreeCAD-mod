@@ -62,6 +62,7 @@ class TestJsonProductAssembly(AWorkingDirectoryTest):
         self.assertEqual(json_product.part_uuid, "3d3708fd_5c6c_4af9_b710_d68778466084", "Property is correctly set")
 
         # Properties have to be 0 since an assembly itself has no position and orientation
+        # TODO: check
         self.assertEqual(json_product.pos_x, 0, "Property is correctly set")
         self.assertEqual(json_product.pos_y, 0, "Property is correctly set")
         self.assertEqual(json_product.pos_z, 0, "Property is correctly set")
@@ -78,6 +79,23 @@ class TestJsonProductAssembly(AWorkingDirectoryTest):
 
         self.assertEqual(json_product_child_1.name, "BasePlateBottom2", "Parsed correct child")
         self.assertEqual(json_product_child_2.name, "BasePlateTop", "Parsed correct child")
+
+        # Check that position and rotation from parent are propagated correctly
+        self.assertEqual(json_product_child_1.pos_x, 0, "Property is correctly set")
+        self.assertEqual(json_product_child_1.pos_y, 0, "Property is correctly set")
+        self.assertEqual(json_product_child_1.pos_z, 0, "Property is correctly set")
+
+        self.assertEqual(json_product_child_1.rot_x, 0.0, "Property is correctly set")
+        self.assertEqual(json_product_child_1.rot_y, 0.0, "Property is correctly set")
+        self.assertEqual(json_product_child_1.rot_z, 0.0, "Property is correctly set")
+
+        self.assertEqual(json_product_child_2.pos_x, 0, "Property is correctly set")
+        self.assertEqual(json_product_child_2.pos_y, 0, "Property is correctly set")
+        self.assertEqual(json_product_child_2.pos_z, 0.5, "Property is correctly set")
+
+        self.assertEqual(json_product_child_2.rot_x, 0.0, "Property is correctly set")
+        self.assertEqual(json_product_child_2.rot_y, 0.0, "Property is correctly set")
+        self.assertEqual(json_product_child_2.rot_z, 0.0, "Property is correctly set")
 
     def test_parse_with_child_with_child(self):
         # Same json as in test_parse_with_children, but BasePlateTop is now child of BasePlateBottom2
@@ -108,7 +126,7 @@ class TestJsonProductAssembly(AWorkingDirectoryTest):
         active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("ProductAssemblyRootPart")
         json_object = json.loads(self.json_data)
         json_product = JsonProductAssembly().parse_from_json(json_object)
-        active_document.save_as("ProductAssemblyRootPart")
+        # active_document.save_as("ProductAssemblyRootPart")
 
         json_product.write_to_freecad(active_document)
 
@@ -130,3 +148,13 @@ class TestJsonProductAssembly(AWorkingDirectoryTest):
         product_child2_part_name = json_product.children[1].get_unique_name()
         product_object = active_document.app_active_document.getObjectsByLabel(product_child2_part_name)[0]
         self.assertIsNotNone(product_object, "Found an object under the given part name")
+
+
+   # TODO:
+    # test same json as above but with subassembvly as assemblychid
+    
+    #TODO:
+    # test same as above, first create subassembly then with that the assembly
+    
+    #TODO:
+    # test same as above, but with automated tree traverser

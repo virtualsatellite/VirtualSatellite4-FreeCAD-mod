@@ -73,12 +73,14 @@ class JsonImporter(object):
 
         return part_file_name
 
+    # TODO: give json
     def full_import(self, filepath):
         '''
         Import a whole json file's products and parts into a FreeCAD document
         '''
         Log(f"Importing JSON file '{filepath}'\n")
 
+        # TODO: refactor in command
         with open(filepath, 'r') as f:
             try:
                 json_object = json.load(f)
