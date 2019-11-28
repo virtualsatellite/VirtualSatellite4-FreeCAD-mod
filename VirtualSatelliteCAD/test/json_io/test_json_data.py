@@ -136,14 +136,14 @@ TEST_JSON_PRODUCT_WITH_CHILDREN = """{
     }
     """
 
-TEST_JSON_PRODUCT_WITH_CHILD_WITH_CHILD = """{
+TEST_JSON_PRODUCT_WITH_CHILDREN_WITH_CHILD = """{
         "name": "BasePlateBottom1",
         "uuid": "e8794f3d-86ec-44c5-9618-8b7170c45484",
         "partUuid": "3d3708fd-5c6c-4af9-b710-d68778466084",
         "partName": "BasePlate",
-        "posX": 10.0,
-        "posY": 15.0,
-        "posZ": 20.0,
+        "posX": 1.0,
+        "posY": 2.0,
+        "posZ": 3.0,
         "rotX": 0.349,
         "rotY": 0.698,
         "rotZ": 1.046,
@@ -154,25 +154,39 @@ TEST_JSON_PRODUCT_WITH_CHILD_WITH_CHILD = """{
                 "posZ": 0.0,
                 "rotX": 0.0,
                 "children": [
-                {
-                    "posX": 0.0,
-                    "posY": 0.0,
-                    "posZ": 0.5,
-                    "rotX": 0.0,
-                    "children": [
-                    ],
-                    "rotZ": 0.0,
-                    "rotY": 0.0,
-                    "name": "BasePlateTop",
-                    "uuid": "a199e3bd-3bc1-426d-8321-e9bd829339b3",
-                    "partUuid": "3d3708fd-5c6c-4af9-b710-d68778466084",
-                    "partName": "BasePlate"
-                }
+                    {
+                        "posX": 0.5,
+                        "posY": 0.5,
+                        "posZ": 0.5,
+                        "rotX": 0.0,
+                        "children": [
+                        ],
+                        "rotZ": 0.0,
+                        "rotY": 0.0,
+                        "name": "BasePlateBottom3",
+                        "uuid": "e8794f3d-86ec-44c5-9618-8b7170c45485",
+                        "partUuid": "3d3708fd-5c6c-4af9-b710-d68778466084",
+                        "partName": "BasePlate"
+                    }
                 ],
-                "rotZ": 0.0,
+                "rotZ": 0.3490659,
                 "rotY": 0.0,
                 "name": "BasePlateBottom2",
                 "uuid": "e8794f3d-86ec-44c5-9618-8b7170c45484",
+                "partUuid": "3d3708fd-5c6c-4af9-b710-d68778466084",
+                "partName": "BasePlate"
+            },
+            {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.5,
+                "rotX": 0.0,
+                "children": [
+                ],
+                "rotZ": 0.0,
+                "rotY": 0.0,
+                "name": "BasePlateTop",
+                "uuid": "a199e3bd-3bc1-426d-8321-e9bd829339b3",
                 "partUuid": "3d3708fd-5c6c-4af9-b710-d68778466084",
                 "partName": "BasePlate"
             }

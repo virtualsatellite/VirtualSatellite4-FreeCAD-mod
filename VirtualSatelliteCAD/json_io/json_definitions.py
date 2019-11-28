@@ -30,6 +30,9 @@ M_TO_MM = 1000
 
 RAD_TO_DEG = 180.0 / math.pi
 
+JSON_PARTS = "Parts"
+JSON_PRODUCTS = "Products"
+
 JSON_ELEMENT_COLOR = "color"
 JSON_ELEMENT_SHAPE = "shape"
 

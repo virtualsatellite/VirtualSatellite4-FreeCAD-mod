@@ -32,7 +32,7 @@ import FreeCADGui
 from json_io.products.json_product_assembly import JsonProductAssembly
 from freecad.active_document import ActiveDocument
 from test.json_io.test_json_data import TEST_JSON_PRODUCT_WITH_CHILDREN,\
-    TEST_JSON_PRODUCT_WITHOUT_CHILDREN, TEST_JSON_PRODUCT_WITH_CHILD_WITH_CHILD
+    TEST_JSON_PRODUCT_WITHOUT_CHILDREN, TEST_JSON_PRODUCT_WITH_CHILDREN_WITH_CHILD
 
 
 App = FreeCAD
@@ -91,26 +91,11 @@ class TestJsonProductAssembly(AWorkingDirectoryTest):
 
         self.assertEqual(json_product_child_2.pos_x, 0, "Property is correctly set")
         self.assertEqual(json_product_child_2.pos_y, 0, "Property is correctly set")
-        self.assertEqual(json_product_child_2.pos_z, 0.5, "Property is correctly set")
+        self.assertEqual(json_product_child_2.pos_z, 500.0, "Property is correctly set")
 
         self.assertEqual(json_product_child_2.rot_x, 0.0, "Property is correctly set")
         self.assertEqual(json_product_child_2.rot_y, 0.0, "Property is correctly set")
         self.assertEqual(json_product_child_2.rot_z, 0.0, "Property is correctly set")
-
-    def test_parse_with_child_with_child(self):
-        # Same json as in test_parse_with_children, but BasePlateTop is now child of BasePlateBottom2
-
-        json_object = json.loads(TEST_JSON_PRODUCT_WITH_CHILD_WITH_CHILD)
-        json_product = JsonProductAssembly().parse_from_json(json_object)
-
-        # Check for the children
-        self.assertEquals(len(json_product.children), 1, "Parsed one children")
-
-        json_product_child_1 = json_product.children[0]
-        self.assertEqual(json_product_child_1.name, "BasePlateBottom2", "Parsed correct child")
-
-        json_product_child_2 = json_product_child_1.children[0]
-        self.assertEqual(json_product_child_2.name, "BasePlateTop", "Parsed correct child")
 
     def test_parse_with_no_children(self):
         json_data = TEST_JSON_PRODUCT_WITHOUT_CHILDREN
@@ -149,12 +134,54 @@ class TestJsonProductAssembly(AWorkingDirectoryTest):
         product_object = active_document.app_active_document.getObjectsByLabel(product_child2_part_name)[0]
         self.assertIsNotNone(product_object, "Found an object under the given part name")
 
+    def test_create_part_product_subassembly_with_root_part(self):
+        json_data = TEST_JSON_PRODUCT_WITH_CHILDREN_WITH_CHILD
+        self.create_Test_Part()
 
-   # TODO:
-    # test same json as above but with subassembvly as assemblychid
-    
-    #TODO:
-    # test same as above, first create subassembly then with that the assembly
-    
-    #TODO:
-    # test same as above, but with automated tree traverser
+        active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("ProductSubassemblyRootPart")
+
+        json_object = json.loads(json_data)
+
+        subassembly = json_object["children"][0]
+        json_product = JsonProductAssembly().parse_from_json(subassembly)
+
+        json_product.write_to_freecad(active_document)
+        active_document.save_as("ProductSubassemblyRootPart")
+
+        # find the object by its label there should be two objects identifiable in the current export
+        self.assertEquals(len(json_product.children), 1, "correct amount of children")
+        self.assertEquals(len(active_document.app_active_document.RootObjects), 4, "Found correct amount of root objects 2 objects plus 2 sheets")
+
+        product_part_name = json_product.get_unique_name()
+        product_object = active_document.app_active_document.getObjectsByLabel(product_part_name)[0]
+        self.assertIsNotNone(product_object, "Found an object under the given part name")
+
+        product_child1_part_name = json_product.children[0].get_unique_name()
+        product_object = active_document.app_active_document.getObjectsByLabel(product_child1_part_name)[0]
+        self.assertIsNotNone(product_object, "Found an object under the given part name")
+
+    # TODO:
+    def test_create_part_product_assembly_and_subassembly_with_root_part(self):
+        json_data = TEST_JSON_PRODUCT_WITH_CHILDREN_WITH_CHILD
+        self.create_Test_Part()
+
+        json_object = json.loads(json_data)
+
+        subassembly = json_object["children"][0]
+
+        active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("BasePlateBottom2_e8794f3d_86ec_44c5_9618_8b7170c45484")
+
+        json_product = JsonProductAssembly().parse_from_json(subassembly)
+        json_product.write_to_freecad(active_document)
+        active_document.save_as("BasePlateBottom2_e8794f3d_86ec_44c5_9618_8b7170c45484")
+
+        # TODO: this assembly now has to use the other assembly
+        active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("ProductAssemblyAndSubassemblyRootPart")
+
+        json_product = JsonProductAssembly().parse_from_json(json_object)
+        json_product.write_to_freecad(active_document)
+        active_document.save_as("ProductAssemblyAndSubassemblyRootPart")
+
+    # TODO:
+    def test_create_part_product_assembly_with_root_part_with_traverser(self):
+        pass
