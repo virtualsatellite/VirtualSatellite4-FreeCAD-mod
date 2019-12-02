@@ -51,11 +51,11 @@ class JsonProductAssemblyTreeTraverser(object):
             # if the current depth has no list in the _lst_of_depths, add it
             if(len(self._lst_of_depths) < depth + 1):
                 self._lst_of_depths.append([])
-                Log(f"Added depth {depth} to _lst_of_depths")
+                Log(f"Added depth {depth} to _lst_of_depths\n")
 
             # append found assembly to the list
             self._lst_of_depths[depth].append(json_object)
-            Log(f"Found assembly '{json_object[JSON_ELEMENT_NAME]}' at {depth}")
+            Log(f"Found assembly '{json_object[JSON_ELEMENT_NAME]}' at {depth}\n")
 
             # recursive call on all children
             for child in json_object[JSON_ELEMNT_CHILDREN]:
@@ -65,19 +65,23 @@ class JsonProductAssemblyTreeTraverser(object):
         """
         Iterate through the list created by traversing the tree in reverse and parse the found product assemblies
         """
-        json_product = None
+        json_product, active_document = None, None
 
         # parse in reverse order
         for depth in reversed(self._lst_of_depths):
             for assembly in depth:
-                Log(f"Parsing '{assembly[JSON_ELEMENT_NAME]}'")
+                Log(f"Parsing '{assembly[JSON_ELEMENT_NAME]}'\n")
 
                 json_product = JsonProductAssembly().parse_from_json(assembly)
                 active_document = ActiveDocument(self.working_output_directory).open_set_and_get_document(json_product.get_unique_name())
                 json_product.write_to_freecad(active_document)
-                active_document.save_as(json_product.get_unique_name())
+                active_document.save_and_close_active_document(json_product.get_unique_name())  # + "_assembly")
 
-        return json_product
+        # the last json_product is the root of the assembly, open it again for the UI
+        if(json_product is not None):
+            active_document = ActiveDocument(self.working_output_directory).open_set_and_get_document(json_product.get_unique_name())
+
+        return json_product, active_document
 
     def traverse_and_parse_from_json(self, json_object):
         self.traverse(json_object)

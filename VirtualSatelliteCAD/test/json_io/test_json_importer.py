@@ -36,6 +36,7 @@ from freecad.active_document import FREECAD_FILE_EXTENSION
 from module.environment import Environment
 from json_io.json_definitions import JSON_ELEMENT_STL_PATH
 import unittest
+from freecad.active_document import ActiveDocument
 
 App = FreeCAD
 Gui = FreeCADGui
@@ -308,23 +309,10 @@ class TestJsonImporter(AWorkingDirectoryTest):
 
         # Check that the right number of children and root objects got created
         self.assertEquals(len(json_product.children), 5, "Correct amount of children")
-        self.assertEquals(len(active_document.app_active_document.RootObjects), 14, "Found correct amount of root objects 7 plus 7 sheets")
+        self.assertEquals(len(active_document.app_active_document.RootObjects), 10, "Found correct amount of root objects 5 plus 5 sheets")
 
-        # Check that for each child a file exists
-        for child in json_product.children:
-            product_object = active_document.app_active_document.getObjectsByLabel(child.get_unique_name())
-            # An empty list in python gets asserted to true
-            self.assertTrue(product_object, "Found an object under the given part name")
-            if(child.name == "BeamStructure"):
-                # Check that two sub children are found
-                self.assertEquals(len(child.children), 2, "Correct amount of children")
-                for subchild in child.children:
-                    product_object = active_document.app_active_document.getObjectsByLabel(subchild.get_unique_name())
-                    self.assertIsNotNone(product_object, "Found an object under the given part name")
-
-                    # Check propagation
-                    # poz_z of -500 should be propagated from "BeamStructure"
-                    self.assertEqual(subchild.pos_z, 500.0, "Z position got propagated correctly")
+        active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("BeamStructure_2afb23c9_f458_4bdb_a4e7_fc863364644f")
+        self.assertEquals(len(active_document.app_active_document.RootObjects), 6, "Found correct amount of root objects 3 objects plus 3 sheets")
 
     @unittest.SkipTest
     def test_full_import_again(self):

@@ -28,10 +28,11 @@ import FreeCAD
 import FreeCADGui
 from freecad.active_document import ActiveDocument
 from json_io.parts.json_part_factory import JsonPartFactory
-from json_io.products.json_product_assembly import JsonProductAssembly
-from json_io.json_definitions import get_part_name_uuid
+from json_io.products.json_product_assembly_tree_traverser import JsonProductAssemblyTreeTraverser
+from json_io.json_definitions import get_part_name_uuid, JSON_PRODUCTS, JSON_PARTS
 
 import json
+from freecad import active_document
 
 App = FreeCAD
 Gui = FreeCADGui
@@ -89,27 +90,14 @@ class JsonImporter(object):
                 Log("Please provide a valid JSON\n")
                 return
 
-        json_parts = json_object['Parts']
+        json_parts = json_object[JSON_PARTS]
 
         part_file_names = []
         for part in json_parts:
             part_file_names.append(self.create_or_update_part(part))
 
-        # json assembly with json product object
-        json_product = JsonProductAssembly().parse_from_json(json_object['Products'])
-
-        # name the freecad document after the root product
-        freecad_name = json_product.name
-
-        # If there is a root document with the same name open already:
-        # assume that all changes of the current import are valid (CRUD)
-        # so clear the document
-        ActiveDocument(self.working_output_directory).clear_if_open_document(freecad_name)
-
-        active_document = ActiveDocument(self.working_output_directory).open_set_and_get_document(freecad_name)
-        json_product.write_to_freecad(active_document)
-
-        active_document.save_as(freecad_name)
+        traverser = JsonProductAssemblyTreeTraverser(self.working_output_directory)
+        json_product, active_document = traverser.traverse_and_parse_from_json(json_object[JSON_PRODUCTS])
 
         Log(f"Import successful\n")
 
