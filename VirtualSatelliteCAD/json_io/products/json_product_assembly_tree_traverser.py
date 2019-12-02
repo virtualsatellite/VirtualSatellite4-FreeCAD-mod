@@ -33,13 +33,14 @@ class JsonProductAssemblyTreeTraverser(object):
     classdocs
     '''
 
-    def __init__(self):
+    def __init__(self, working_output_directory):
         '''
         Constructor
         '''
-        pass
+        self._lst_of_depths = []
+        self.working_output_directory = working_output_directory
 
-    def traverse(self, json_object, depth=0, lst_of_depths=[]):
+    def traverse(self, json_object, depth=0):  # , _lst_of_depths=[]):
         """
         recursive traverse the tree and create list of depths (length(list) = max_depth):
         containing a list of found assembly (NOT child) nodes at that depth for each depth
@@ -47,36 +48,37 @@ class JsonProductAssemblyTreeTraverser(object):
 
         # TODO: change condition?
         if json_object != "":
-            print(f"found {json_object[JSON_ELEMENT_NAME]} at {depth}")
 
             # TODO: test condition
             if(JSON_ELEMNT_CHILDREN in json_object and json_object[JSON_ELEMNT_CHILDREN] != []):
                 # only append assemblys that have children
-                # print(len(lst_of_depths), depth)
-                if(len(lst_of_depths) < depth+1):
-                    lst_of_depths.append([])
-                    print(f"added depth {depth} to lst_of_depths")
-                print(f"found assembly{json_object[JSON_ELEMENT_NAME]} at {depth}")
+                # print(len(_lst_of_depths), depth)
+                if(len(self._lst_of_depths) < depth + 1):
+                    self._lst_of_depths.append([])
+                    print(f"Added depth {depth} to _lst_of_depths")
+                print(f"Found assembly '{json_object[JSON_ELEMENT_NAME]}' at {depth}")
 
-                lst_of_depths[depth].append(json_object)
+                self._lst_of_depths[depth].append(json_object)
 
-                depth += 1
+                # depth += 1
 
                 # recursive call on all children
                 for child in json_object[JSON_ELEMNT_CHILDREN]:
-                    self.traverse(child, depth)
+                    self.traverse(child, depth+1)
 
-        return lst_of_depths
+        # if depth == 0:
+        #     return self._lst_of_depths
+        # return None
 
-    def parse_from_json(self, lst_of_depths, cwd):
+    def parse_from_json(self):
         json_product = None
 
-        for depth in reversed(lst_of_depths):
+        for depth in reversed(self._lst_of_depths):
             for assembly in depth:
+                print(f"Parsing '{assembly[JSON_ELEMENT_NAME]}'")
                 json_product = JsonProductAssembly().parse_from_json(assembly)
 
-                # TODO: replace cwd
-                active_document = ActiveDocument(cwd).open_set_and_get_document(json_product.get_unique_name())
+                active_document = ActiveDocument(self.working_output_directory).open_set_and_get_document(json_product.get_unique_name())
 
                 # print(assembly)
                 # print(json_product)
@@ -85,6 +87,6 @@ class JsonProductAssemblyTreeTraverser(object):
 
         return json_product
 
-    def traverse_and_parse_from_json(self, json_object, cwd):
-        lst_of_depths = self.traverse(json_object)
-        return self.parse_from_json(lst_of_depths, cwd)
+    def traverse_and_parse_from_json(self, json_object):
+        self.traverse(json_object)
+        return self.parse_from_json()

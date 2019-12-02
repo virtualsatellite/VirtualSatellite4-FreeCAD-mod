@@ -34,9 +34,6 @@ from freecad.active_document import ActiveDocument
 from test.json_io.test_json_data import TEST_JSON_PRODUCT_WITH_CHILDREN,\
     TEST_JSON_PRODUCT_WITHOUT_CHILDREN, TEST_JSON_PRODUCT_WITH_CHILDREN_WITH_CHILD
 from json_io.json_definitions import JSON_ELEMNT_CHILDREN
-from json_io.products.json_product_assembly_tree_traverser import JsonProductAssemblyTreeTraverser
-import glob
-import os
 
 App = FreeCAD
 Gui = FreeCADGui
@@ -51,14 +48,8 @@ class TestJsonProductAssembly(AWorkingDirectoryTest):
         cls.setUpDirectory("ProductAssembly/")
         cls._WORKING_DIRECTORY = cls.getDirectoryFullPath()
 
-    def clearWorkingDirectory(self):
-        filelist = glob.glob(os.path.join(self._WORKING_DIRECTORY, "*"))
-        for f in filelist:
-            os.remove(f)
-
     def tearDown(self):
         super().tearDown()
-        self.clearWorkingDirectory()
 
     def test_parse_with_children(self):
         json_object = json.loads(self.json_data)
@@ -120,7 +111,6 @@ class TestJsonProductAssembly(AWorkingDirectoryTest):
         active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("ProductAssemblyRootPart")
         json_object = json.loads(self.json_data)
         json_product = JsonProductAssembly().parse_from_json(json_object)
-        # active_document.save_as("ProductAssemblyRootPart")
 
         json_product.write_to_freecad(active_document)
 
@@ -157,7 +147,6 @@ class TestJsonProductAssembly(AWorkingDirectoryTest):
         json_product.write_to_freecad(active_document)
         active_document.save_as("ProductSubassemblyRootPart")
 
-        # find the object by its label there should be two objects identifiable in the current export
         self.assertEquals(len(json_product.children), 1, "correct amount of children")
         self.assertEquals(len(active_document.app_active_document.RootObjects), 4, "Found correct amount of root objects 2 objects plus 2 sheets")
 
@@ -169,8 +158,7 @@ class TestJsonProductAssembly(AWorkingDirectoryTest):
         product_object = active_document.app_active_document.getObjectsByLabel(product_child1_part_name)[0]
         self.assertIsNotNone(product_object, "Found an object under the given part name")
 
-    # TODO: move following tests into seperate file for tree_traverser test?
-    def test_create_part_product_assembly_and_subassembly_with_root_part(self):
+    def test_create_part_product_assembly_and_subassembly_with_root_part_manual(self):
         json_data = TEST_JSON_PRODUCT_WITH_CHILDREN_WITH_CHILD
         self.create_Test_Part()
 
@@ -184,26 +172,12 @@ class TestJsonProductAssembly(AWorkingDirectoryTest):
         json_product.write_to_freecad(active_document)
         active_document.save_as("BasePlateBottom2_e8794f3d_86ec_44c5_9618_8b7170c45484")
 
+        self.assertEquals(len(active_document.app_active_document.RootObjects), 4, "Found correct amount of root objects 2 objects plus 2 sheets")
+
         active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("ProductAssemblyAndSubassemblyRootPart")
 
         json_product = JsonProductAssembly().parse_from_json(json_object)
         json_product.write_to_freecad(active_document)
         active_document.save_as("ProductAssemblyAndSubassemblyRootPart")
 
-        # TODO: assigns
-
-    # TODO:
-    def test_create_part_product_assembly_with_root_part_with_traverser(self):
-        json_data = TEST_JSON_PRODUCT_WITH_CHILDREN_WITH_CHILD
-        self.create_Test_Part()
-
-        json_object = json.loads(json_data)
-
-        traverser = JsonProductAssemblyTreeTraverser()
-        lst_of_depths = traverser.traverse(json_object)
-
-        print(len(lst_of_depths))
-        print(lst_of_depths[0])
-        print(lst_of_depths[1])
-
-        traverser.parse_from_json(lst_of_depths, self._WORKING_DIRECTORY)
+        self.assertEquals(len(active_document.app_active_document.RootObjects), 6, "Found correct amount of root objects 3 objects plus 3 sheets")
