@@ -32,7 +32,7 @@ from json_io.json_definitions import JSON_ELEMENT_NAME, JSON_ELEMENT_UUID,\
 from json_io.json_spread_sheet import JsonSpreadSheet
 from A2plus.a2p_importpart import importPartFromFile
 from freecad.active_document import VECTOR_X, VECTOR_Y, VECTOR_Z, VECTOR_ZERO
-from FreeCAD import Placement
+# from FreeCAD import Placement
 
 
 class AJsonProduct():
@@ -108,7 +108,7 @@ class AJsonProduct():
         import_part_full_path = active_document.get_file_full_path(import_part_file_name)
         import_part_ref = active_document.app_active_document.getObjectsByLabel(import_part_name_in_product)
 
-        print(f"Called with '{import_part_name_in_product}'")
+        # print(f"Called with '{import_part_name_in_product}'")
         # TODO:
         # If the part doesn't exists (the returned list is not empty) update (delete and recreate) it
         if import_part_ref:

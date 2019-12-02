@@ -22,8 +22,7 @@ from test.test_setup import AWorkingDirectoryTest
 from test.json_io.test_json_data import TEST_JSON_PRODUCT_WITH_CHILDREN_WITH_CHILD, TEST_JSON_PRODUCT_WITHOUT_CHILDREN
 import json
 from json_io.products.json_product_assembly_tree_traverser import JsonProductAssemblyTreeTraverser
-from json_io.json_definitions import JSON_ELEMNT_CHILDREN, JSON_ELEMENT_NAME
-from json_io.products.json_product_assembly import JsonProductAssembly
+from json_io.json_definitions import JSON_ELEMENT_NAME
 from freecad.active_document import ActiveDocument
 
 
