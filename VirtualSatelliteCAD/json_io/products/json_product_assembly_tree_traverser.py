@@ -24,7 +24,7 @@
 # SPDX-License-Identifier: LGPL-3.0-or-later
 
 from json_io.products.json_product_assembly import JsonProductAssembly
-from json_io.json_definitions import JSON_ELEMNT_CHILDREN, JSON_ELEMENT_NAME, PRODUCT_IDENTIFIER
+from json_io.json_definitions import JSON_ELEMNT_CHILDREN, JSON_ELEMENT_NAME
 from freecad.active_document import ActiveDocument
 import FreeCAD
 Log = FreeCAD.Console.PrintLog
@@ -79,7 +79,7 @@ class JsonProductAssemblyTreeTraverser(object):
 
         # the last json_product is the root of the assembly, open it again for the UI
         if(json_product is not None):
-            active_document = ActiveDocument(self.working_output_directory).open_set_and_get_document(json_product.get_unique_name())
+            active_document = ActiveDocument(self.working_output_directory).open_set_and_get_document(json_product.get_product_unique_name())
 
         return json_product, active_document
 
