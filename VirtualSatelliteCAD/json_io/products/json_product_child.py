@@ -41,4 +41,3 @@ class JsonProductChild(AJsonProduct):
             return PRODUCT_IDENTIFIER + _get_combined_name_uuid(self.name, self.uuid)
         else:
             return PART_IDENTIFIER + _get_combined_name_uuid(self.part_name, self.part_uuid)
-

@@ -93,4 +93,3 @@ class JsonProductAssembly(AJsonProduct):
 
     def get_product_unique_name(self):
         return PRODUCT_IDENTIFIER + _get_combined_name_uuid(self.name, self.uuid)
-
