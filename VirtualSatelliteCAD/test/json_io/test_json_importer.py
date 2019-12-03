@@ -36,6 +36,7 @@ from freecad.active_document import FREECAD_FILE_EXTENSION, ActiveDocument
 from module.environment import Environment
 from json_io.json_definitions import JSON_ELEMENT_STL_PATH, PART_IDENTIFIER, PRODUCT_IDENTIFIER
 import unittest
+from test.json_io.test_json_data import TEST_JSON_FULL_VISCUBE
 
 App = FreeCAD
 Gui = FreeCADGui
@@ -285,9 +286,9 @@ class TestJsonImporter(AWorkingDirectoryTest):
         Full JSON import test
         """
 
-        json_test_resource_path = Environment.get_test_resource_path("VisCube2.json")
         json_importer = JsonImporter(self._WORKING_DIRECTORY)
-        part_file_names, json_product, active_document = json_importer.full_import(json_test_resource_path)
+        json_object = json.loads(TEST_JSON_FULL_VISCUBE)
+        part_file_names, json_product, active_document = json_importer.full_import(json_object)
 
         # =========================
         # Check parts

@@ -31,11 +31,14 @@ from commands.command_definitions import COMMAND_ID_IMPORT_2_FREECAD
 from PySide2.QtWidgets import QFileDialog
 from json_io.json_importer import JsonImporter
 import os
+import json
+
+Log = FreeCAD.Console.PrintMessage
 
 
 class CommandImport:
     def Activated(self):
-        FreeCAD.Console.PrintMessage("Calling the importer\n")
+        Log("Calling the importer\n")
 
         # call pyqt dialog: returns (filename, filter)
         filename = QFileDialog.getOpenFileName(
@@ -45,10 +48,18 @@ class CommandImport:
             "JSON(*.json)")[0]  # filter
 
         if filename != '':
-            FreeCAD.Console.PrintMessage(f"Selected file '{filename}'\n")
+            (f"Selected file '{filename}'\n")
+
+            with open(filename, 'r') as f:
+                try:
+                    json_object = json.load(f)
+                except ValueError as error:
+                    Log(f"ERROR: Invalid JSON found: '{error}'\n")
+                    Log("Please provide a valid JSON\n")
+                    return
 
             json_importer = JsonImporter(Environment.get_appdata_module_path() + os.sep)
-            json_importer.full_import(filename)
+            json_importer.full_import(json_object)
 
     def IsActive(self):
         return True

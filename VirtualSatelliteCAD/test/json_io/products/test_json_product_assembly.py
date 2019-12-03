@@ -62,7 +62,6 @@ class TestJsonProductAssembly(AWorkingDirectoryTest):
         self.assertEqual(json_product.part_uuid, "3d3708fd_5c6c_4af9_b710_d68778466084", "Property is correctly set")
 
         # Properties have to be 0 since an assembly itself has no position and orientation
-        # TODO: check
         self.assertEqual(json_product.pos_x, 0, "Property is correctly set")
         self.assertEqual(json_product.pos_y, 0, "Property is correctly set")
         self.assertEqual(json_product.pos_z, 0, "Property is correctly set")

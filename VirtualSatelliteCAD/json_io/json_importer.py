@@ -31,7 +31,6 @@ from json_io.parts.json_part_factory import JsonPartFactory
 from json_io.products.json_product_assembly_tree_traverser import JsonProductAssemblyTreeTraverser
 from json_io.json_definitions import get_part_name_uuid, JSON_PRODUCTS, JSON_PARTS, PART_IDENTIFIER
 
-import json
 from freecad import active_document
 
 App = FreeCAD
@@ -74,21 +73,11 @@ class JsonImporter(object):
 
         return part_file_name
 
-    # TODO: give json
-    def full_import(self, filepath):
+    def full_import(self, json_object):
         '''
         Import a whole json file's products and parts into a FreeCAD document
         '''
-        Log(f"Importing JSON file '{filepath}'\n")
-
-        # TODO: refactor in command
-        with open(filepath, 'r') as f:
-            try:
-                json_object = json.load(f)
-            except ValueError as error:
-                Log(f"ERROR: Invalid JSON found: '{error}'\n")
-                Log("Please provide a valid JSON\n")
-                return
+        Log(f"Calling the importer'\n")
 
         json_parts = json_object[JSON_PARTS]
 

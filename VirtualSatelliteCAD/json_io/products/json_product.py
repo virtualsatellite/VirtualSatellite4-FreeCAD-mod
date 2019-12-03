@@ -108,7 +108,7 @@ class AJsonProduct():
         import_part_ref = active_document.app_active_document.getObjectsByLabel(import_part_name_in_product)
 
         # print(f"Called with '{import_part_name_in_product}'")
-        # TODO:
+        # TODO: CRUD
         # If the part doesn't exists (the returned list is not empty) update (delete and recreate) it
         if import_part_ref:
             active_document.app_active_document.removeObject(import_part_ref[0].Name)

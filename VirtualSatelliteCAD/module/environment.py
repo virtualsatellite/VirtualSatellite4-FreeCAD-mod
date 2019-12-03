@@ -91,6 +91,7 @@ class Environment:
         path = os.path.join(cls.get_tests_resource_path(), test_resource_name)
         return path
 
+    # TODO: Update user file handling
     @classmethod
     def get_appdata_module_path(cls):
         '''
