@@ -65,7 +65,7 @@ jobs:
       if: branch NOT IN (integration_snapshot, development_snapshot) 
       name: Test - FreeCAD Module Tests
       script:
-      - ant Main
+      - ant SetupEnvironment
       # Execute FreeCAD tests
       - ./squashfs-root/AppRun -M $(pwd)/VirtualSatelliteCAD -t TestVirtualSatelliteApp -l --log-file "FreeCAD.log"
       
@@ -81,7 +81,7 @@ jobs:
       if: branch NOT IN (integration_snapshot, development_snapshot) 
       name: Test - FreeCAD All Tests
       script:
-      - ant Main
+      - ant SetupEnvironment
       # Execute FreeCAD tests
       - ./squashfs-root/AppRun -M $(pwd) -t 0 -l --log-file "FreeCAD.log"
 
