@@ -33,7 +33,7 @@ from json_io.products.json_product_assembly import JsonProductAssembly
 from freecad.active_document import ActiveDocument
 from test.json_io.test_json_data import TEST_JSON_PRODUCT_WITH_CHILDREN,\
     TEST_JSON_PRODUCT_WITHOUT_CHILDREN, TEST_JSON_PRODUCT_WITH_CHILDREN_WITH_CHILD
-from json_io.json_definitions import JSON_ELEMNT_CHILDREN
+from json_io.json_definitions import JSON_ELEMNT_CHILDREN, PRODUCT_IDENTIFIER
 
 App = FreeCAD
 Gui = FreeCADGui
@@ -166,11 +166,12 @@ class TestJsonProductAssembly(AWorkingDirectoryTest):
 
         subassembly = json_object[JSON_ELEMNT_CHILDREN][0]
 
-        active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("BasePlateBottom2_e8794f3d_86ec_44c5_9618_8b7170c45484")
+        active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document(
+            PRODUCT_IDENTIFIER + "BasePlateBottom2_e8794f3d_86ec_44c5_9618_8b7170c45484")
 
         json_product = JsonProductAssembly().parse_from_json(subassembly)
         json_product.write_to_freecad(active_document)
-        active_document.save_as("BasePlateBottom2_e8794f3d_86ec_44c5_9618_8b7170c45484")
+        active_document.save_as(PRODUCT_IDENTIFIER + "BasePlateBottom2_e8794f3d_86ec_44c5_9618_8b7170c45484")
 
         self.assertEquals(len(active_document.app_active_document.RootObjects), 4, "Found correct amount of root objects 2 objects plus 2 sheets")
 

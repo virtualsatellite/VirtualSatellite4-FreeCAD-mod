@@ -31,7 +31,7 @@ import FreeCAD
 import FreeCADGui
 from json_io.products.json_product_child import JsonProductChild
 from freecad.active_document import ActiveDocument
-from json_io.json_definitions import get_product_name_uuid
+from json_io.json_definitions import get_product_name_uuid, PART_IDENTIFIER, PRODUCT_IDENTIFIER
 from test.json_io.test_json_data import TEST_JSON_PRODUCT_WITHOUT_CHILDREN,\
     TEST_JSON_PRODUCT_WITH_ONE_CHILD
 
@@ -73,14 +73,16 @@ class TestJsonProductChild(AWorkingDirectoryTest):
         self.assertAlmostEqual(json_product.rot_z, 60, 5, "Property is correctly set")
 
         self.assertFalse(json_product.has_children, "Current product has no children")
-        self.assertEquals(json_product.get_part_unique_name(), "BasePlate_3d3708fd_5c6c_4af9_b710_d68778466084", "No children thus references the part")
+        self.assertEquals(json_product.get_part_unique_name(),
+                          PART_IDENTIFIER + "BasePlate_3d3708fd_5c6c_4af9_b710_d68778466084", "No children thus references the part")
 
     def test_parse_with_children(self):
         json_object = json.loads(self.json_data_with_child)
         json_product = JsonProductChild().parse_from_json(json_object)
 
         self.assertTrue(json_product.has_children, "Current product has children")
-        self.assertEquals(json_product.get_part_unique_name(), "BasePlateBottom_e8794f3d_86ec_44c5_9618_8b7170c45484", "No children thus references the part")
+        self.assertEquals(json_product.get_part_unique_name(),
+                          PRODUCT_IDENTIFIER + "BasePlateBottom_e8794f3d_86ec_44c5_9618_8b7170c45484", "No children thus references the part")
 
     def test_create_part_product_child(self):
         self.create_Test_Part()

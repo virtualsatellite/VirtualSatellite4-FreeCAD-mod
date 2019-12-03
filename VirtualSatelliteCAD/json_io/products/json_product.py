@@ -28,11 +28,10 @@ from json_io.json_definitions import JSON_ELEMENT_NAME, JSON_ELEMENT_UUID,\
     JSON_ELEMENT_POS_Y, JSON_ELEMENT_POS_X,\
     JSON_ELEMENT_POS_Z, JSON_ELEMENT_ROT_X, JSON_ELEMENT_ROT_Y,\
     JSON_ELEMENT_ROT_Z, JSON_ELEMENT_PART_UUID, JSON_ELEMENT_PART_NAME, M_TO_MM,\
-    RAD_TO_DEG, _get_combined_name_uuid, JSON_ELEMNT_CHILDREN
+    RAD_TO_DEG, _get_combined_name_uuid, JSON_ELEMNT_CHILDREN, PART_IDENTIFIER
 from json_io.json_spread_sheet import JsonSpreadSheet
 from A2plus.a2p_importpart import importPartFromFile
 from freecad.active_document import VECTOR_X, VECTOR_Y, VECTOR_Z, VECTOR_ZERO
-# from FreeCAD import Placement
 
 
 class AJsonProduct():
@@ -176,7 +175,7 @@ class AJsonProduct():
         '''
         Returns the unique name of the referenced part
         '''
-        return _get_combined_name_uuid(self.part_name, self.part_uuid)
+        return PART_IDENTIFIER + _get_combined_name_uuid(self.part_name, self.part_uuid)
 
     def is_part_reference(self):
         '''

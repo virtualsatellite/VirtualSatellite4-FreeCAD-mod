@@ -67,6 +67,9 @@ JSON_ELEMENT_PART_NAME = "partName"
 
 JSON_ELEMNT_CHILDREN = "children"
 
+PART_IDENTIFIER = "part_"
+PRODUCT_IDENTIFIER = "assembly_"
+
 
 def _get_combined_name_uuid(name, uuid):
     return str(name + "_" + uuid.replace("-", "_"))

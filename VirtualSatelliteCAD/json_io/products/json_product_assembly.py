@@ -25,7 +25,7 @@
 #
 
 from json_io.products.json_product import AJsonProduct
-from json_io.json_definitions import JSON_ELEMNT_CHILDREN
+from json_io.json_definitions import JSON_ELEMNT_CHILDREN, PRODUCT_IDENTIFIER, _get_combined_name_uuid
 from json_io.products.json_product_child import JsonProductChild
 
 
@@ -90,3 +90,7 @@ class JsonProductAssembly(AJsonProduct):
         # part or a product
         for child in self.children:
             child.write_to_freecad(active_document)
+
+    def get_product_unique_name(self):
+        return PRODUCT_IDENTIFIER + _get_combined_name_uuid(self.name, self.uuid)
+

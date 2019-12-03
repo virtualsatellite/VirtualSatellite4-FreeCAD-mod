@@ -27,7 +27,7 @@
 from json_io.json_definitions import JSON_ELEMENT_NAME, JSON_ELEMENT_SHAPE,\
     JSON_ELEMENT_UUID, JSON_ELEMENT_LENGTH_X, JSON_ELEMENT_LENGTH_Y,\
     JSON_ELEMENT_LENGTH_Z, JSON_ELEMENT_RADIUS, JSON_ELEMENT_COLOR, M_TO_MM,\
-    _get_combined_name_uuid
+    _get_combined_name_uuid, PART_IDENTIFIER
 from json_io.json_spread_sheet import JsonSpreadSheet
 
 
@@ -138,4 +138,4 @@ class AJsonPart():
         return shape_type
 
     def get_unique_name(self):
-        return _get_combined_name_uuid(self.name, self.uuid)
+        return PART_IDENTIFIER + _get_combined_name_uuid(self.name, self.uuid)
