@@ -25,7 +25,7 @@
 #
 
 from json_io.products.json_product import AJsonProduct
-from json_io.json_definitions import JSON_ELEMNT_CHILDREN
+from json_io.json_definitions import JSON_ELEMNT_CHILDREN, PRODUCT_IDENTIFIER, _get_combined_name_uuid
 from json_io.products.json_product_child import JsonProductChild
 
 
@@ -70,6 +70,7 @@ class JsonProductAssembly(AJsonProduct):
         self.children = []
         for json_object_child in json_object_children:
             json_product_child = JsonProductChild().parse_from_json(json_object_child)
+            # json_product_child.propagate_pos_and_rot_from_parent(self)
             self.children.append(json_product_child)
 
         # Don't hand back an assembly if there are no children
@@ -89,3 +90,6 @@ class JsonProductAssembly(AJsonProduct):
         # part or a product
         for child in self.children:
             child.write_to_freecad(active_document)
+
+    def get_product_unique_name(self):
+        return PRODUCT_IDENTIFIER + _get_combined_name_uuid(self.name, self.uuid)

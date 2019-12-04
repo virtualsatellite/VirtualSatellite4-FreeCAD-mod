@@ -32,9 +32,11 @@ from json_io.json_importer import JsonImporter
 import FreeCAD
 import FreeCADGui
 from test.test_setup import AWorkingDirectoryTest
-from freecad.active_document import FREECAD_FILE_EXTENSION
+from freecad.active_document import FREECAD_FILE_EXTENSION, ActiveDocument
 from module.environment import Environment
-from json_io.json_definitions import JSON_ELEMENT_STL_PATH
+from json_io.json_definitions import JSON_ELEMENT_STL_PATH, PART_IDENTIFIER, PRODUCT_IDENTIFIER
+import unittest
+from test.json_io.test_json_data import TEST_JSON_FULL_VISCUBE
 
 App = FreeCAD
 Gui = FreeCADGui
@@ -71,7 +73,7 @@ class TestJsonImporter(AWorkingDirectoryTest):
         json_importer.create_or_update_part(json_object)
 
         # Check the file got created
-        test_file_name = self._WORKING_DIRECTORY + "Beam_6201a731_d703_43f8_ab37_6a0581dfe022" + FREECAD_FILE_EXTENSION
+        test_file_name = self._WORKING_DIRECTORY + PART_IDENTIFIER + "Beam_6201a731_d703_43f8_ab37_6a0581dfe022" + FREECAD_FILE_EXTENSION
         self.assertTrue(os.path.isfile(test_file_name), "File exists on drive")
         App.open(test_file_name)
 
@@ -126,7 +128,7 @@ class TestJsonImporter(AWorkingDirectoryTest):
         json_importer.create_or_update_part(json_object)
 
         # Check the file got created
-        test_file_name = self._WORKING_DIRECTORY + "Beam_6201a731_d703_43f8_ab37_6a0581dfe022" + FREECAD_FILE_EXTENSION
+        test_file_name = self._WORKING_DIRECTORY + PART_IDENTIFIER + "Beam_6201a731_d703_43f8_ab37_6a0581dfe022" + FREECAD_FILE_EXTENSION
         self.assertTrue(os.path.isfile(test_file_name), "File exists on drive")
         App.open(test_file_name)
 
@@ -149,7 +151,7 @@ class TestJsonImporter(AWorkingDirectoryTest):
         json_importer.create_or_update_part(json_object)
 
         # Check the file got created
-        test_file_name = self._WORKING_DIRECTORY + "Beam_6201a731_d703_43f8_ab37_6a0666dfe022" + FREECAD_FILE_EXTENSION
+        test_file_name = self._WORKING_DIRECTORY + PART_IDENTIFIER + "Beam_6201a731_d703_43f8_ab37_6a0666dfe022" + FREECAD_FILE_EXTENSION
         App.open(test_file_name)
 
         self.assertEquals(len(App.ActiveDocument.RootObjects), TEST_ALLOWED_AMOUNT_OF_PART_OBJECTS, "Correct amount of objects in file")
@@ -176,7 +178,7 @@ class TestJsonImporter(AWorkingDirectoryTest):
         json_importer.create_or_update_part(json_object)
 
         # Check the file got created
-        test_file_name = self._WORKING_DIRECTORY + "Beam_6201a731_d703_43f8_ab37_6a0581dfe022" + FREECAD_FILE_EXTENSION
+        test_file_name = self._WORKING_DIRECTORY + PART_IDENTIFIER + "Beam_6201a731_d703_43f8_ab37_6a0581dfe022" + FREECAD_FILE_EXTENSION
         self.assertTrue(os.path.isfile(test_file_name), "File exists on drive")
         App.open(test_file_name)
 
@@ -200,7 +202,7 @@ class TestJsonImporter(AWorkingDirectoryTest):
         json_importer.create_or_update_part(json_object)
 
         # Check the file got created
-        test_file_name = self._WORKING_DIRECTORY + "Beam_6201a731_d703_43f8_ab37_6a0581dfe022" + FREECAD_FILE_EXTENSION
+        test_file_name = self._WORKING_DIRECTORY + PART_IDENTIFIER + "Beam_6201a731_d703_43f8_ab37_6a0581dfe022" + FREECAD_FILE_EXTENSION
         self.assertTrue(os.path.isfile(test_file_name), "File exists on drive")
         App.open(test_file_name)
 
@@ -232,12 +234,12 @@ class TestJsonImporter(AWorkingDirectoryTest):
         json_importer.create_or_update_part(json_object)
 
         # Check the file got created
-        test_file_name = self._WORKING_DIRECTORY + "Beam_6201a731_d703_43f8_ab37_6a7171dfe022" + FREECAD_FILE_EXTENSION
+        test_file_name = self._WORKING_DIRECTORY + PART_IDENTIFIER + "Beam_6201a731_d703_43f8_ab37_6a7171dfe022" + FREECAD_FILE_EXTENSION
         App.open(test_file_name)
 
         # Check that there is the correct object inside
         self.assertIsNotNone(App.ActiveDocument.getObject("Box"), "Got correct object")
-        App.closeDocument("Beam_6201a731_d703_43f8_ab37_6a7171dfe022")
+        App.closeDocument(PART_IDENTIFIER + "Beam_6201a731_d703_43f8_ab37_6a7171dfe022")
 
         # Now start cyling the objects
         json_object["shape"] = "CYLINDER"
@@ -247,7 +249,7 @@ class TestJsonImporter(AWorkingDirectoryTest):
         App.open(test_file_name)
         self.assertIsNone(App.ActiveDocument.getObject("Box"), "Removed previous object")
         self.assertIsNotNone(App.ActiveDocument.getObject("Cylinder"), "Got correct object")
-        App.closeDocument("Beam_6201a731_d703_43f8_ab37_6a7171dfe022")
+        App.closeDocument(PART_IDENTIFIER + "Beam_6201a731_d703_43f8_ab37_6a7171dfe022")
 
         # Next object
         json_object["shape"] = "SPHERE"
@@ -257,7 +259,7 @@ class TestJsonImporter(AWorkingDirectoryTest):
         App.open(test_file_name)
         self.assertIsNone(App.ActiveDocument.getObject("Cylinder"), "Removed previous object")
         self.assertIsNotNone(App.ActiveDocument.getObject("Sphere"), "Got correct object")
-        App.closeDocument("Beam_6201a731_d703_43f8_ab37_6a7171dfe022")
+        App.closeDocument(PART_IDENTIFIER + "Beam_6201a731_d703_43f8_ab37_6a7171dfe022")
 
         # Next object
         json_object["shape"] = "GEOMETRY"
@@ -267,7 +269,7 @@ class TestJsonImporter(AWorkingDirectoryTest):
         App.open(test_file_name)
         self.assertIsNone(App.ActiveDocument.getObject("Sphere"), "Removed previous object")
         self.assertIsNotNone(App.ActiveDocument.getObject("Geometry"), "Got correct object")
-        App.closeDocument("Beam_6201a731_d703_43f8_ab37_6a7171dfe022")
+        App.closeDocument(PART_IDENTIFIER + "Beam_6201a731_d703_43f8_ab37_6a7171dfe022")
 
         # Next object
         json_object["shape"] = "CONE"
@@ -277,4 +279,112 @@ class TestJsonImporter(AWorkingDirectoryTest):
         App.open(test_file_name)
         self.assertIsNone(App.ActiveDocument.getObject("Geometry"), "Removed previous object")
         self.assertIsNotNone(App.ActiveDocument.getObject("Cone"), "Got correct object")
-        App.closeDocument("Beam_6201a731_d703_43f8_ab37_6a7171dfe022")
+        App.closeDocument(PART_IDENTIFIER + "Beam_6201a731_d703_43f8_ab37_6a7171dfe022")
+
+    def test_full_import(self):
+        """
+        Full JSON import test
+        """
+
+        json_importer = JsonImporter(self._WORKING_DIRECTORY)
+        json_object = json.loads(TEST_JSON_FULL_VISCUBE)
+        part_file_names, json_product, active_document = json_importer.full_import(json_object)
+
+        # =========================
+        # Check parts
+
+        # Check that the right number of parts was found
+        self.assertEqual(len(part_file_names), 7, "Found 7 files")
+
+        # Check each part
+        for part_file_name in part_file_names:
+            test_file_name = self._WORKING_DIRECTORY + part_file_name + FREECAD_FILE_EXTENSION
+
+            # Check the file got created
+            self.assertTrue(os.path.isfile(test_file_name), "File exists on drive")
+
+        # =========================
+        # Check product
+
+        # Check that the right number of children and root objects got created
+        self.assertEquals(len(json_product.children), 5, "Correct amount of children")
+        self.assertEquals(len(active_document.app_active_document.RootObjects), 10, "Found correct amount of root objects 5 plus 5 sheets")
+
+        active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document(
+            PRODUCT_IDENTIFIER + "BeamStructure_2afb23c9_f458_4bdb_a4e7_fc863364644f")
+        self.assertEquals(len(active_document.app_active_document.RootObjects), 6, "Found correct amount of root objects 3 objects plus 3 sheets")
+
+    @unittest.SkipTest
+    def test_full_import_again(self):
+        """
+        Importing the same file again should not result in changes
+        """
+
+        json_test_resource_path = Environment.get_test_resource_path("VisCube2.json")
+        json_importer = JsonImporter(self._WORKING_DIRECTORY)
+
+        # =========================
+        # First import
+        part_file_names, json_product, active_document = json_importer.full_import(json_test_resource_path)
+
+        # Check that the right number of parts was found
+        self.assertEqual(len(part_file_names), 7, "Found 7 files")
+
+        # Check that the right number of children and root objects got created
+        self.assertEqual(len(json_product.children), 5, "Correct amount of children")
+        self.assertEqual(len(active_document.app_active_document.RootObjects), 14, "Found correct amount of root objects 7 plus 7 sheets")
+
+        # =========================
+        # Second import
+        part_file_names2, json_product2, active_document2 = json_importer.full_import(json_test_resource_path)
+
+        # Check that the right number of parts was found
+        self.assertEqual(len(part_file_names2), 7, "Found 7 files")
+
+        # Check that the right number of children and root objects got created
+        self.assertEqual(len(json_product2.children), 5, "Correct amount of children")
+        self.assertEqual(len(active_document2.app_active_document.RootObjects), 14, "Found correct amount of root objects 7 plus 7 sheets")
+
+        # =========================
+        # Check equality
+        self.assertEquals(part_file_names, part_file_names2)
+
+        for i, child1 in enumerate(json_product.children):
+            child2 = json_product2.children[i]
+            child1.has_equal_values(child2)
+
+    @unittest.SkipTest
+    def test_full_import_again_with_changes(self):
+        """
+        If two files with the same name get imported: we assume that the VirSat side used CRUD, that means:
+        - new parts/products could be created, so add them
+        - old parts/products could be replaced/updated, so use the new information
+        - old parts/products could be deleted, so delete all not updated files
+        -> this means instead of merging, simply the information of the old files get replaced by the newer one
+        """
+
+        json_importer = JsonImporter(self._WORKING_DIRECTORY)
+
+        # =========================
+        # First import
+        json_test_resource_path = Environment.get_test_resource_path("VisCube2.json")
+        part_file_names, json_product, active_document = json_importer.full_import(json_test_resource_path)
+
+        # Check that the right number of parts was found
+        self.assertEqual(len(part_file_names), 7, "Found 7 files")
+
+        # Check that the right number of children and root objects got created
+        self.assertEqual(len(json_product.children), 5, "Correct amount of children")
+        self.assertEqual(len(active_document.app_active_document.RootObjects), 14, "Found correct amount of root objects 7 plus 7 sheets")
+
+        # =========================
+        # Second import
+        json_test_resource_path2 = Environment.get_test_resource_path("VisCube2_update.json")
+        part_file_names2, json_product2, active_document2 = json_importer.full_import(json_test_resource_path2)
+
+        # Check that the right number of parts was found
+        self.assertEqual(len(part_file_names2), 1, "Found 1 files")
+
+        # Check that the right number of children and root objects got created
+        self.assertEquals(len(json_product2.children), 1, "Correct amount of children")
+        self.assertEquals(len(active_document2.app_active_document.RootObjects), 2, "Found correct amount of root objects 1 plus 1 sheets")

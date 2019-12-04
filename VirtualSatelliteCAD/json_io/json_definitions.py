@@ -30,6 +30,9 @@ M_TO_MM = 1000
 
 RAD_TO_DEG = 180.0 / math.pi
 
+JSON_PARTS = "Parts"
+JSON_PRODUCTS = "Products"
+
 JSON_ELEMENT_COLOR = "color"
 JSON_ELEMENT_SHAPE = "shape"
 
@@ -63,6 +66,9 @@ JSON_ELEMENT_PART_UUID = "partUuid"
 JSON_ELEMENT_PART_NAME = "partName"
 
 JSON_ELEMNT_CHILDREN = "children"
+
+PART_IDENTIFIER = "part_"
+PRODUCT_IDENTIFIER = "assembly_"
 
 
 def _get_combined_name_uuid(name, uuid):

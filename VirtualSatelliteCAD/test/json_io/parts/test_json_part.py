@@ -32,6 +32,7 @@ from freecad.active_document import ActiveDocument
 import FreeCAD
 import FreeCADGui
 from test.json_io.test_json_data import TEST_JSON_PART_BOX
+from json_io.json_definitions import PART_IDENTIFIER
 
 App = FreeCAD
 Gui = FreeCADGui
@@ -105,4 +106,4 @@ class TestJsonPart(AWorkingDirectoryTest):
         json_part = AJsonPart()
         json_part.parse_from_json(json_object)
 
-        self.assertEquals(json_part.get_unique_name(), "Beam_6201a731_d703_43f8_ab37_6a0581dfe022", "Correct unique name")
+        self.assertEquals(json_part.get_unique_name(), PART_IDENTIFIER + "Beam_6201a731_d703_43f8_ab37_6a0581dfe022", "Correct unique name")

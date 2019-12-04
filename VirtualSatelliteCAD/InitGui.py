@@ -45,10 +45,10 @@ class VirtualSatelliteWorkbench(Workbench):  # NOQA @UndefinedVariable
         import commands.command_export  # NOQA @UnusedImport
         from commands.command_definitions import COMMAND_ID_EXPORT_2_VIRTUAL_SATELLITE
         from commands.command_definitions import COMMAND_ID_IMPORT_2_FREECAD
-        self.appendToolbar('VirtualSatelliteMod', [COMMAND_ID_EXPORT_2_VIRTUAL_SATELLITE])
-        self.appendMenu('VirtualSatelliteMod', [COMMAND_ID_EXPORT_2_VIRTUAL_SATELLITE])
         self.appendToolbar('VirtualSatelliteMod', [COMMAND_ID_IMPORT_2_FREECAD])
         self.appendMenu('VirtualSatelliteMod', [COMMAND_ID_IMPORT_2_FREECAD])
+        self.appendToolbar('VirtualSatelliteMod', [COMMAND_ID_EXPORT_2_VIRTUAL_SATELLITE])
+        self.appendMenu('VirtualSatelliteMod', [COMMAND_ID_EXPORT_2_VIRTUAL_SATELLITE])
 
     def GetClassName(self):
         # Required method by FreeCAD framework

@@ -28,7 +28,7 @@ from json_io.json_definitions import JSON_ELEMENT_NAME, JSON_ELEMENT_UUID,\
     JSON_ELEMENT_POS_Y, JSON_ELEMENT_POS_X,\
     JSON_ELEMENT_POS_Z, JSON_ELEMENT_ROT_X, JSON_ELEMENT_ROT_Y,\
     JSON_ELEMENT_ROT_Z, JSON_ELEMENT_PART_UUID, JSON_ELEMENT_PART_NAME, M_TO_MM,\
-    RAD_TO_DEG, _get_combined_name_uuid, JSON_ELEMNT_CHILDREN
+    RAD_TO_DEG, _get_combined_name_uuid, JSON_ELEMNT_CHILDREN, PART_IDENTIFIER
 from json_io.json_spread_sheet import JsonSpreadSheet
 from A2plus.a2p_importpart import importPartFromFile
 from freecad.active_document import VECTOR_X, VECTOR_Y, VECTOR_Z, VECTOR_ZERO
@@ -57,6 +57,9 @@ class AJsonProduct():
         self.rot_x = 0.0
         self.rot_y = 0.0
         self.rot_z = 0.0
+
+        self.name = None
+        self.uuid = None
 
     def _parse_name_and_uuid_from_json(self, json_object):
         self.name = str(json_object[JSON_ELEMENT_NAME])
@@ -97,18 +100,23 @@ class AJsonProduct():
         This method imports the part referenced by the product.
         The referenced part will be placed under the product part name into
         the assembly. E.g. A BasePlate will be added as BasePlateBottom to the
-        assembly. In case the object already exists, nothing special will happen.
+        assembly. In case the object already exists, it will be recreated.
         '''
         import_part_file_name = self.get_part_unique_name()
         import_part_name_in_product = self.get_unique_name()
         import_part_full_path = active_document.get_file_full_path(import_part_file_name)
+        import_part_ref = active_document.app_active_document.getObjectsByLabel(import_part_name_in_product)
+
+        # print(f"Called with '{import_part_name_in_product}'")
+        # TODO: CRUD
+        # If the part doesn't exists (the returned list is not empty) update (delete and recreate) it
+        if import_part_ref:
+            active_document.app_active_document.removeObject(import_part_ref[0].Name)
+
         imported_product_part = importPartFromFile(
             active_document.app_active_document,
             import_part_full_path)
         imported_product_part.Label = import_part_name_in_product
-
-    def _set_freecad_name_and_color(self, active_document):
-        pass
 
     def _set_freecad_position_and_rotation(self, active_document):
         product_part_name = self.get_unique_name()
@@ -122,7 +130,7 @@ class AJsonProduct():
         vector_rotation_y = active_document.app.Rotation(VECTOR_Y, self.rot_y)
         vector_rotation_z = active_document.app.Rotation(VECTOR_Z, self.rot_z)
 
-        placement = product_part.Placement
+        placement = product_part.Placement  # Placement()
 
         placement_translation = active_document.app.Placement(
             vector_translation,
@@ -167,7 +175,7 @@ class AJsonProduct():
         '''
         Returns the unique name of the referenced part
         '''
-        return _get_combined_name_uuid(self.part_name, self.part_uuid)
+        return PART_IDENTIFIER + _get_combined_name_uuid(self.part_name, self.part_uuid)
 
     def is_part_reference(self):
         '''
@@ -178,3 +186,22 @@ class AJsonProduct():
         has_part_name = hasattr(self, "part_name")
 
         return has_part_uuid and has_part_name
+
+    def has_equal_values(self, other):
+        """
+        Compares values with another AJsonProduct
+        """
+        if(isinstance(other, AJsonProduct)):
+            return (
+                self.pos_x == other.pos_x and
+                self.pos_y == other.pos_y and
+                self.pos_z == other.pos_z and
+
+                self.rot_x == other.rot_x and
+                self.rot_y == other.rot_y and
+                self.rot_z == other.rot_z and
+
+                self.name == other.name and
+                self.uuid == other.uuid)
+
+        return NotImplemented

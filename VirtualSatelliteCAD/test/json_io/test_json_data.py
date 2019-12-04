@@ -97,9 +97,9 @@ TEST_JSON_PRODUCT_WITH_CHILDREN = """{
         "uuid": "e8794f3d-86ec-44c5-9618-8b7170c45484",
         "partUuid": "3d3708fd-5c6c-4af9-b710-d68778466084",
         "partName": "BasePlate",
-        "posX": 10.0,
-        "posY": 15.0,
-        "posZ": 20.0,
+        "posX": 1.0,
+        "posY": 2.0,
+        "posZ": 3.0,
         "rotX": 0.349,
         "rotY": 0.698,
         "rotZ": 1.046,
@@ -135,6 +135,165 @@ TEST_JSON_PRODUCT_WITH_CHILDREN = """{
         ]
     }
     """
+
+TEST_JSON_PRODUCT_WITH_CHILDREN_WITH_CHILD = """{
+        "name": "BasePlateBottom1",
+        "uuid": "e8794f3d-86ec-44c5-9618-8b7170c45484",
+        "partUuid": "3d3708fd-5c6c-4af9-b710-d68778466084",
+        "partName": "BasePlate",
+        "posX": 1.0,
+        "posY": 2.0,
+        "posZ": 3.0,
+        "rotX": 0.349,
+        "rotY": 0.698,
+        "rotZ": 1.046,
+        "children": [
+            {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "children": [
+                    {
+                        "posX": 0.5,
+                        "posY": 0.5,
+                        "posZ": 0.5,
+                        "rotX": 0.0,
+                        "children": [
+                        ],
+                        "rotZ": 0.0,
+                        "rotY": 0.0,
+                        "name": "BasePlateBottom3",
+                        "uuid": "e8794f3d-86ec-44c5-9618-8b7170c45485",
+                        "partUuid": "3d3708fd-5c6c-4af9-b710-d68778466084",
+                        "partName": "BasePlate"
+                    }
+                ],
+                "rotZ": 0.3490659,
+                "rotY": 0.0,
+                "name": "BasePlateBottom2",
+                "uuid": "e8794f3d-86ec-44c5-9618-8b7170c45484",
+                "partUuid": "3d3708fd-5c6c-4af9-b710-d68778466084",
+                "partName": "BasePlate"
+            },
+            {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.5,
+                "rotX": 0.0,
+                "children": [
+                ],
+                "rotZ": 0.0,
+                "rotY": 0.0,
+                "name": "BasePlateTop",
+                "uuid": "a199e3bd-3bc1-426d-8321-e9bd829339b3",
+                "partUuid": "3d3708fd-5c6c-4af9-b710-d68778466084",
+                "partName": "BasePlate"
+            }
+        ]
+    }
+    """
+
+TEST_JSON_PRODUCT_WITH_CHILDREN_WITH_CHILD_SUBASSEMBLY_IS_NO_PART = """{
+        "name": "BasePlateBottom1",
+        "uuid": "e8794f3d-86ec-44c5-9618-8b7170c45484",
+        "partUuid": "3d3708fd-5c6c-4af9-b710-d68778466084",
+        "partName": "BasePlate",
+        "posX": 1.0,
+        "posY": 2.0,
+        "posZ": 3.0,
+        "rotX": 0.349,
+        "rotY": 0.698,
+        "rotZ": 1.046,
+        "children": [
+            {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "children": [
+                    {
+                        "posX": 0.5,
+                        "posY": 0.5,
+                        "posZ": 0.5,
+                        "rotX": 0.0,
+                        "children": [
+                        ],
+                        "rotZ": 0.0,
+                        "rotY": 0.0,
+                        "name": "BasePlateBottom3",
+                        "uuid": "e8794f3d-86ec-44c5-9618-8b7170c45485",
+                        "partUuid": "3d3708fd-5c6c-4af9-b710-d68778466084",
+                        "partName": "BasePlate"
+                    }
+                ],
+                "rotZ": 0.3490659,
+                "rotY": 0.0,
+                "name": "BasePlateBottom2",
+                "uuid": "e8794f3d-86ec-44c5-9618-8b7170c45484"
+            },
+            {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.5,
+                "rotX": 0.0,
+                "children": [
+                ],
+                "rotZ": 0.0,
+                "rotY": 0.0,
+                "name": "BasePlateTop",
+                "uuid": "a199e3bd-3bc1-426d-8321-e9bd829339b3",
+                "partUuid": "3d3708fd-5c6c-4af9-b710-d68778466084",
+                "partName": "BasePlate"
+            }
+        ]
+    }
+    """
+
+TEST_JSON_PRODUCT_SUBASSEMBLY_WITH_SAME_PART = """{
+        "name": "BasePlateBottom1",
+        "uuid": "e8794f3d-86ec-44c5-9618-8b7170c45484",
+        "partUuid": "3d3708fd-5c6c-4af9-b710-d68778466084",
+        "partName": "BasePlate",
+        "posX": 1.0,
+        "posY": 2.0,
+        "posZ": 3.0,
+        "rotX": 0.349,
+        "rotY": 0.698,
+        "rotZ": 1.046,
+        "children": [
+            {
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 0.0,
+                "rotX": 0.0,
+                "children": [
+                    {
+                        "posX": 0.5,
+                        "posY": 0.5,
+                        "posZ": 0.5,
+                        "rotX": 0.0,
+                        "children": [
+                        ],
+                        "rotZ": 0.0,
+                        "rotY": 0.0,
+                        "name": "BasePlateBottom3",
+                        "uuid": "e8794f3d-86ec-44c5-9618-8b7170c45485",
+                        "partUuid": "3d3708fd-5c6c-4af9-b710-d68778466084",
+                        "partName": "BasePlate"
+                    }
+                ],
+                "rotZ": 0.3490659,
+                "rotY": 0.0,
+                "name": "BasePlate",
+                "uuid": "3d3708fd-5c6c-4af9-b710-d68778466084",
+                "partUuid": "3d3708fd-5c6c-4af9-b710-d68778466084",
+                "partName": "BasePlate"
+            }
+        ]
+    }
+    """
+
 
 TEST_JSON_PRODUCT_WITHOUT_CHILDREN = """{
         "name": "BasePlateBottom",
@@ -177,6 +336,165 @@ TEST_JSON_PRODUCT_WITH_ONE_CHILD = """{
                 "uuid": "e8794f3d-86ec-44c5-9618-8b7170c45484",
                 "partUuid": "3d3708fd-5c6c-4af9-b710-d68778466084",
                 "partName": "BasePlate"
+            }
+        ]
+    }
+    """
+TEST_JSON_FULL_VISCUBE = """{
+        "Products": {
+            "children": [{
+                    "posX": 0.0,
+                    "posY": 0.0,
+                    "posZ": 1.0,
+                    "rotX": 0.0,
+                    "children": [],
+                    "rotZ": 0.0,
+                    "rotY": 0.0,
+                    "name": "Top",
+                    "uuid": "cc14e2c7-9d7e-4cf2-8d6d-9b8cf5e96d56",
+                    "partUuid": "cc14e2c7-9d7e-4cf2-8d6d-9b8cf5e96d56",
+                    "partName": "Top"
+                }, {
+                    "posX": 0.0,
+                    "posY": 0.0,
+                    "posZ": 0.0,
+                    "rotX": 0.0,
+                    "children": [],
+                    "rotZ": 0.0,
+                    "rotY": 0.0,
+                    "name": "Bottom",
+                    "uuid": "61db0622-6fef-4f12-932d-a00fdb9d0848",
+                    "partUuid": "00f430a6-6311-4a33-961b-41ded4cf57d5",
+                    "partName": "Plate"
+                }, {
+                    "posX": 0.5,
+                    "posY": 0.0,
+                    "posZ": 0.5,
+                    "rotX": 0.0,
+                    "children": [],
+                    "rotZ": 0.0,
+                    "rotY": 1.5707963267948966,
+                    "name": "Front",
+                    "uuid": "e6af9d3f-8ad6-4488-b3d0-d35549be9a1e",
+                    "partUuid": "e6af9d3f-8ad6-4488-b3d0-d35549be9a1e",
+                    "partName": "Front"
+                }, {
+                    "posX": -0.5,
+                    "posY": 0.0,
+                    "posZ": 0.5,
+                    "rotX": 0.0,
+                    "children": [],
+                    "rotZ": 0.0,
+                    "rotY": 1.5707963267948966,
+                    "name": "Back",
+                    "uuid": "a3c9c547-8fd3-40d5-97a1-a3f9a3a9c337",
+                    "partUuid": "a3c9c547-8fd3-40d5-97a1-a3f9a3a9c337",
+                    "partName": "Back"
+                }, {
+                    "posX": 0.0,
+                    "posY": 0.0,
+                    "posZ": 0.5,
+                    "rotX": 0.0,
+                    "children": [{
+                            "posX": 0.0,
+                            "posY": 0.5,
+                            "posZ": 0.0,
+                            "rotX": 1.5707963267948966,
+                            "children": [],
+                            "rotZ": 0.0,
+                            "rotY": 0.0,
+                            "name": "Left",
+                            "uuid": "615985c0-73fd-48db-8f8b-e11b7cbb2ee8",
+                            "partUuid": "615985c0-73fd-48db-8f8b-e11b7cbb2ee8",
+                            "partName": "Left"
+                        }, {
+                            "posX": 0.0,
+                            "posY": -0.5,
+                            "posZ": 0.0,
+                            "rotX": 1.5707963267948966,
+                            "children": [],
+                            "rotZ": 0.0,
+                            "rotY": 0.0,
+                            "name": "Right",
+                            "uuid": "882a0b35-7da8-4555-903d-fd6b5cbec392",
+                            "partUuid": "882a0b35-7da8-4555-903d-fd6b5cbec392",
+                            "partName": "Right"
+                        }
+                    ],
+                    "rotZ": 0.0,
+                    "rotY": 0.0,
+                    "name": "BeamStructure",
+                    "uuid": "2afb23c9-f458-4bdb-a4e7-fc863364644f",
+                    "partUuid": "2afb23c9-f458-4bdb-a4e7-fc863364644f",
+                    "partName": "BeamStructure"
+                }
+            ],
+            "name": "SpaceCube",
+            "uuid": "a3533e02-125c-4066-bffe-d046d8d8342a"
+        },
+        "Parts": [{
+                "color": 16744448,
+                "shape": "CYLINDER",
+                "name": "BeamStructure",
+                "lengthY": 1.0,
+                "lengthX": 1.0,
+                "radius": 0.05,
+                "uuid": "2afb23c9-f458-4bdb-a4e7-fc863364644f",
+                "lengthZ": 1.0
+            }, {
+                "color": 8388608,
+                "shape": "BOX",
+                "name": "Right",
+                "lengthY": 1.0,
+                "lengthX": 1.0,
+                "radius": 0.05,
+                "uuid": "882a0b35-7da8-4555-903d-fd6b5cbec392",
+                "lengthZ": 0.02
+            }, {
+                "color": 32832,
+                "shape": "BOX",
+                "name": "Front",
+                "lengthY": 1.0,
+                "lengthX": 1.0,
+                "radius": 0.05,
+                "uuid": "e6af9d3f-8ad6-4488-b3d0-d35549be9a1e",
+                "lengthZ": 0.02
+            }, {
+                "color": 16711680,
+                "shape": "BOX",
+                "name": "Left",
+                "lengthY": 1.0,
+                "lengthX": 1.0,
+                "radius": 0.05,
+                "uuid": "615985c0-73fd-48db-8f8b-e11b7cbb2ee8",
+                "lengthZ": 0.02
+            }, {
+                "color": 65280,
+                "shape": "BOX",
+                "name": "Plate",
+                "lengthY": 1.0,
+                "lengthX": 1.0,
+                "radius": 0.05,
+                "uuid": "00f430a6-6311-4a33-961b-41ded4cf57d5",
+                "lengthZ": 0.02
+            }, {
+                "color": 16776960,
+                "shape": "BOX",
+                "name": "Back",
+                "lengthY": 1.0,
+                "lengthX": 1.0,
+                "radius": 0.05,
+                "uuid": "a3c9c547-8fd3-40d5-97a1-a3f9a3a9c337",
+                "lengthZ": 0.02
+            }, {
+                "color": 32768,
+                "shape": "BOX",
+                "name": "Top",
+                "lengthY": 1.0,
+                "lengthX": 1.0,
+                "radius": 0.05,
+                "uuid": "cc14e2c7-9d7e-4cf2-8d6d-9b8cf5e96d56",
+                "lengthZ": 0.02
             }
         ]
     }

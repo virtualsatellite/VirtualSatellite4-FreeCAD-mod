@@ -70,6 +70,14 @@ class ActiveDocument(object):
 
         return self
 
+    def clear_if_open_document(self, file_name_without_extension):
+        documents = list(App.listDocuments().keys())
+
+        if documents.count(file_name_without_extension) != 0:
+            Log('Delete and recreate new FreeCAD file...\n')
+            App.closeDocument(file_name_without_extension)
+            App.newDocument(file_name_without_extension)
+
     def set_active_documents(self, file_name_without_extension):
         App.setActiveDocument(file_name_without_extension)
 

@@ -1,0 +1,31 @@
+{
+	"Products": {
+		"children": [{
+				"posX": 0.0,
+				"posY": 0.0,
+				"posZ": 1.0,
+				"rotX": 0.0,
+				"children": [],
+				"rotZ": 0.0,
+				"rotY": 0.0,
+				"name": "Top",
+				"uuid": "cc14e2c7-9d7e-4cf2-8d6d-9b8cf5e96d56",
+				"partUuid": "cc14e2c7-9d7e-4cf2-8d6d-9b8cf5e96d57",
+				"partName": "Top2"
+			}
+		],
+		"name": "SpaceCube",
+		"uuid": "a3533e02-125c-4066-bffe-d046d8d8342a"
+	},
+	"Parts": [{
+			"color": 32768,
+			"shape": "BOX",
+			"name": "Top2",
+			"lengthY": 1.0,
+			"lengthX": 1.0,
+			"radius": 0.05,
+			"uuid": "cc14e2c7-9d7e-4cf2-8d6d-9b8cf5e96d57",
+			"lengthZ": 0.02
+		}
+	]
+}

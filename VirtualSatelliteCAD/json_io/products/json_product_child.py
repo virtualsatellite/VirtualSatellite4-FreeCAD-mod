@@ -26,6 +26,7 @@
 
 from json_io.products.json_product import AJsonProduct
 from json_io.json_definitions import _get_combined_name_uuid
+from json_io.json_definitions import PART_IDENTIFIER, PRODUCT_IDENTIFIER
 
 
 class JsonProductChild(AJsonProduct):
@@ -37,6 +38,6 @@ class JsonProductChild(AJsonProduct):
         In this case the file name of the product has to be returned
         '''
         if self.has_children:
-            return _get_combined_name_uuid(self.name, self.uuid)
+            return PRODUCT_IDENTIFIER + _get_combined_name_uuid(self.name, self.uuid)
         else:
-            return _get_combined_name_uuid(self.part_name, self.part_uuid)
+            return PART_IDENTIFIER + _get_combined_name_uuid(self.part_name, self.part_uuid)
