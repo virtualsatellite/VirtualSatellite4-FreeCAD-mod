@@ -28,11 +28,30 @@ import FreeCAD
 import FreeCADGui
 from module.environment import Environment, ICON_EXPORT
 from commands.command_definitions import COMMAND_ID_EXPORT_2_VIRTUAL_SATELLITE
+from PySide2.QtWidgets import QFileDialog
+from json_io.json_exporter import JsonExporter
+
+Log = FreeCAD.Console.PrintMessage
 
 
 class CommandExport:
     def Activated(self):
-        FreeCAD.Console.PrintMessage("Calling the exporter\n")
+        Log("Calling the importer\n")
+
+        # call pyqt dialog: returns (filename, filter)
+        filename = QFileDialog.getSaveFileName(
+            None,  # ui parent
+            "Save JSON file",  # dialog caption
+            Environment.get_appdata_module_path(),
+            "JSON(*.json)")[0]  # filter
+
+        if filename != '':
+            with open(filename, 'w') as file:
+
+                json_exporter = JsonExporter()
+                json_str = json_exporter.full_export()
+
+                file.write(json_str)
 
     def IsActive(self):
         return True
