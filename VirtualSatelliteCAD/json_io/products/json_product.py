@@ -165,6 +165,9 @@ class AJsonProduct():
         # to the FreeCAD document
         self.sheet.write_to_freecad(active_document)
 
+    def read_from_freecad(self, active_document, working_output_directory):
+        pass
+
     def get_unique_name(self):
         '''
         Returns the unique name of the current product

@@ -48,5 +48,5 @@ class TestJsonExporter(AWorkingDirectoryTest):
         json_object = json.loads(TEST_JSON_FULL_VISCUBE)
         part_file_names, json_product, active_document = json_importer.full_import(json_object)
 
-        json_exporter = JsonExporter()
-        json_exporter.full_export()  # active_document)
+        json_exporter = JsonExporter(self._WORKING_DIRECTORY)
+        json_exporter.full_export(active_document)
