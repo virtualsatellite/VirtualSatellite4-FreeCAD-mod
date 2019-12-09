@@ -95,6 +95,26 @@ class AJsonProduct():
 
         return self
 
+    def parse_to_json(self):
+        json_dict = {
+            JSON_ELEMENT_NAME: self.name,
+            JSON_ELEMENT_UUID: self.uuid,
+
+            JSON_ELEMENT_POS_X: self.pos_x / M_TO_MM,
+            JSON_ELEMENT_POS_Y: self.pos_y / M_TO_MM,
+            JSON_ELEMENT_POS_Z: self.pos_z / M_TO_MM,
+
+            JSON_ELEMENT_ROT_X: self.rot_x / RAD_TO_DEG,
+            JSON_ELEMENT_ROT_Y: self.rot_y / RAD_TO_DEG,
+            JSON_ELEMENT_ROT_Z: self.rot_z / RAD_TO_DEG
+        }
+
+        if self.is_part_reference():
+            json_dict[JSON_ELEMENT_PART_UUID] = self.part_uuid.replace("_", "-")
+            json_dict[JSON_ELEMENT_PART_NAME] = self.part_name.replace("_", "-")
+
+        return json_dict
+
     def _create_or_update_freecad_part(self, active_document):
         '''
         This method imports the part referenced by the product.
@@ -165,8 +185,37 @@ class AJsonProduct():
         # to the FreeCAD document
         self.sheet.write_to_freecad(active_document)
 
-    def read_from_freecad(self, active_document, working_output_directory):
-        pass
+    def read_from_freecad(self, active_document, working_output_directory, freecad_object=None, freecad_sheet=None):
+        if(freecad_object is not None):
+            # TODO: basically revert _set_freecad_position_and_rotation
+            pos = freecad_object.Placement.Base
+            rot = freecad_object.Placement.Rotation.toEuler()
+
+            self.pos_x = pos[0]
+            self.pos_y = pos[1]
+            self.pos_z = pos[2]
+
+            self.rot_x = rot[0]
+            self.rot_y = rot[1]
+            self.rot_z = rot[2]
+
+        print(self.pos_x, self.pos_y, self.pos_z, self.rot_x, self.rot_y, self.rot_z)
+
+        if(freecad_sheet is not None):
+            # TODO: refactor this with the json_spread_sheet
+            if(freecad_sheet is not None):
+                self.name = freecad_sheet.get("B3")
+                self.uuid = freecad_sheet.get("B4")
+                self.part_name = freecad_sheet.get("B5")
+                self.part_uuid = freecad_sheet.get("B6")
+
+            print(self.name, self.uuid, self.part_name, self.part_uuid)
+
+        if(self.is_part_reference()):
+            # TODO: read in the referenced part (if not read in already)?
+            # do we even have to read in parts like that?
+            # parsing parts when we export to JSON should be enough?
+            pass
 
     def get_unique_name(self):
         '''

@@ -85,6 +85,17 @@ class JsonProductAssembly(AJsonProduct):
         else:
             return None
 
+    def parse_to_json(self):
+        json_dict = super().parse_to_json()
+
+        children_dicts = []
+        for child in self.children:
+            children_dicts.append(child.parse_to_json())
+
+        json_dict[JSON_ELEMNT_CHILDREN] = children_dicts
+
+        return json_dict
+
     def write_to_freecad(self, active_document):
         # This assembly may refer to a part as well
         # hence if there is a partUuid and if there is a part name, than
@@ -97,7 +108,7 @@ class JsonProductAssembly(AJsonProduct):
         for child in self.children:
             child.write_to_freecad(active_document)
 
-    def read_from_freecad(self, active_document, working_output_directory):
+    def read_from_freecad(self, active_document, working_output_directory, freecad_object=None, freecad_sheet=None):
         """
         Reads an ProductAssembly from FreeCAD
         Then calls read_from_freecad of his children (either another assembly or a ?ProductChild?)
@@ -105,8 +116,9 @@ class JsonProductAssembly(AJsonProduct):
         products_with_sheets = self.get_products_of_active_document(active_document)
         # read the assembly
         # TODO: super().read_from_freecad() and in super read the product and (if available) the corresponding part?
-        super().read_from_freecad(active_document, working_output_directory)
+        super().read_from_freecad(active_document, working_output_directory, freecad_object, freecad_sheet)
 
+        self.children = []
         # read the children
         for product, sheet in products_with_sheets:
             name, label = product.Name, product.Label
@@ -118,11 +130,12 @@ class JsonProductAssembly(AJsonProduct):
                 print(f"Read ProductAssembly '{label}'")
                 child = JsonProductAssembly()
             else:
-                print(f"Read Product'{label}'")
+                print(f"Read Product '{label}'")
                 # TODO: or JsonProductChild?
                 child = AJsonProduct()
 
-            child.read_from_freecad(child_document, working_output_directory)
+            self.children.append(child)
+            child.read_from_freecad(child_document, working_output_directory, freecad_object=product, freecad_sheet=sheet)
 
     def get_products_of_active_document(self, active_document):
         """
