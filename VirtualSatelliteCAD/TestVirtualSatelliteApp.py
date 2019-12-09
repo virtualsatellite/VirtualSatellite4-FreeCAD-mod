@@ -25,6 +25,7 @@
 #
 
 from test.json_io.test_json_importer import TestJsonImporter  # NOQA 
+from test.json_io.test_json_exporter import TestJsonExporter # NOQA 
 from test.json_io.test_json_spread_sheet import TestJsonSpreadSheet # NOQA
 from test.json_io.parts.test_json_part import TestJsonPart  # NOQA 
 from test.json_io.parts.test_json_part_box import TestJsonPartBox  # NOQA 

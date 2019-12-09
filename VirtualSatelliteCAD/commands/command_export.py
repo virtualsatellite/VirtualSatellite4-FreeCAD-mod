@@ -36,7 +36,7 @@ Log = FreeCAD.Console.PrintMessage
 
 class CommandExport:
     def Activated(self):
-        Log("Calling the importer\n")
+        Log("Calling the exporter\n")
 
         # call pyqt dialog: returns (filename, filter)
         filename = QFileDialog.getSaveFileName(

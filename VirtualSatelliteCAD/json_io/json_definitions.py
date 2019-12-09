@@ -69,6 +69,7 @@ JSON_ELEMNT_CHILDREN = "children"
 
 PART_IDENTIFIER = "part_"
 PRODUCT_IDENTIFIER = "assembly_"
+SHEET_IDENTIFIER = "VS_"
 
 
 def _get_combined_name_uuid(name, uuid):
