@@ -75,6 +75,23 @@ class AJsonPart():
 
         return self
 
+    def parse_to_json(self):
+        json_dict = {
+            JSON_ELEMENT_NAME: self.name,
+            JSON_ELEMENT_UUID: self.uuid,
+            JSON_ELEMENT_SHAPE: self.shape,
+
+            JSON_ELEMENT_LENGTH_X: self.length / M_TO_MM,
+            JSON_ELEMENT_LENGTH_Y: self.width / M_TO_MM,
+            JSON_ELEMENT_LENGTH_Z: self.height / M_TO_MM,
+
+            JSON_ELEMENT_RADIUS: self.radius / M_TO_MM,
+
+            JSON_ELEMENT_COLOR: self.color >> 8
+        }
+
+        return json_dict
+
     def _clean_freecad_object(self, active_document):
         '''
         This method checks if the object to be created complies with the one
@@ -132,6 +149,33 @@ class AJsonPart():
         # Recompute the object on FreeCAD side
         object_name_and_type = self.get_shape_type()
         active_document.app_active_document.getObject(object_name_and_type).recompute()
+
+    def _get_freecad_properties(self, freecad_object):
+        pass
+
+    def read_from_freecad(self, freecad_object, freecad_sheet):
+        """
+        TODO
+        """
+        # TODO: with sheet?
+        self.name = freecad_sheet.get("B3")
+        self.shape = freecad_sheet.get("B4")
+        self.uuid = freecad_sheet.get("B5")
+
+        # init with values of the sheet
+        self.length = float(freecad_sheet.get("B6"))
+        self.width = float(freecad_sheet.get("B7"))
+        self.height = float(freecad_sheet.get("B8"))
+        self.radius = float(freecad_sheet.get("B9"))
+        self.color = int(freecad_sheet.get("B10"))
+
+        # then overwrite with the values of the freecad object
+        self._get_freecad_properties(freecad_object)
+
+        # color belongs to the GUI so don't get it atm
+
+        # TODO:
+        self.sheet = None
 
     def get_shape_type(self):
         shape_type = self.shape.lower().capitalize()

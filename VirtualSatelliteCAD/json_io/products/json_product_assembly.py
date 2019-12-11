@@ -25,7 +25,7 @@
 #
 
 from json_io.products.json_product import AJsonProduct
-from json_io.json_definitions import JSON_ELEMNT_CHILDREN, PRODUCT_IDENTIFIER, _get_combined_name_uuid
+from json_io.json_definitions import JSON_ELEMNT_CHILDREN, PRODUCT_IDENTIFIER, _get_combined_name_uuid, JSON_ELEMENT_NAME, JSON_ELEMENT_UUID
 from json_io.products.json_product_child import JsonProductChild
 from json_io.json_spread_sheet import FREECAD_PART_SHEET_NAME
 from freecad.active_document import ActiveDocument
@@ -87,13 +87,22 @@ class JsonProductAssembly(AJsonProduct):
 
     def parse_to_json(self, isRoot=False):
         if(isRoot):
-            json_dict = {}
+            json_dict = {
+                JSON_ELEMENT_NAME: self.name.replace("_", "-"),
+                JSON_ELEMENT_UUID: self.uuid.replace("_", "-")
+            }
         else:
             json_dict = super().parse_to_json()
 
         children_dicts = []
         for child in self.children:
-            children_dicts.append(child.parse_to_json())
+
+            if(isRoot):
+                children_dicts.append(child.parse_to_json())
+            else:
+                # ignore part of product assembly
+                if(not child.get_unique_name() == self.get_unique_name()):
+                    children_dicts.append(child.parse_to_json())
 
         json_dict[JSON_ELEMNT_CHILDREN] = children_dicts
 
@@ -129,7 +138,6 @@ class JsonProductAssembly(AJsonProduct):
             # TODO: use source file of a2plus part and then only use the name without fcstd, there probably is a better way to do this
             child_document = ActiveDocument(working_output_directory).open_set_and_get_document(product.sourceFile.split(os.path.sep)[-1][:-6])
 
-            # TODO: if self has part
             if(PRODUCT_IDENTIFIER in name):
                 print(f"Read ProductAssembly '{label}'")
                 child = JsonProductAssembly()

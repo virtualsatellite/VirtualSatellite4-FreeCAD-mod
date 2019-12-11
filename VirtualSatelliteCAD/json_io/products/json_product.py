@@ -98,8 +98,8 @@ class AJsonProduct():
 
     def parse_to_json(self):
         json_dict = {
-            JSON_ELEMENT_NAME: self.name,
-            JSON_ELEMENT_UUID: self.uuid,
+            JSON_ELEMENT_NAME: self.name.replace("_", "-"),
+            JSON_ELEMENT_UUID: self.uuid.replace("_", "-"),
 
             JSON_ELEMENT_POS_X: self.pos_x / M_TO_MM,
             JSON_ELEMENT_POS_Y: self.pos_y / M_TO_MM,
@@ -204,13 +204,18 @@ class AJsonProduct():
 
         if(freecad_sheet is not None):
             # TODO: refactor this with the json_spread_sheet
-            if(freecad_sheet is not None):
-                self.name = freecad_sheet.get("B3")
-                self.uuid = freecad_sheet.get("B4")
-                self.part_name = freecad_sheet.get("B5")
-                self.part_uuid = freecad_sheet.get("B6")
+            self.name = freecad_sheet.get("B3")
+            self.uuid = freecad_sheet.get("B4")
+            self.part_name = freecad_sheet.get("B5")
+            self.part_uuid = freecad_sheet.get("B6")
 
             print(self.name, self.uuid, self.part_name, self.part_uuid)
+        # get properties from name, because a root assembly has no sheet
+        else:
+            # identifier_name_uuid
+            document_name = active_document.app_active_document.Name
+            self.name = document_name.split("_")[1]
+            self.uuid = "_".join(document_name.split("_")[2:])
 
         if(self.is_part_reference()):
             # TODO: read in the referenced part (if not read in already)?
@@ -225,13 +230,13 @@ class AJsonProduct():
                 part_document = ActiveDocument(working_output_directory).open_set_and_get_document(part_name)
                 for obj in part_document.app_active_document.Objects:
                     if(obj.Label == self.part_name):
-                        # print(part)
-                        # print(part.PropertiesList)
-                        # print(part.Label)
-                        # print(part.TypeId)
-                        factory = JsonPartFactory()
-                        part = factory.create_from_freecad(obj)
-                        part_list.append((part_name, part))
+                        part_object = obj
+                    else:
+                        part_sheet = obj
+                factory = JsonPartFactory()
+                part = factory.create_from_freecad(part_object)
+                part.read_from_freecad(part_object, part_sheet)
+                part_list.append((part_name, part))
                 # read_from_freecad(child_document, working_output_directory
 
     def get_unique_name(self):

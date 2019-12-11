@@ -28,8 +28,8 @@
 # from freecad.active_document import ActiveDocument
 import FreeCAD
 from json_io.products.json_product_assembly import JsonProductAssembly
-import json
-# from json_io.json_definitions import PART_IDENTIFIER, PRODUCT_IDENTIFIER
+# import json
+from json_io.json_definitions import JSON_PARTS, JSON_PRODUCTS
 # from json_io.json_spread_sheet import FREECAD_PART_SHEET_NAME
 
 Log = FreeCAD.Console.PrintLog
@@ -57,12 +57,11 @@ class JsonExporter(object):
 
         json_part_list = []
         for _, part in part_list:
-            print(part)
-            # json_part_list = part.parse_to_json
+            json_part_list.append(part.parse_to_json())
 
         json_dict = {
-            "Products": json_products_dict,
-            "Parts": json_part_list
+            JSON_PRODUCTS: json_products_dict,
+            JSON_PARTS: json_part_list
         }
 
         print(json_dict)
