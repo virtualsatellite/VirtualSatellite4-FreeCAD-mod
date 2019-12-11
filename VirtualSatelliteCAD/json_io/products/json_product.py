@@ -30,8 +30,9 @@ from json_io.json_definitions import JSON_ELEMENT_NAME, JSON_ELEMENT_UUID,\
     JSON_ELEMENT_ROT_Z, JSON_ELEMENT_PART_UUID, JSON_ELEMENT_PART_NAME, M_TO_MM,\
     RAD_TO_DEG, _get_combined_name_uuid, JSON_ELEMNT_CHILDREN, PART_IDENTIFIER
 from json_io.json_spread_sheet import JsonSpreadSheet
+from json_io.parts.json_part_factory import JsonPartFactory
 from A2plus.a2p_importpart import importPartFromFile
-from freecad.active_document import VECTOR_X, VECTOR_Y, VECTOR_Z, VECTOR_ZERO
+from freecad.active_document import VECTOR_X, VECTOR_Y, VECTOR_Z, VECTOR_ZERO, ActiveDocument
 
 
 class AJsonProduct():
@@ -185,7 +186,7 @@ class AJsonProduct():
         # to the FreeCAD document
         self.sheet.write_to_freecad(active_document)
 
-    def read_from_freecad(self, active_document, working_output_directory, freecad_object=None, freecad_sheet=None):
+    def read_from_freecad(self, active_document, working_output_directory, part_list, freecad_object=None, freecad_sheet=None):
         if(freecad_object is not None):
             # TODO: basically revert _set_freecad_position_and_rotation
             pos = freecad_object.Placement.Base
@@ -215,7 +216,23 @@ class AJsonProduct():
             # TODO: read in the referenced part (if not read in already)?
             # do we even have to read in parts like that?
             # parsing parts when we export to JSON should be enough?
-            pass
+            part_name = self.get_part_unique_name()
+            print(part_name)
+            # print(part_name in [item[0] for item in part_list])
+
+            # only have a part one time in the list
+            if(part_name not in [item[0] for item in part_list]):
+                part_document = ActiveDocument(working_output_directory).open_set_and_get_document(part_name)
+                for obj in part_document.app_active_document.Objects:
+                    if(obj.Label == self.part_name):
+                        # print(part)
+                        # print(part.PropertiesList)
+                        # print(part.Label)
+                        # print(part.TypeId)
+                        factory = JsonPartFactory()
+                        part = factory.create_from_freecad(obj)
+                        part_list.append((part_name, part))
+                # read_from_freecad(child_document, working_output_directory
 
     def get_unique_name(self):
         '''

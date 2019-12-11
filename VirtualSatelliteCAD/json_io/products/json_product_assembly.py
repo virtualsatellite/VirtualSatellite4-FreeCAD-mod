@@ -85,8 +85,11 @@ class JsonProductAssembly(AJsonProduct):
         else:
             return None
 
-    def parse_to_json(self):
-        json_dict = super().parse_to_json()
+    def parse_to_json(self, isRoot=False):
+        if(isRoot):
+            json_dict = {}
+        else:
+            json_dict = super().parse_to_json()
 
         children_dicts = []
         for child in self.children:
@@ -108,7 +111,7 @@ class JsonProductAssembly(AJsonProduct):
         for child in self.children:
             child.write_to_freecad(active_document)
 
-    def read_from_freecad(self, active_document, working_output_directory, freecad_object=None, freecad_sheet=None):
+    def read_from_freecad(self, active_document, working_output_directory, part_list, freecad_object=None, freecad_sheet=None):
         """
         Reads an ProductAssembly from FreeCAD
         Then calls read_from_freecad of his children (either another assembly or a ?ProductChild?)
@@ -116,7 +119,7 @@ class JsonProductAssembly(AJsonProduct):
         products_with_sheets = self.get_products_of_active_document(active_document)
         # read the assembly
         # TODO: super().read_from_freecad() and in super read the product and (if available) the corresponding part?
-        super().read_from_freecad(active_document, working_output_directory, freecad_object, freecad_sheet)
+        super().read_from_freecad(active_document, working_output_directory, part_list, freecad_object, freecad_sheet)
 
         self.children = []
         # read the children
@@ -126,6 +129,7 @@ class JsonProductAssembly(AJsonProduct):
             # TODO: use source file of a2plus part and then only use the name without fcstd, there probably is a better way to do this
             child_document = ActiveDocument(working_output_directory).open_set_and_get_document(product.sourceFile.split(os.path.sep)[-1][:-6])
 
+            # TODO: if self has part
             if(PRODUCT_IDENTIFIER in name):
                 print(f"Read ProductAssembly '{label}'")
                 child = JsonProductAssembly()
@@ -135,7 +139,7 @@ class JsonProductAssembly(AJsonProduct):
                 child = AJsonProduct()
 
             self.children.append(child)
-            child.read_from_freecad(child_document, working_output_directory, freecad_object=product, freecad_sheet=sheet)
+            child.read_from_freecad(child_document, working_output_directory, part_list, freecad_object=product, freecad_sheet=sheet)
 
     def get_products_of_active_document(self, active_document):
         """

@@ -64,6 +64,18 @@ class JsonPartFactory(object):
             return None
 
     @classmethod
+    def create_from_freecad(cls, freecad_object):
+        Log("Reading part object...\n")
+        shape = freecad_object.TypeId.split(":")[-1]
+
+        # TODO: JSON_ELEMENT_SHAPE_NONE?
+        create_method_name = "_create_json_part_" + shape.lower()
+        create_method_dispatch = getattr(cls, create_method_name, lambda: Err("Invalid call to : " + create_method_name + "\n"))
+        part_x = create_method_dispatch()
+
+        return part_x
+
+    @classmethod
     def _create_json_part_box(cls):
         Log("Creating box part.\n")
         return JsonPartBox()
