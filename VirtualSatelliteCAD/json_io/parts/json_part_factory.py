@@ -67,6 +67,9 @@ class JsonPartFactory(object):
     def create_from_freecad(cls, freecad_object):
         Log("Reading part object...\n")
         shape = freecad_object.TypeId.split(":")[-1]
+        if shape == "Feature":
+            # assume geometry
+            shape = "Geometry"
 
         # TODO: JSON_ELEMENT_SHAPE_NONE: can't be exported because no representation in FreeCAD exists?
         create_method_name = "_create_json_part_" + shape.lower()
