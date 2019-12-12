@@ -51,4 +51,4 @@ class TestJsonExporter(AWorkingDirectoryTest):
         json_exporter = JsonExporter(self._WORKING_DIRECTORY)
         exported_json = json_exporter.full_export(active_document)
 
-        # self.assertEqual(exported_json, json_object, "JSON in and out equal each other")
+        # TODO: self.assertEqual(exported_json, json_object, "JSON in and out equal each other")

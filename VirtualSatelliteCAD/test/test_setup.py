@@ -107,3 +107,43 @@ class AWorkingDirectoryTest(unittest.TestCase):
         self.assertEqual(len(first), len(second), msg)
         for index in range(len(first)):
             self.assertAlmostEqual(first[index], second[index], places, msg)
+
+    def _order(self, obj):
+        """
+        Recursive orders object with nested lists and dictionaries
+        """
+        if isinstance(obj, dict):
+            return sorted((k, self._order(v)) for k, v in obj.items())
+        if isinstance(obj, list):
+            return sorted(self._order(x) for x in obj)
+        else:
+            return obj
+
+    def assertJsonObjectsEqual(self, first, second, msg=None):
+        self.assertEqual(self._order(first), self._order(second), msg)
+
+    def _ignore(self, obj, keys):
+        key = keys[0]
+
+        if isinstance(obj, dict):
+            # last key
+            if len(keys) == 1:
+                obj[key] = None
+            else:
+                if key in obj:
+                    self._ignore(obj[key], ".".keys[1:])
+
+    def assertJsonObjectsAlmostEqual(self, first, second, diff=[], msg=None):
+        """
+        Ignores differences to be specified as URIs like "key1.key2" in diff
+        Checks for equality in the resulting JSON objects
+        """
+        # copy objects so we don't change the real ones
+        first_copy, second_copy = first.copy(), second.copy()
+
+        for uri in diff:
+            keys = uri.split(".")
+            self._ignore(first_copy, keys)
+            self._ignore(second_copy, keys)
+
+        self.assertEqual(self._order(first_copy), self._order(second_copy), msg)

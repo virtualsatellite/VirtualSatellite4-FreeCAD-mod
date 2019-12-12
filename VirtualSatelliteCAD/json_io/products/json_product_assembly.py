@@ -25,7 +25,8 @@
 #
 
 from json_io.products.json_product import AJsonProduct
-from json_io.json_definitions import JSON_ELEMNT_CHILDREN, PRODUCT_IDENTIFIER, _get_combined_name_uuid, JSON_ELEMENT_NAME, JSON_ELEMENT_UUID
+from json_io.json_definitions import JSON_ELEMNT_CHILDREN, PRODUCT_IDENTIFIER, PART_IDENTIFIER, \
+ _get_combined_name_uuid, JSON_ELEMENT_NAME, JSON_ELEMENT_UUID
 from json_io.products.json_product_child import JsonProductChild
 from json_io.json_spread_sheet import FREECAD_PART_SHEET_NAME
 from freecad.active_document import ActiveDocument
@@ -86,6 +87,9 @@ class JsonProductAssembly(AJsonProduct):
             return None
 
     def parse_to_json(self, isRoot=False):
+        """
+        TODO
+        """
         if(isRoot):
             json_dict = {
                 JSON_ELEMENT_NAME: self.name.replace("_", "-"),
@@ -123,11 +127,10 @@ class JsonProductAssembly(AJsonProduct):
     def read_from_freecad(self, active_document, working_output_directory, part_list, freecad_object=None, freecad_sheet=None):
         """
         Reads an ProductAssembly from FreeCAD
-        Then calls read_from_freecad of his children (either another assembly or a ?ProductChild?)
+        Then calls read_from_freecad of his children (either another assembly or a ProductChild)
         """
         products_with_sheets = self.get_products_of_active_document(active_document)
         # read the assembly
-        # TODO: super().read_from_freecad() and in super read the product and (if available) the corresponding part?
         super().read_from_freecad(active_document, working_output_directory, part_list, freecad_object, freecad_sheet)
 
         self.children = []
@@ -143,11 +146,10 @@ class JsonProductAssembly(AJsonProduct):
                 child = JsonProductAssembly()
             else:
                 print(f"Read Product '{label}'")
-                # TODO: or JsonProductChild?
                 child = AJsonProduct()
 
-            self.children.append(child)
             child.read_from_freecad(child_document, working_output_directory, part_list, freecad_object=product, freecad_sheet=sheet)
+            self.children.append(child)
 
     def get_products_of_active_document(self, active_document):
         """
@@ -160,18 +162,15 @@ class JsonProductAssembly(AJsonProduct):
 
         for obj in active_document.app_active_document.Objects:
             name, label = obj.Name, obj.Label
-            Log("Object: {}, {}".format(name, label))  # , obj.PropertiesList)
+            Log("Object: {}, {}".format(name, label))
 
             # TODO: use Labels instead of names if the names contain the identifiers
             if(FREECAD_PART_SHEET_NAME in name):
                 sheets.append(obj)
                 Log("Object is sheet")
-            else:
+            elif(PRODUCT_IDENTIFIER in name or PART_IDENTIFIER in name):
                 products.append(obj)
                 Log("Object is product")
-
-        # print([obj.Label for obj in sheets])
-        # print([obj.Label for obj in products])
 
         products_with_sheets = []
 

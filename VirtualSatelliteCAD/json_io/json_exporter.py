@@ -41,24 +41,28 @@ class JsonExporter(object):
         self.working_output_directory = working_output_directory
 
     def full_export(self, active_document):
+        """
+        TODO
+        """
 
-        # parse the root document (this will parse all children
         root_assembly = JsonProductAssembly()
+
         part_list = []
+        # read the root document (this will create the tree and read all children)
+        # a list of all found part names and the created part objects will be returned
         root_assembly.read_from_freecad(active_document, self.working_output_directory, part_list)
 
         print(part_list)
-        # for the root assembly we have to provide additional information (name and uuid) here?
 
-        # parse to json
-        # TODO: a root assembly does only have name and uuid, so don't parse it like a normal assembly
-        # maybe with a dedicated class somehow?
+        # parse the products using the product assembly tree similar as above
         json_products_dict = root_assembly.parse_to_json(isRoot=True)
 
+        # separate parse the parts into a list
         json_part_list = []
         for _, part in part_list:
             json_part_list.append(part.parse_to_json())
 
+        # create the complete JSON dictionary
         json_dict = {
             JSON_PRODUCTS: json_products_dict,
             JSON_PARTS: json_part_list

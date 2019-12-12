@@ -76,3 +76,28 @@ class TestJsonPartGeometry(AWorkingDirectoryTest):
         self.assertEquals(Gui.ActiveDocument.getObject("Geometry").ShapeColor,
                           (0.003921568859368563, 0.007843137718737125, 0.9098039269447327, 0.0),
                           "Shape has correct color")
+
+    def test_create_and_read_part_sphere(self):
+        json_data = TEST_JSON_PART_GEOMETRY
+
+        active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("PartGeometry")
+        json_object = json.loads(json_data)
+
+        # get the current module path and get the directory for the test resource
+        # place that path into the json object before executing the transformations
+        stl_test_resource_path = Environment.get_test_resource_path("Switch.stl")
+        json_object[JSON_ELEMENT_STL_PATH] = stl_test_resource_path
+
+        json_part = JsonPartGeometry()
+        json_part.parse_from_json(json_object)
+        json_part.write_to_freecad(active_document)
+
+        read_part = JsonPartGeometry()
+        # first 3 objects belong to the stl
+        freecad_object = active_document.app_active_document.Objects[3]
+        freecad_sheet = active_document.app_active_document.Objects[4]
+
+        read_part.read_from_freecad(freecad_object, freecad_sheet)
+        read_json = read_part.parse_to_json()
+
+        self.assertJsonObjectsEqual(json_object, read_json, "Equal JSON objects")

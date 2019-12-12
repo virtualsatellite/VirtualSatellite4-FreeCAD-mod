@@ -28,8 +28,9 @@ from json_io.json_definitions import JSON_ELEMENT_NAME, JSON_ELEMENT_UUID,\
     JSON_ELEMENT_POS_Y, JSON_ELEMENT_POS_X,\
     JSON_ELEMENT_POS_Z, JSON_ELEMENT_ROT_X, JSON_ELEMENT_ROT_Y,\
     JSON_ELEMENT_ROT_Z, JSON_ELEMENT_PART_UUID, JSON_ELEMENT_PART_NAME, M_TO_MM,\
-    RAD_TO_DEG, _get_combined_name_uuid, JSON_ELEMNT_CHILDREN, PART_IDENTIFIER
-from json_io.json_spread_sheet import JsonSpreadSheet
+    RAD_TO_DEG, _get_combined_name_uuid, JSON_ELEMNT_CHILDREN, PART_IDENTIFIER,\
+    PRODUCT_IDENTIFIER
+from json_io.json_spread_sheet import JsonSpreadSheet, FREECAD_PART_SHEET_NAME
 from json_io.parts.json_part_factory import JsonPartFactory
 from A2plus.a2p_importpart import importPartFromFile
 from freecad.active_document import VECTOR_X, VECTOR_Y, VECTOR_Z, VECTOR_ZERO, ActiveDocument
@@ -186,9 +187,11 @@ class AJsonProduct():
         # to the FreeCAD document
         self.sheet.write_to_freecad(active_document)
 
+    def _get_freecad_rotation(self, freecad_object):
+        pass
+
     def read_from_freecad(self, active_document, working_output_directory, part_list, freecad_object=None, freecad_sheet=None):
         if(freecad_object is not None):
-            # TODO: basically revert _set_freecad_position_and_rotation
             pos = freecad_object.Placement.Base
             rot = freecad_object.Placement.Rotation.toEuler()
 
@@ -196,20 +199,30 @@ class AJsonProduct():
             self.pos_y = pos[1]
             self.pos_z = pos[2]
 
+            # TODO: use _get_freecad_rotation
             self.rot_x = rot[0]
             self.rot_y = rot[1]
             self.rot_z = rot[2]
 
-        print(self.pos_x, self.pos_y, self.pos_z, self.rot_x, self.rot_y, self.rot_z)
+            child_cnt = 0
+            for obj in active_document.app_active_document.Objects:
+                name = obj.Name
+
+                # TODO: use Labels instead of names if the names contain the identifiers
+                if(FREECAD_PART_SHEET_NAME in name):
+                    child_cnt += 1
+                elif(PRODUCT_IDENTIFIER in name or PART_IDENTIFIER in name):
+                    child_cnt += 1
+
+            self.has_children = child_cnt
 
         if(freecad_sheet is not None):
-            # TODO: refactor this with the json_spread_sheet
+            # TODO: use the json_spread_sheet
             self.name = freecad_sheet.get("B3")
             self.uuid = freecad_sheet.get("B4")
             self.part_name = freecad_sheet.get("B5")
             self.part_uuid = freecad_sheet.get("B6")
 
-            print(self.name, self.uuid, self.part_name, self.part_uuid)
         # get properties from name, because a root assembly has no sheet
         else:
             # identifier_name_uuid
@@ -218,16 +231,15 @@ class AJsonProduct():
             self.uuid = "_".join(document_name.split("_")[2:])
 
         if(self.is_part_reference()):
-            # TODO: read in the referenced part (if not read in already)?
-            # do we even have to read in parts like that?
-            # parsing parts when we export to JSON should be enough?
+            # read in the referenced part (if not read in already)
+
             part_name = self.get_part_unique_name()
             print(part_name)
-            # print(part_name in [item[0] for item in part_list])
 
             # only have a part one time in the list
             if(part_name not in [item[0] for item in part_list]):
                 part_document = ActiveDocument(working_output_directory).open_set_and_get_document(part_name)
+                # TODO: use fixed positions? check number of objects?
                 for obj in part_document.app_active_document.Objects:
                     if(obj.Label == self.part_name):
                         part_object = obj
@@ -237,7 +249,6 @@ class AJsonProduct():
                 part = factory.create_from_freecad(part_object)
                 part.read_from_freecad(part_object, part_sheet)
                 part_list.append((part_name, part))
-                # read_from_freecad(child_document, working_output_directory
 
     def get_unique_name(self):
         '''

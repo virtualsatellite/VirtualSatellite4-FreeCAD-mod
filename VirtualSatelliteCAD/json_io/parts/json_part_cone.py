@@ -56,5 +56,5 @@ class JsonPartCone(AJsonPart):
         cone.Placement = placement
 
     def _get_freecad_properties(self, cone):
-        self.radius = cone.Radius2
-        self.width = cone.Height
+        self.radius = float(cone.Radius2)
+        self.width = float(cone.Height)

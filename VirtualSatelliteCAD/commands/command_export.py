@@ -30,6 +30,8 @@ from module.environment import Environment, ICON_EXPORT
 from commands.command_definitions import COMMAND_ID_EXPORT_2_VIRTUAL_SATELLITE
 from PySide2.QtWidgets import QFileDialog
 from json_io.json_exporter import JsonExporter
+import json
+from freecad.active_document import ActiveDocument
 
 Log = FreeCAD.Console.PrintMessage
 
@@ -46,12 +48,17 @@ class CommandExport:
             "JSON(*.json)")[0]  # filter
 
         if filename != '':
-            with open(filename, 'w') as file:
+            json_exporter = JsonExporter(Environment.get_appdata_module_path())
+            # TODO: better way to do this?, fix
+            if(FreeCAD.ActiveDocument is not None):
+                active_document = ActiveDocument(Environment.get_appdata_module_path()).open_set_and_get_document(FreeCAD.ActiveDocument.Label)
+                json_dict = json_exporter.full_export(active_document)
+                json_str = json.dumps(json_dict)
 
-                json_exporter = JsonExporter()
-                json_str = json_exporter.full_export()
-
-                file.write(json_str)
+                with open(filename, 'w') as file:
+                    file.write(json_str)
+            else:
+                print("Error msg")
 
     def IsActive(self):
         return True

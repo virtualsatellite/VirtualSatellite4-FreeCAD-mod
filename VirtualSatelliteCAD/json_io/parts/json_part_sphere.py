@@ -37,4 +37,4 @@ class JsonPartSphere(AJsonPart):
         sphere.Radius = self.radius
 
     def _get_freecad_properties(self, sphere):
-        self.radius = sphere.Radius
+        self.radius = float(sphere.Radius)

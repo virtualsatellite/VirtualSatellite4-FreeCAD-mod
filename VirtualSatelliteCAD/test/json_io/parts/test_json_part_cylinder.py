@@ -32,6 +32,7 @@ import FreeCAD
 import FreeCADGui
 from json_io.parts.json_part_cylinder import JsonPartCylinder
 from test.json_io.test_json_data import TEST_JSON_PART_CYLINDER
+from json_io.json_definitions import JSON_ELEMENT_LENGTH_Y, JSON_ELEMENT_RADIUS
 
 App = FreeCAD
 Gui = FreeCADGui
@@ -68,3 +69,52 @@ class TestJsonPartCylinder(AWorkingDirectoryTest):
         self.assertEquals(Gui.ActiveDocument.getObject("Cylinder").ShapeColor,
                           (0.7529411911964417, 0.7529411911964417, 0.7529411911964417, 0.0),
                           "Shape has correct color")
+
+    def test_create_and_read_part_cylinder(self):
+        json_data = TEST_JSON_PART_CYLINDER
+
+        active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("PartCylinder")
+        json_object = json.loads(json_data)
+
+        json_part = JsonPartCylinder()
+        json_part.parse_from_json(json_object)
+        json_part.write_to_freecad(active_document)
+
+        read_part = JsonPartCylinder()
+        freecad_object = active_document.app_active_document.Objects[0]
+        freecad_sheet = active_document.app_active_document.Objects[1]
+
+        read_part.read_from_freecad(freecad_object, freecad_sheet)
+        read_json = read_part.parse_to_json()
+
+        self.assertJsonObjectsEqual(json_object, read_json, "Equal JSON objects")
+
+    def test_create_change_and_read_part_cylinder(self):
+        json_data = TEST_JSON_PART_CYLINDER
+
+        active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("PartCylinder")
+        json_object = json.loads(json_data)
+
+        json_part = JsonPartCylinder()
+        json_part.parse_from_json(json_object)
+        json_part.write_to_freecad(active_document)
+
+        read_part = JsonPartCylinder()
+        freecad_object = active_document.app_active_document.Objects[0]
+        freecad_sheet = active_document.app_active_document.Objects[1]
+
+        # Change cylinder properties
+        freecad_object.Radius = 10
+        freecad_object.Height = 20
+
+        read_part.read_from_freecad(freecad_object, freecad_sheet)
+        read_json = read_part.parse_to_json()
+
+        # check that only the expected values got changed
+        self.assertJsonObjectsAlmostEqual(
+            read_json, json_object, [JSON_ELEMENT_RADIUS, JSON_ELEMENT_LENGTH_Y],
+            "JSON objects at most differ in radius and lengthY")
+
+        # check that the values got changed correct
+        self.assertEqual(read_json[JSON_ELEMENT_RADIUS], 0.01, "Radius set correct")
+        self.assertEqual(read_json[JSON_ELEMENT_LENGTH_Y], 0.02, "Width set correct")

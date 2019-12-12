@@ -44,6 +44,18 @@ class JsonPartGeometry(AJsonPart):
         super().parse_from_json(json_object)
         self.stl_path = json_object[JSON_ELEMENT_STL_PATH]
 
+    def parse_to_json(self):
+        json_dict = super().parse_to_json()
+        json_dict[JSON_ELEMENT_STL_PATH] = self.stl_path
+
+        return json_dict
+
+    def read_from_freecad(self, freecad_object, freecad_sheet):
+        super().read_from_freecad(freecad_object, freecad_sheet)
+
+        # TODO: remove?
+        self.stl_path = freecad_sheet.get("B11")
+
     def _set_freecad_properties(self, active_document):
         pass
 
@@ -81,3 +93,6 @@ class JsonPartGeometry(AJsonPart):
             active_document.gui_active_document.getObject(object_geometry_name).Visibility = False
             active_document.gui_active_document.getObject(object_geometry_name + "_form").Visibility = False
             active_document.gui_active_document.getObject(object_geometry_name + "_cleaned").Visibility = False
+
+    def _get_freecad_properties(self, geometry):
+        pass

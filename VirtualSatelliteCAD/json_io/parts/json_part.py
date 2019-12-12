@@ -76,9 +76,12 @@ class AJsonPart():
         return self
 
     def parse_to_json(self):
+        """
+        TODO
+        """
         json_dict = {
             JSON_ELEMENT_NAME: self.name,
-            JSON_ELEMENT_UUID: self.uuid,
+            JSON_ELEMENT_UUID: self.uuid.replace("_", "-"),
             JSON_ELEMENT_SHAPE: self.shape,
 
             JSON_ELEMENT_LENGTH_X: self.length / M_TO_MM,
@@ -157,24 +160,24 @@ class AJsonPart():
         """
         TODO
         """
-        # TODO: with sheet?
+        # TODO: create / use sheet
         self.name = freecad_sheet.get("B3")
         self.shape = freecad_sheet.get("B4")
         self.uuid = freecad_sheet.get("B5")
 
-        # init with values of the sheet
+        # initialize with values of the sheet
         self.length = float(freecad_sheet.get("B6"))
         self.width = float(freecad_sheet.get("B7"))
         self.height = float(freecad_sheet.get("B8"))
         self.radius = float(freecad_sheet.get("B9"))
         self.color = int(freecad_sheet.get("B10"))
 
-        # then overwrite with the values of the freecad object
+        # then overwrite with the values of the FreeCAD object
         self._get_freecad_properties(freecad_object)
 
-        # color belongs to the GUI so don't get it atm
+        # the color belongs to the GUI so don't read it?
 
-        # TODO:
+        # TODO: create a sheet
         self.sheet = None
 
     def get_shape_type(self):
