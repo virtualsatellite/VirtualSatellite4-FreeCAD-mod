@@ -115,6 +115,9 @@ class AJsonProduct():
             json_dict[JSON_ELEMENT_PART_UUID] = self.part_uuid.replace("_", "-")
             json_dict[JSON_ELEMENT_PART_NAME] = self.part_name.replace("_", "-")
 
+        # will be overwritten from ProductAssembly
+        json_dict[JSON_ELEMNT_CHILDREN] = []
+
         return json_dict
 
     def _create_or_update_freecad_part(self, active_document):
@@ -188,21 +191,24 @@ class AJsonProduct():
         self.sheet.write_to_freecad(active_document)
 
     def _get_freecad_rotation(self, freecad_object):
-        pass
+        # reverse rotation
+
+        rot = freecad_object.Placement.Rotation.toEuler()
+
+        # TODO: check
+        self.rot_z = rot[0]
+        self.rot_y = rot[1]
+        self.rot_x = rot[2]
 
     def read_from_freecad(self, active_document, working_output_directory, part_list, freecad_object=None, freecad_sheet=None):
         if(freecad_object is not None):
             pos = freecad_object.Placement.Base
-            rot = freecad_object.Placement.Rotation.toEuler()
 
             self.pos_x = pos[0]
             self.pos_y = pos[1]
             self.pos_z = pos[2]
 
-            # TODO: use _get_freecad_rotation
-            self.rot_x = rot[0]
-            self.rot_y = rot[1]
-            self.rot_z = rot[2]
+            self._get_freecad_rotation(freecad_object)
 
             child_cnt = 0
             for obj in active_document.app_active_document.Objects:

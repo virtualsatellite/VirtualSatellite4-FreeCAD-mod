@@ -48,7 +48,7 @@ class TestJsonProduct(AWorkingDirectoryTest):
     def tearDown(self):
         super().tearDown()
 
-    def test_parse(self):
+    def test_parse_from_json(self):
         json_data = TEST_JSON_PRODUCT_WITHOUT_CHILDREN
 
         json_object = json.loads(json_data)
@@ -69,6 +69,16 @@ class TestJsonProduct(AWorkingDirectoryTest):
         self.assertAlmostEqual(json_product.rot_z, 60, 5, "Property is correctly set")
 
         self.assertFalse(json_product.has_children, "The defined product has an empty list of children")
+
+    def test_parse_to_json(self):
+        json_data = TEST_JSON_PRODUCT_WITHOUT_CHILDREN
+
+        json_object = json.loads(json_data)
+        json_product = AJsonProduct().parse_from_json(json_object)
+
+        read_json = json_product.parse_to_json()
+
+        self.assertJsonObjectsEqual(json_object, read_json, "Equal JSON objects")
 
     def test_get_unique_names(self):
         json_data = TEST_JSON_PRODUCT_WITHOUT_CHILDREN

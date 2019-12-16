@@ -51,7 +51,7 @@ class TestJsonProductAssembly(AWorkingDirectoryTest):
     def tearDown(self):
         super().tearDown()
 
-    def test_parse_with_children(self):
+    def test_parse_from_json_with_children(self):
         json_object = json.loads(self.json_data)
         json_product = JsonProductAssembly().parse_from_json(json_object)
 
@@ -96,7 +96,9 @@ class TestJsonProductAssembly(AWorkingDirectoryTest):
         self.assertEqual(json_product_child_2.rot_y, 0.0, "Property is correctly set")
         self.assertEqual(json_product_child_2.rot_z, 0.0, "Property is correctly set")
 
-    def test_parse_with_no_children(self):
+    # TODO: testcases for product assembly
+
+    def test_parse_from_json_with_no_children(self):
         json_data = TEST_JSON_PRODUCT_WITHOUT_CHILDREN
 
         json_object = json.loads(json_data)
