@@ -96,3 +96,15 @@ class JsonSpreadSheet(object):
 
         if (attribute_index >= 0 and attribute_index < len(self._json_part_or_product.attributes)):
             return sheet.get("B" + str(attribute_index + FREECAD_PART_SHEET_ATTRIBUTE_START_LINE))
+
+    def read_sheet_attribute_from_freecad(self, freecad_sheet, attribute_name):
+        '''
+        This method can be used to read from the part sheet from a
+        given document. The method allows to individually access the
+        written properties.
+        '''
+
+        attribute_index = list(self._json_part_or_product.attributes).index(attribute_name)
+
+        if (attribute_index >= 0 and attribute_index < len(self._json_part_or_product.attributes)):
+            return freecad_sheet.get("B" + str(attribute_index + FREECAD_PART_SHEET_ATTRIBUTE_START_LINE))

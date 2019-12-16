@@ -154,31 +154,29 @@ class AJsonPart():
         active_document.app_active_document.getObject(object_name_and_type).recompute()
 
     def _get_freecad_properties(self, freecad_object):
+        """
+        Function to be overwritten by concrete part implementations
+        """
         pass
 
     def read_from_freecad(self, freecad_object, freecad_sheet):
-        """
-        TODO
-        """
-        # TODO: create / use sheet
-        self.name = freecad_sheet.get("B3")
-        self.shape = freecad_sheet.get("B4")
-        self.uuid = freecad_sheet.get("B5")
+        sheet = JsonSpreadSheet(self)
+
+        self.name = sheet.read_sheet_attribute_from_freecad(freecad_sheet, "name")
+        self.shape = sheet.read_sheet_attribute_from_freecad(freecad_sheet, "shape")
+        self.uuid = sheet.read_sheet_attribute_from_freecad(freecad_sheet, "uuid")
 
         # initialize with values of the sheet
-        self.length = float(freecad_sheet.get("B6"))
-        self.width = float(freecad_sheet.get("B7"))
-        self.height = float(freecad_sheet.get("B8"))
-        self.radius = float(freecad_sheet.get("B9"))
-        self.color = int(freecad_sheet.get("B10"))
+        self.length = float(sheet.read_sheet_attribute_from_freecad(freecad_sheet, "length"))
+        self.width = float(sheet.read_sheet_attribute_from_freecad(freecad_sheet, "width"))
+        self.height = float(sheet.read_sheet_attribute_from_freecad(freecad_sheet, "height"))
+        self.radius = float(sheet.read_sheet_attribute_from_freecad(freecad_sheet, "radius"))
+        self.color = int(sheet.read_sheet_attribute_from_freecad(freecad_sheet, "color"))
 
         # then overwrite with the values of the FreeCAD object
         self._get_freecad_properties(freecad_object)
 
-        # the color belongs to the GUI so don't read it?
-
-        # TODO: create a sheet
-        self.sheet = None
+        self.sheet = sheet
 
     def get_shape_type(self):
         shape_type = self.shape.lower().capitalize()

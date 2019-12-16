@@ -195,12 +195,26 @@ class AJsonProduct():
 
         rot = freecad_object.Placement.Rotation.toEuler()
 
-        # TODO: check
+        # TODO: check with test case
         self.rot_z = rot[0]
         self.rot_y = rot[1]
         self.rot_x = rot[2]
 
     def read_from_freecad(self, active_document, working_output_directory, part_list, freecad_object=None, freecad_sheet=None):
+
+        if(freecad_sheet is not None):
+            sheet = JsonSpreadSheet(self)
+            self.name = sheet.read_sheet_attribute_from_freecad(freecad_sheet, "name")
+            self.uuid = sheet.read_sheet_attribute_from_freecad(freecad_sheet, "uuid")
+            self.part_name = sheet.read_sheet_attribute_from_freecad(freecad_sheet, "part_name")
+            self.part_uuid = sheet.read_sheet_attribute_from_freecad(freecad_sheet, "part_uuid")
+        # get properties from name, because a root assembly has no sheet
+        else:
+            # document_name is identifier_name_uuid
+            document_name = active_document.app_active_document.Name
+            self.name = document_name.split("_")[1]
+            self.uuid = "_".join(document_name.split("_")[2:])
+
         if(freecad_object is not None):
             pos = freecad_object.Placement.Base
 
@@ -221,20 +235,6 @@ class AJsonProduct():
                     child_cnt += 1
 
             self.has_children = child_cnt
-
-        if(freecad_sheet is not None):
-            # TODO: use the json_spread_sheet
-            self.name = freecad_sheet.get("B3")
-            self.uuid = freecad_sheet.get("B4")
-            self.part_name = freecad_sheet.get("B5")
-            self.part_uuid = freecad_sheet.get("B6")
-
-        # get properties from name, because a root assembly has no sheet
-        else:
-            # identifier_name_uuid
-            document_name = active_document.app_active_document.Name
-            self.name = document_name.split("_")[1]
-            self.uuid = "_".join(document_name.split("_")[2:])
 
         if(self.is_part_reference()):
             # read in the referenced part (if not read in already)
