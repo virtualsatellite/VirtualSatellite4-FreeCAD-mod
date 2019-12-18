@@ -128,7 +128,6 @@ class AWorkingDirectoryTest(unittest.TestCase):
         Recursive ignore objects
         keys: URI like "key1.key2" ignores obj["key1"]["key2"]
         """
-        # TODO: also resolve lists?
         key = keys[0]
 
         if isinstance(obj, dict):

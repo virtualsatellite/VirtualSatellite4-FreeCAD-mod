@@ -340,6 +340,74 @@ TEST_JSON_PRODUCT_WITH_ONE_CHILD = """{
         ]
     }
     """
+
+TEST_JSON_PRODUCT_ROOT = """{
+        "name": "Root",
+        "uuid": "e8794f3d-86ec-44c5-9618-8b7170c45480",
+        "children": [
+            {
+                "name": "BasePlateBottom",
+                "uuid": "e8794f3d-86ec-44c5-9618-8b7170c45484",
+                "partUuid": "3d3708fd-5c6c-4af9-b710-d68778466084",
+                "partName": "BasePlate",
+                "posX": 0.02,
+                "posY": 0.03,
+                "posZ": 0.04,
+                "rotX": 0.3490659,
+                "rotY": 0.6981317,
+                "rotZ": 1.0471976,
+                "children": [
+                    {
+                        "posX": 0.0,
+                        "posY": 0.0,
+                        "posZ": 0.0,
+                        "rotX": 0.0,
+                        "children": [
+                        ],
+                        "rotZ": 0.0,
+                        "rotY": 0.0,
+                        "name": "BasePlateBottom2",
+                        "uuid": "e8794f3d-86ec-44c5-9618-8b7170c45485",
+                        "partUuid": "3d3708fd-5c6c-4af9-b710-d68778466084",
+                        "partName": "BasePlate"
+                    }
+                ]
+            }
+        ]
+    }
+    """
+
+TEST_JSON_FULL_NONE_SHAPE = """{
+    "Products": {
+        "name": "SpaceCube",
+        "uuid": "a3533e02-125c-4066-bffe-d046d8d8342a",
+        "children": [{
+                "name": "Top",
+                "uuid": "cc14e2c7-9d7e-4cf2-8d6d-9b8cf5e96d56",
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 1.0,
+                "rotX": 0.0,
+                "rotY": 0.0,
+                "rotZ": 0.0,
+                "partUuid": "cc14e2c7-9d7e-4cf2-8d6d-9b8cf5e96d56",
+                "partName": "Top",
+                "children": []
+            }
+        ]
+    },
+    "Parts": [{
+            "name": "Top",
+            "uuid": "cc14e2c7-9d7e-4cf2-8d6d-9b8cf5e96d56",
+            "shape": "NONE",
+            "lengthX": 1.0,
+            "lengthY": 1.0,
+            "lengthZ": 0.02,
+            "radius": 0.05,
+            "color": 32768
+        }]
+}"""
+
 TEST_JSON_FULL_VISCUBE = """{
         "Products": {
             "children": [{

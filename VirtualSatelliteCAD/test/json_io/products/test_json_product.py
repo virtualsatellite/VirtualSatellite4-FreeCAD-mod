@@ -31,8 +31,9 @@ import FreeCAD
 import FreeCADGui
 from json_io.products.json_product import AJsonProduct
 from test.json_io.test_json_data import TEST_JSON_PRODUCT_WITHOUT_CHILDREN
-from json_io.json_definitions import PART_IDENTIFIER
-
+from json_io.json_definitions import PART_IDENTIFIER, \
+    JSON_ELEMENT_ROT_X, JSON_ELEMENT_ROT_Y, JSON_ELEMENT_ROT_Z
+from freecad.active_document import ActiveDocument
 
 App = FreeCAD
 Gui = FreeCADGui
@@ -115,3 +116,25 @@ class TestJsonProduct(AWorkingDirectoryTest):
         json_product = AJsonProduct().parse_from_json(json_object)
 
         self.assertTrue(json_product.is_part_reference(), "The current product references a part")
+
+    def test_rotation(self):
+        self.create_Test_Part()
+
+        json_data = TEST_JSON_PRODUCT_WITHOUT_CHILDREN
+
+        json_object = json.loads(json_data)
+        json_product = AJsonProduct().parse_from_json(json_object)
+        rot_old = [json_product.rot_x, json_product.rot_y, json_product.rot_z]
+
+        active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("Rotation_test")
+        json_product.write_to_freecad(active_document)
+        freecad_object = active_document.app_active_document.Objects[0]
+
+        json_product._get_freecad_rotation(freecad_object)
+
+        read_json = json_product.parse_to_json()
+
+        self.assertAlmostEqualVector(rot_old, [json_product.rot_x, json_product.rot_y, json_product.rot_z], msg="Product rotations are equal")
+        self.assertAlmostEqualVector([json_object[JSON_ELEMENT_ROT_X], json_object[JSON_ELEMENT_ROT_Y], json_object[JSON_ELEMENT_ROT_Z]],
+                                     [read_json[JSON_ELEMENT_ROT_X], read_json[JSON_ELEMENT_ROT_Y], read_json[JSON_ELEMENT_ROT_Z]],
+                                     msg="Rotations in JSON files are equal")

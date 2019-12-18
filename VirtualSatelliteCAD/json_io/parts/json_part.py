@@ -76,9 +76,6 @@ class AJsonPart():
         return self
 
     def parse_to_json(self):
-        """
-        TODO
-        """
         json_dict = {
             JSON_ELEMENT_NAME: self.name,
             JSON_ELEMENT_UUID: self.uuid.replace("_", "-"),

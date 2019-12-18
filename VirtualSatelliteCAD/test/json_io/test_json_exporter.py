@@ -60,7 +60,7 @@ class TestJsonExporter(AWorkingDirectoryTest):
         for child in exported_json[JSON_PRODUCTS][JSON_ELEMNT_CHILDREN]:
             if(child[JSON_ELEMENT_NAME] == "BeamStructure"):
                 exported_child = child[JSON_ELEMNT_CHILDREN][0]
-        print(exported_child)
+
         for child in json_object[JSON_PRODUCTS][JSON_ELEMNT_CHILDREN]:
             if(child[JSON_ELEMENT_NAME] == "BeamStructure"):
                 json_child = child[JSON_ELEMNT_CHILDREN][0]
@@ -69,3 +69,10 @@ class TestJsonExporter(AWorkingDirectoryTest):
         self.assertAlmostEqual(exported_child[JSON_ELEMENT_ROT_X], json_child[JSON_ELEMENT_ROT_X], msg="Rotation X equal")
         self.assertAlmostEqual(exported_child[JSON_ELEMENT_ROT_Y], json_child[JSON_ELEMENT_ROT_Y], msg="Rotation Y equal")
         self.assertAlmostEqual(exported_child[JSON_ELEMENT_ROT_Z], json_child[JSON_ELEMENT_ROT_Z], msg="Rotation Z equal")
+
+    # TODO:
+    def test_full_export_shape_none(self):
+        pass
+
+    def test_full_export_shape_geometry(self):
+        pass

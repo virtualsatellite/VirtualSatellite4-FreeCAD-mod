@@ -36,13 +36,16 @@ Log = FreeCAD.Console.PrintLog
 
 
 class JsonExporter(object):
+    '''
+    Provides functionality to export a FreeCAD document into JSON format
+    '''
 
     def __init__(self, working_output_directory):
         self.working_output_directory = working_output_directory
 
     def full_export(self, active_document):
         """
-        TODO
+        Export a FreeCAD document into a JSON file with products and parts
         """
 
         root_assembly = JsonProductAssembly()
@@ -50,10 +53,12 @@ class JsonExporter(object):
         part_list = []
         # read the root document (this will create the tree and read all children)
         # a list of all found part names and the created part objects will be returned
+        Log("Read root assembly...\n")
         root_assembly.read_from_freecad(active_document, self.working_output_directory, part_list)
 
-        print(part_list)
+        Log(part_list)
 
+        Log("Parse root assembly...\n")
         # parse the products using the product assembly tree similar as above
         json_products_dict = root_assembly.parse_to_json(isRoot=True)
 
@@ -68,6 +73,8 @@ class JsonExporter(object):
             JSON_PARTS: json_part_list
         }
 
-        print(json_dict)
+        Log(f"Created JSON dictionary: '{json_dict}'\n")
+
+        Log(f"Export successful\n")
 
         return json_dict

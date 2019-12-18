@@ -314,6 +314,13 @@ class TestJsonImporter(AWorkingDirectoryTest):
             PRODUCT_IDENTIFIER + "BeamStructure_2afb23c9_f458_4bdb_a4e7_fc863364644f")
         self.assertEquals(len(active_document.app_active_document.RootObjects), 6, "Found correct amount of root objects 3 objects plus 3 sheets")
 
+    # TODO:
+    def test_full_import_shape_none(self):
+        pass
+
+    def test_full_import_shape_geometry(self):
+        pass
+
     @unittest.SkipTest
     def test_full_import_again(self):
         """

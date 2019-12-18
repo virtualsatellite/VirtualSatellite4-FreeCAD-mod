@@ -97,5 +97,8 @@ class ActiveDocument(object):
     def save_and_close_active_document(self, file_name_without_extension):
         self.save_as(file_name_without_extension)
 
+        self.close_active_document(file_name_without_extension)
+
+    def close_active_document(self, file_name_without_extension):
         App.closeDocument(file_name_without_extension)
         App.ActiveDocument = None

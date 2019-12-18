@@ -53,8 +53,8 @@ class JsonPartGeometry(AJsonPart):
     def read_from_freecad(self, freecad_object, freecad_sheet):
         super().read_from_freecad(freecad_object, freecad_sheet)
 
-        # TODO: remove?
-        self.stl_path = freecad_sheet.get("B11")
+        # use already read in sheet
+        self.stl_path = self.sheet.read_sheet_attribute_from_freecad(freecad_sheet, "stl_path")
 
     def _set_freecad_properties(self, active_document):
         pass

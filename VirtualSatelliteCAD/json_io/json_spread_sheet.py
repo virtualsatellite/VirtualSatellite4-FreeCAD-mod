@@ -23,6 +23,8 @@
 #
 # SPDX-License-Identifier: LGPL-3.0-or-later
 #
+import FreeCAD
+Log = FreeCAD.Console.PrintLog
 
 FREECAD_PART_SHEET_NAME = "VS"
 FREECAD_PART_SHEET_ATTRIBUTE_START_LINE = 3
@@ -67,7 +69,6 @@ class JsonSpreadSheet(object):
         sheet_line = FREECAD_PART_SHEET_ATTRIBUTE_START_LINE
         for json_part_attribute_name in list(self._json_part_or_product.attributes.keys()):
 
-            # TODO: added this try catch because some children would not have part_name and attribute (because they are assemblies)
             try:
                 json_part_attribute_value = str(getattr(self._json_part_or_product, json_part_attribute_name))
                 json_part_attribute_unit = self._json_part_or_product.attributes[json_part_attribute_name]
@@ -77,8 +78,8 @@ class JsonSpreadSheet(object):
                 sheet.set("C" + str(sheet_line), json_part_attribute_unit)
 
                 sheet_line += 1
-            except AttributeError as e:
-                print(e)
+            except AttributeError:
+                Log(f"Warning: Couldn't write attribute '{json_part_attribute_name}' because it doesn't exist")
 
         # Recompute the sheet, so that all properties are correctly written
         # if not recomputed accessing the properties will result in none objects

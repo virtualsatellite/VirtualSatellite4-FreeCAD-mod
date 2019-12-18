@@ -66,12 +66,14 @@ class JsonPartFactory(object):
     @classmethod
     def create_from_freecad(cls, freecad_object):
         Log("Reading part object...\n")
+
         shape = freecad_object.TypeId.split(":")[-1]
         if shape == "Feature":
             # assume geometry
             shape = "Geometry"
 
-        # TODO: JSON_ELEMENT_SHAPE_NONE: can't be exported because no representation in FreeCAD exists?
+        # TODO: JSON_ELEMENT_SHAPE_NONE: can't be exported because no representation in FreeCAD exists
+        # but it should have a sheet and that information should be exported
         create_method_name = "_create_json_part_" + shape.lower()
         create_method_dispatch = getattr(cls, create_method_name, lambda: Err("Invalid call to : " + create_method_name + "\n"))
         part_x = create_method_dispatch()

@@ -87,9 +87,6 @@ class JsonProductAssembly(AJsonProduct):
             return None
 
     def parse_to_json(self, isRoot=False):
-        """
-        TODO
-        """
         if(isRoot):
             json_dict = {
                 JSON_ELEMENT_NAME: self.name.replace("_", "-"),
@@ -137,18 +134,23 @@ class JsonProductAssembly(AJsonProduct):
         # read the children
         for product, sheet in products_with_sheets:
             name, label = product.Name, product.Label
+            # use the source file of a2plus part
+            # then get the file name (.split(os.path.sep)[-1]) and ignore the FreeCAD file ending ([:-6])
+            child_file_name = product.sourceFile.split(os.path.sep)[-1][:-6]
+
             # open the document for this child
-            # TODO: use source file of a2plus part and then only use the name without fcstd, there probably is a better way to do this
-            child_document = ActiveDocument(working_output_directory).open_set_and_get_document(product.sourceFile.split(os.path.sep)[-1][:-6])
+            child_document = ActiveDocument(working_output_directory).open_set_and_get_document(child_file_name)
 
             if(PRODUCT_IDENTIFIER in name):
-                print(f"Read ProductAssembly '{label}'")
+                Log(f"Read ProductAssembly '{label}'\n")
                 child = JsonProductAssembly()
             else:
-                print(f"Read Product '{label}'")
+                Log(f"Read Product '{label}'\n")
                 child = AJsonProduct()
 
             child.read_from_freecad(child_document, working_output_directory, part_list, freecad_object=product, freecad_sheet=sheet)
+            child_document.close_active_document(child_file_name)
+
             self.children.append(child)
 
     def get_products_of_active_document(self, active_document):
@@ -162,15 +164,14 @@ class JsonProductAssembly(AJsonProduct):
 
         for obj in active_document.app_active_document.Objects:
             name, label = obj.Name, obj.Label
-            Log("Object: {}, {}".format(name, label))
+            Log("Object: {}, {}\n".format(name, label))
 
-            # TODO: use Labels instead of names if the names contain the identifiers
             if(FREECAD_PART_SHEET_NAME in name):
                 sheets.append(obj)
-                Log("Object is sheet")
+                Log("Object is sheet\n")
             elif(PRODUCT_IDENTIFIER in name or PART_IDENTIFIER in name):
                 products.append(obj)
-                Log("Object is product")
+                Log("Object is product\n")
 
         products_with_sheets = []
 
@@ -179,7 +180,7 @@ class JsonProductAssembly(AJsonProduct):
                 if(product.Label in sheet.Label):
                     products_with_sheets.append((product, sheet))
 
-        print([(p.Label, s.Label) for p, s in products_with_sheets])
+        Log(f"Found products with sheets: '{[(p.Label, s.Label) for p, s in products_with_sheets]}'\n")
 
         return products_with_sheets
 

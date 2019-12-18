@@ -23,7 +23,7 @@
 #
 # SPDX-License-Identifier: LGPL-3.0-or-later
 #
-
+import os
 import FreeCAD
 import FreeCADGui
 from module.environment import Environment, ICON_EXPORT
@@ -48,17 +48,21 @@ class CommandExport:
             "JSON(*.json)")[0]  # filter
 
         if filename != '':
-            json_exporter = JsonExporter(Environment.get_appdata_module_path())
-            # TODO: better way to do this?, fix
+            json_exporter = JsonExporter(Environment.get_appdata_module_path() + os.sep)
+
             if(FreeCAD.ActiveDocument is not None):
-                active_document = ActiveDocument(Environment.get_appdata_module_path()).open_set_and_get_document(FreeCAD.ActiveDocument.Label)
+                document_name = FreeCAD.ActiveDocument.Label
+                active_document = ActiveDocument(Environment.get_appdata_module_path()).open_set_and_get_document(document_name)
                 json_dict = json_exporter.full_export(active_document)
                 json_str = json.dumps(json_dict)
+
+                # after export open the file again for the UI
+                active_document = ActiveDocument(Environment.get_appdata_module_path()).open_set_and_get_document(document_name)
 
                 with open(filename, 'w') as file:
                     file.write(json_str)
             else:
-                print("Error msg")
+                Log("Error: First open a document to export it\n")
 
     def IsActive(self):
         return True

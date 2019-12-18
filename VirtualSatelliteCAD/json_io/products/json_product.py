@@ -34,6 +34,9 @@ from json_io.json_spread_sheet import JsonSpreadSheet, FREECAD_PART_SHEET_NAME
 from json_io.parts.json_part_factory import JsonPartFactory
 from A2plus.a2p_importpart import importPartFromFile
 from freecad.active_document import VECTOR_X, VECTOR_Y, VECTOR_Z, VECTOR_ZERO, ActiveDocument
+import FreeCAD
+
+Log = FreeCAD.Console.PrintLog
 
 
 class AJsonProduct():
@@ -195,7 +198,6 @@ class AJsonProduct():
 
         rot = freecad_object.Placement.Rotation.toEuler()
 
-        # TODO: check with test case
         self.rot_z = rot[0]
         self.rot_y = rot[1]
         self.rot_x = rot[2]
@@ -228,7 +230,6 @@ class AJsonProduct():
             for obj in active_document.app_active_document.Objects:
                 name = obj.Name
 
-                # TODO: use Labels instead of names if the names contain the identifiers
                 if(FREECAD_PART_SHEET_NAME in name):
                     child_cnt += 1
                 elif(PRODUCT_IDENTIFIER in name or PART_IDENTIFIER in name):
@@ -240,16 +241,14 @@ class AJsonProduct():
             # read in the referenced part (if not read in already)
 
             part_name = self.get_part_unique_name()
-            print(part_name)
 
             # only have a part one time in the list
             if(part_name not in [item[0] for item in part_list]):
                 part_document = ActiveDocument(working_output_directory).open_set_and_get_document(part_name)
-                # TODO: use fixed positions? check number of objects?
                 for obj in part_document.app_active_document.Objects:
                     if(obj.Label == self.part_name):
                         part_object = obj
-                    else:
+                    elif(FREECAD_PART_SHEET_NAME in obj.Label):
                         part_sheet = obj
                 factory = JsonPartFactory()
                 part = factory.create_from_freecad(part_object)
