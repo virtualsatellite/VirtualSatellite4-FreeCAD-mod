@@ -36,7 +36,8 @@ from freecad.active_document import FREECAD_FILE_EXTENSION, ActiveDocument
 from module.environment import Environment
 from json_io.json_definitions import JSON_ELEMENT_STL_PATH, PART_IDENTIFIER, PRODUCT_IDENTIFIER
 import unittest
-from test.json_io.test_json_data import TEST_JSON_FULL_VISCUBE
+from test.json_io.test_json_data import TEST_JSON_FULL_VISCUBE, TEST_JSON_FULL_NONE_SHAPE, TEST_JSON_FULL_NONE_SHAPE_ASSEMBLY
+from json_io.json_spread_sheet import FREECAD_PART_SHEET_NAME
 
 App = FreeCAD
 Gui = FreeCADGui
@@ -104,7 +105,7 @@ class TestJsonImporter(AWorkingDirectoryTest):
         json_importer = JsonImporter(self._WORKING_DIRECTORY)
         json_importer.create_or_update_part(json_object)
 
-        # Check the file got created
+        # Check NO file got created
         test_file_name = self._WORKING_DIRECTORY + "Beam_6201a731_d703_22a2_ab37_6a0581dfe022" + FREECAD_FILE_EXTENSION
         self.assertFalse(os.path.isfile(test_file_name), "File does not exist on drive")
 
@@ -314,10 +315,43 @@ class TestJsonImporter(AWorkingDirectoryTest):
             PRODUCT_IDENTIFIER + "BeamStructure_2afb23c9_f458_4bdb_a4e7_fc863364644f")
         self.assertEquals(len(active_document.app_active_document.RootObjects), 6, "Found correct amount of root objects 3 objects plus 3 sheets")
 
-    # TODO:
+    @unittest.SkipTest
+    # TODO: tries to import the not existing part files
+    # can be prevented by using the part list -> breaks a lot of tests
     def test_full_import_shape_none(self):
-        pass
+        json_importer = JsonImporter(self._WORKING_DIRECTORY)
+        json_object = json.loads(TEST_JSON_FULL_NONE_SHAPE)
+        part_file_names, json_product, active_document = json_importer.full_import(json_object)
 
+        self.assertEqual(part_file_names, [''], "Part file name is empty string ")
+
+        self.assertEqual(len(json_product.children), 1, "Correct amount of children")
+        self.assertEqual(len(active_document.app_active_document.RootObjects), 1, "Found correct amount of 1 sheet")
+        self.assertEqual(active_document.app_active_document.RootObjects[0].Label, FREECAD_PART_SHEET_NAME + "_None_cc14e2c7_9d7e_4cf2_8d6d_9b8cf5e96d56",
+                         "Found the right object")
+
+    @unittest.SkipTest
+    # TODO: errors because the importPartFromFile can't import file without visible Part
+    #  as in "/tmp/FreeCADtest/Importer/assembly_NoneAssembly_2afb23c9_f458_4bdb_a4e7_fc863364644f.FCstd"
+    def test_full_import_shape_none_assembly(self):
+        json_importer = JsonImporter(self._WORKING_DIRECTORY)
+        json_object = json.loads(TEST_JSON_FULL_NONE_SHAPE_ASSEMBLY)
+        part_file_names, json_product, active_document = json_importer.full_import(json_object)
+
+        self.assertEqual(part_file_names, [''], "Part file name is empty string ")
+
+        self.assertEqual(len(json_product.children), 1, "Correct amount of children")
+        self.assertEqual(len(active_document.app_active_document.RootObjects), 1, "Found correct amount of 1 sheet")
+        self.assertEqual(active_document.app_active_document.RootObjects[0].Label,
+                         FREECAD_PART_SHEET_NAME + "_NoneAssembly_2afb23c9_f458_4bdb_a4e7_fc863364644f", "Found the right object")
+
+        active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document(
+            PRODUCT_IDENTIFIER + "VS_NoneAssembly_2afb23c9_f458_4bdb_a4e7_fc863364644f")
+        self.assertEqual(len(active_document.app_active_document.RootObjects), 1, "Found correct amount of 1 sheet")
+        self.assertEqual(active_document.app_active_document.RootObjects[0].Label,
+                         FREECAD_PART_SHEET_NAME + "_None_cc14e2c7_9d7e_4cf2_8d6d_9b8cf5e96d56", "Found the right object")
+
+    # TODO:
     def test_full_import_shape_geometry(self):
         pass
 

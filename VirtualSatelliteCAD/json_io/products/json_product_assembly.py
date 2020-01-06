@@ -77,7 +77,6 @@ class JsonProductAssembly(AJsonProduct):
         self.children = []
         for json_object_child in json_object_children:
             json_product_child = JsonProductChild().parse_from_json(json_object_child)
-            # json_product_child.propagate_pos_and_rot_from_parent(self)
             self.children.append(json_product_child)
 
         # Don't hand back an assembly if there are no children
@@ -109,17 +108,18 @@ class JsonProductAssembly(AJsonProduct):
 
         return json_dict
 
-    def write_to_freecad(self, active_document):
+    def write_to_freecad(self, active_document):  # TODO: , part_file_names):
         # This assembly may refer to a part as well
         # hence if there is a partUuid and if there is a part name, than
         # it should be written to the FreeCAD document as well.
         if self.is_part_reference():
-            super().write_to_freecad(active_document)
+            # TODO: if self.get_part_unique_name() in part_file_names:
+            super().write_to_freecad(active_document)  # TODO: , part_file_names)
 
         # And now write the children, they decide on their own if they reference
         # part or a product
         for child in self.children:
-            child.write_to_freecad(active_document)
+            child.write_to_freecad(active_document)  # TODO: , part_file_names)
 
     def read_from_freecad(self, active_document, working_output_directory, part_list, freecad_object=None, freecad_sheet=None):
         """

@@ -35,9 +35,10 @@ class JsonProductAssemblyTreeTraverser(object):
     This class provides functionality to traverse a product tree to parse the product assemblies in the right order
     '''
 
-    def __init__(self, working_output_directory):
+    def __init__(self, working_output_directory, part_file_names=[]):
         self._lst_of_depths = []
         self.working_output_directory = working_output_directory
+        self.part_file_names = part_file_names
 
     def traverse(self, json_object, depth=0):
         """
@@ -74,7 +75,8 @@ class JsonProductAssemblyTreeTraverser(object):
 
                 json_product = JsonProductAssembly().parse_from_json(assembly)
                 active_document = ActiveDocument(self.working_output_directory).open_set_and_get_document(json_product.get_product_unique_name())
-                json_product.write_to_freecad(active_document)
+
+                json_product.write_to_freecad(active_document)  # TODO: , self.part_file_names)
                 active_document.save_and_close_active_document(json_product.get_product_unique_name())
 
         # the last json_product is the root of the assembly, open it again for the UI
