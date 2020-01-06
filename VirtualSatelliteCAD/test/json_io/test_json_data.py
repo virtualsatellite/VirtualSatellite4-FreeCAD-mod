@@ -451,6 +451,38 @@ TEST_JSON_FULL_NONE_SHAPE_ASSEMBLY = """{
         }]
 }"""
 
+TEST_JSON_FULL_GEOMETRY = """{
+    "Products": {
+        "name": "GeometryShape",
+        "uuid": "a3533e02-125c-4066-bffe-d046d8d8342a",
+        "children": [{
+                "name": "Geometry",
+                "uuid": "cc14e2c7-9d7e-4cf2-8d6d-9b8cf5e96d56",
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 1.0,
+                "rotX": 0.0,
+                "rotY": 0.0,
+                "rotZ": 0.0,
+                "partUuid": "38eae3a5-8338-4a51-b1df-5583058f9e77",
+                "partName": "Geometry",
+                "children": []
+            }
+        ]
+    },
+    "Parts": [{
+        "color": 66280,
+        "shape": "GEOMETRY",
+        "name": "Geometry",
+        "lengthY": 1.0,
+        "lengthX": 0.0,
+        "radius": 1.0,
+        "lengthZ": 0.0,
+        "uuid": "38eae3a5-8338-4a51-b1df-5583058f9e77",
+        "stlPath": "Test.stl"
+    }]
+}"""
+
 TEST_JSON_FULL_VISCUBE = """{
         "Products": {
             "children": [{

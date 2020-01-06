@@ -34,10 +34,13 @@ import FreeCADGui
 from test.test_setup import AWorkingDirectoryTest
 from freecad.active_document import FREECAD_FILE_EXTENSION, ActiveDocument
 from module.environment import Environment
-from json_io.json_definitions import JSON_ELEMENT_STL_PATH, PART_IDENTIFIER, PRODUCT_IDENTIFIER
+from json_io.json_definitions import JSON_ELEMENT_STL_PATH, PART_IDENTIFIER, PRODUCT_IDENTIFIER, \
+    JSON_PARTS
 import unittest
-from test.json_io.test_json_data import TEST_JSON_FULL_VISCUBE, TEST_JSON_FULL_NONE_SHAPE, TEST_JSON_FULL_NONE_SHAPE_ASSEMBLY
+from test.json_io.test_json_data import TEST_JSON_FULL_VISCUBE, TEST_JSON_FULL_NONE_SHAPE, TEST_JSON_FULL_NONE_SHAPE_ASSEMBLY, \
+    TEST_JSON_FULL_GEOMETRY
 from json_io.json_spread_sheet import FREECAD_PART_SHEET_NAME
+from json_io.parts.json_part_geometry import JsonPartGeometry
 
 App = FreeCAD
 Gui = FreeCADGui
@@ -351,9 +354,35 @@ class TestJsonImporter(AWorkingDirectoryTest):
         self.assertEqual(active_document.app_active_document.RootObjects[0].Label,
                          FREECAD_PART_SHEET_NAME + "_None_cc14e2c7_9d7e_4cf2_8d6d_9b8cf5e96d56", "Found the right object")
 
-    # TODO:
     def test_full_import_shape_geometry(self):
-        pass
+        json_importer = JsonImporter(self._WORKING_DIRECTORY)
+        json_object = json.loads(TEST_JSON_FULL_GEOMETRY)
+
+        # get the current module path and get the directory for the test resource
+        # place that path into the json object before executing the transformations
+        stl_test_resource_path = Environment.get_test_resource_path("Switch.stl")
+        json_object[JSON_PARTS][0][JSON_ELEMENT_STL_PATH] = stl_test_resource_path
+
+        _, json_product, active_document = json_importer.full_import(json_object)
+
+        self.assertEqual(len(json_product.children), 1, "Correct amount of children")
+        self.assertEqual(len(active_document.app_active_document.RootObjects), 2, "Found correct amount of 1 object and 1 sheet")
+        name = "Geometry_cc14e2c7_9d7e_4cf2_8d6d_9b8cf5e96d56"
+        self.assertEqual(active_document.app_active_document.RootObjects[0].Label, name, "Found the right object")
+        self.assertEqual(active_document.app_active_document.RootObjects[1].Label, FREECAD_PART_SHEET_NAME + "_" + name, "Found the right object")
+
+        active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document(
+            PART_IDENTIFIER + "Geometry_38eae3a5_8338_4a51_b1df_5583058f9e77")
+        self.assertEqual(len(active_document.app_active_document.RootObjects), 5, "Found correct amount of 4 object and 1 sheet")
+
+        # first 3 objects belong to the stl
+        freecad_object = active_document.app_active_document.Objects[3]
+        freecad_sheet = active_document.app_active_document.Objects[4]
+        geometryPart = JsonPartGeometry()
+        geometryPart.read_from_freecad(freecad_object, freecad_sheet)
+
+        # Check that the extra attribute for the STL files got written to the sheet
+        self.assertEqual(geometryPart.stl_path, stl_test_resource_path, "The path is written to the spreadsheet")
 
     @unittest.SkipTest
     def test_full_import_again(self):

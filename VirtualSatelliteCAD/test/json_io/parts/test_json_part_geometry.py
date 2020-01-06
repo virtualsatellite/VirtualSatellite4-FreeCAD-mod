@@ -77,7 +77,7 @@ class TestJsonPartGeometry(AWorkingDirectoryTest):
                           (0.003921568859368563, 0.007843137718737125, 0.9098039269447327, 0.0),
                           "Shape has correct color")
 
-    def test_create_and_read_part_sphere(self):
+    def test_create_and_read_part_geometry(self):
         json_data = TEST_JSON_PART_GEOMETRY
 
         active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("PartGeometry")
