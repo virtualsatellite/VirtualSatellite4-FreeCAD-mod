@@ -39,7 +39,7 @@ from json_io.json_definitions import JSON_ELEMENT_STL_PATH, PART_IDENTIFIER, PRO
 import unittest
 from test.json_io.test_json_data import TEST_JSON_FULL_VISCUBE, TEST_JSON_FULL_NONE_SHAPE, TEST_JSON_FULL_NONE_SHAPE_ASSEMBLY, \
     TEST_JSON_FULL_GEOMETRY
-from json_io.json_spread_sheet import FREECAD_PART_SHEET_NAME
+from json_io.json_spread_sheet import FREECAD_PART_SHEET_NAME, JsonSpreadSheet
 from json_io.parts.json_part_geometry import JsonPartGeometry
 from shutil import copyfile
 
@@ -328,10 +328,6 @@ class TestJsonImporter(AWorkingDirectoryTest):
 
         self.assertEqual(len(json_product.children), 1, "Correct amount of children")
         self.assertEqual(len(active_document.app_active_document.RootObjects), 2, "Found correct amount of 1 sheet and 1 dummy")
-        self.assertEqual(active_document.app_active_document.RootObjects[0].Label, "None_cc14e2c7_9d7e_4cf2_8d6d_9b8cf5e96d56",
-                         "Found the right object")
-        self.assertEqual(active_document.app_active_document.RootObjects[1].Label, FREECAD_PART_SHEET_NAME + "_None_cc14e2c7_9d7e_4cf2_8d6d_9b8cf5e96d56",
-                         "Found the right object")
 
     def test_full_import_shape_none_assembly(self):
         json_importer = JsonImporter(self._WORKING_DIRECTORY)
@@ -342,22 +338,10 @@ class TestJsonImporter(AWorkingDirectoryTest):
 
         self.assertEqual(len(json_product.children), 1, "Correct amount of children")
         self.assertEqual(len(active_document.app_active_document.RootObjects), 2, "Found correct amount of 1 sheet and 1 dummy")
-        self.assertEqual(active_document.app_active_document.RootObjects[0].Label, "NoneAssembly_2afb23c9_f458_4bdb_a4e7_fc863364644f",
-                         "Found the right object")
-        self.assertEqual(active_document.app_active_document.RootObjects[1].Label,
-                         FREECAD_PART_SHEET_NAME + "_NoneAssembly_2afb23c9_f458_4bdb_a4e7_fc863364644f", "Found the right object")
 
         active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document(
                                          PRODUCT_IDENTIFIER + "NoneAssembly_2afb23c9_f458_4bdb_a4e7_fc863364644f")
         self.assertEqual(len(active_document.app_active_document.RootObjects), 4, "Found correct amount of 1 assembly and 2 sheet and 1 dummy")
-        self.assertEqual(active_document.app_active_document.RootObjects[0].Label, "NoneAssembly_2afb23c9_f458_4bdb_a4e7_fc863364644f",
-                         "Found the right object")
-        self.assertEqual(active_document.app_active_document.RootObjects[1].Label,
-                         FREECAD_PART_SHEET_NAME + "_NoneAssembly_2afb23c9_f458_4bdb_a4e7_fc863364644f", "Found the right object")
-        self.assertEqual(active_document.app_active_document.RootObjects[2].Label, "None_cc14e2c7_9d7e_4cf2_8d6d_9b8cf5e96d56",
-                         "Found the right object")
-        self.assertEqual(active_document.app_active_document.RootObjects[3].Label, FREECAD_PART_SHEET_NAME + "_None_cc14e2c7_9d7e_4cf2_8d6d_9b8cf5e96d56",
-                         "Found the right object")
 
     def test_full_import_shape_geometry(self):
         json_importer = JsonImporter(self._WORKING_DIRECTORY)
@@ -382,14 +366,12 @@ class TestJsonImporter(AWorkingDirectoryTest):
             PART_IDENTIFIER + "Geometry_38eae3a5_8338_4a51_b1df_5583058f9e77")
         self.assertEqual(len(active_document.app_active_document.RootObjects), 5, "Found correct amount of 4 object and 1 sheet")
 
-        # first 3 objects belong to the stl
-        freecad_object = active_document.app_active_document.Objects[3]
         freecad_sheet = active_document.app_active_document.Objects[4]
-        geometryPart = JsonPartGeometry()
-        geometryPart.read_from_freecad(freecad_object, freecad_sheet)
+        sheet = JsonSpreadSheet(JsonPartGeometry())
+        stl_path = sheet.read_sheet_attribute_from_freecad(freecad_sheet, "stl_path")
 
         # Check that the extra attribute for the STL files got written to the sheet
-        self.assertEqual(geometryPart.stl_path, stl_test_resource_path_cp, "The path is written to the spreadsheet")
+        self.assertEqual(stl_path, stl_test_resource_path_cp, "The path is written to the spreadsheet")
 
     @unittest.SkipTest
     def test_full_import_again(self):

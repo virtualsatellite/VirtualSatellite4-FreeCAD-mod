@@ -192,11 +192,8 @@ class AJsonProduct():
         self._set_freecad_position_and_rotation(active_document)
 
     def write_to_freecad(self, active_document):
-        # to catch NONE shapes check if the part name is in the list
-        # ignore assembly parts with PRODUCT_IDENTIFIER_...
-        self._write_freecad_part(active_document)
 
-        # always write a sheet to the FreeCAD document
+        self._write_freecad_part(active_document)
         self.sheet.write_to_freecad(active_document)
 
     def _get_freecad_rotation(self, freecad_object):
