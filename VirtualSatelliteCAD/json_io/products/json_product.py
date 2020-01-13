@@ -133,13 +133,6 @@ class AJsonProduct():
         import_part_file_name = self.get_part_unique_name()
         import_part_name_in_product = self.get_unique_name()
         import_part_full_path = active_document.get_file_full_path(import_part_file_name)
-        import_part_ref = active_document.app_active_document.getObjectsByLabel(import_part_name_in_product)
-
-        # print(f"Called with '{import_part_name_in_product}'")
-        # TODO: CRUD
-        # If the part doesn't exists (the returned list is not empty) update (delete and recreate) it
-        if import_part_ref:
-            active_document.app_active_document.removeObject(import_part_ref[0].Name)
 
         imported_product_part = importPartFromFile(
             active_document.app_active_document,
@@ -188,8 +181,14 @@ class AJsonProduct():
         product_part.Placement = placement
 
     def _write_freecad_part(self, active_document):
-        self._create_or_update_freecad_part(active_document)
-        self._set_freecad_position_and_rotation(active_document)
+        # check if the object doesn't exist already
+        if not active_document.app_active_document.getObjectsByLabel(self.get_unique_name()):
+            # this is a new object: create
+            self._create_or_update_freecad_part(active_document)
+            self._set_freecad_position_and_rotation(active_document)
+        else:
+            # TODO: replace / update
+            pass
 
     def write_to_freecad(self, active_document):
 

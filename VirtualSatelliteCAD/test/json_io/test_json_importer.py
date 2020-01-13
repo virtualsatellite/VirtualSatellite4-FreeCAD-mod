@@ -35,8 +35,7 @@ from test.test_setup import AWorkingDirectoryTest
 from freecad.active_document import FREECAD_FILE_EXTENSION, ActiveDocument
 from module.environment import Environment
 from json_io.json_definitions import JSON_ELEMENT_STL_PATH, PART_IDENTIFIER, PRODUCT_IDENTIFIER, \
-    JSON_PARTS
-import unittest
+    JSON_PARTS, JSON_PRODUCTS, JSON_ELEMNT_CHILDREN
 from test.json_io.test_json_data import TEST_JSON_FULL_VISCUBE, TEST_JSON_FULL_NONE_SHAPE, TEST_JSON_FULL_NONE_SHAPE_ASSEMBLY, \
     TEST_JSON_FULL_GEOMETRY
 from json_io.json_spread_sheet import FREECAD_PART_SHEET_NAME, JsonSpreadSheet
@@ -373,38 +372,36 @@ class TestJsonImporter(AWorkingDirectoryTest):
         # Check that the extra attribute for the STL files got written to the sheet
         self.assertEqual(stl_path, stl_test_resource_path_cp, "The path is written to the spreadsheet")
 
-    @unittest.SkipTest
+    # @unittest.SkipTest
     def test_full_import_again(self):
         """
         Importing the same file again should not result in changes
         """
 
-        json_test_resource_path = Environment.get_test_resource_path("VisCube2.json")
         json_importer = JsonImporter(self._WORKING_DIRECTORY)
+        json_object = json.loads(TEST_JSON_FULL_VISCUBE)
 
         # =========================
         # First import
-        part_file_names, json_product, active_document = json_importer.full_import(json_test_resource_path)
+        part_file_names, json_product, active_document = json_importer.full_import(json_object)
 
         # Check that the right number of parts was found
         self.assertEqual(len(part_file_names), 7, "Found 7 files")
 
         # Check that the right number of children and root objects got created
         self.assertEqual(len(json_product.children), 5, "Correct amount of children")
-        self.assertEqual(len(active_document.app_active_document.RootObjects), 14, "Found correct amount of root objects 7 plus 7 sheets")
+        self.assertEqual(len(active_document.app_active_document.RootObjects), 10, "Found correct amount of root objects 5 plus 5 sheets")
 
-        # =========================
         # Second import
-        part_file_names2, json_product2, active_document2 = json_importer.full_import(json_test_resource_path)
+        part_file_names2, json_product2, active_document2 = json_importer.full_import(json_object)
 
         # Check that the right number of parts was found
         self.assertEqual(len(part_file_names2), 7, "Found 7 files")
 
         # Check that the right number of children and root objects got created
         self.assertEqual(len(json_product2.children), 5, "Correct amount of children")
-        self.assertEqual(len(active_document2.app_active_document.RootObjects), 14, "Found correct amount of root objects 7 plus 7 sheets")
+        self.assertEqual(len(active_document2.app_active_document.RootObjects), 10, "Found correct amount of root objects 5 plus 5 sheets")
 
-        # =========================
         # Check equality
         self.assertEquals(part_file_names, part_file_names2)
 
@@ -412,38 +409,34 @@ class TestJsonImporter(AWorkingDirectoryTest):
             child2 = json_product2.children[i]
             child1.has_equal_values(child2)
 
-    @unittest.SkipTest
     def test_full_import_again_with_changes(self):
-        """
-        If two files with the same name get imported: we assume that the VirSat side used CRUD, that means:
-        - new parts/products could be created, so add them
-        - old parts/products could be replaced/updated, so use the new information
-        - old parts/products could be deleted, so delete all not updated files
-        -> this means instead of merging, simply the information of the old files get replaced by the newer one
-        """
+        # TODO
+        pass
 
+    def test_full_import_again_with_deletion(self):
         json_importer = JsonImporter(self._WORKING_DIRECTORY)
+        json_object = json.loads(TEST_JSON_FULL_VISCUBE)
 
-        # =========================
         # First import
-        json_test_resource_path = Environment.get_test_resource_path("VisCube2.json")
-        part_file_names, json_product, active_document = json_importer.full_import(json_test_resource_path)
+        part_file_names, json_product, active_document = json_importer.full_import(json_object)
 
         # Check that the right number of parts was found
         self.assertEqual(len(part_file_names), 7, "Found 7 files")
 
         # Check that the right number of children and root objects got created
         self.assertEqual(len(json_product.children), 5, "Correct amount of children")
-        self.assertEqual(len(active_document.app_active_document.RootObjects), 14, "Found correct amount of root objects 7 plus 7 sheets")
+        self.assertEqual(len(active_document.app_active_document.RootObjects), 10, "Found correct amount of root objects 7 plus 7 sheets")
 
-        # =========================
+        # Changes in the file
+        # delete first children
+        json_object[JSON_PRODUCTS][JSON_ELEMNT_CHILDREN].pop(0)
+
         # Second import
-        json_test_resource_path2 = Environment.get_test_resource_path("VisCube2_update.json")
-        part_file_names2, json_product2, active_document2 = json_importer.full_import(json_test_resource_path2)
+        part_file_names2, json_product2, active_document2 = json_importer.full_import(json_object)
 
         # Check that the right number of parts was found
-        self.assertEqual(len(part_file_names2), 1, "Found 1 files")
+        self.assertEqual(len(part_file_names2), 7, "Found 7 files")
 
         # Check that the right number of children and root objects got created
-        self.assertEquals(len(json_product2.children), 1, "Correct amount of children")
-        self.assertEquals(len(active_document2.app_active_document.RootObjects), 2, "Found correct amount of root objects 1 plus 1 sheets")
+        self.assertEquals(len(json_product2.children), 4, "Correct amount of children")
+        self.assertEquals(len(active_document2.app_active_document.RootObjects), 8, "Found correct amount of root objects 4 plus 4 sheets")
