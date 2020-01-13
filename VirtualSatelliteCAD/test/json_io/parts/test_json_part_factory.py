@@ -39,6 +39,7 @@ from test.json_io.test_json_data import TEST_JSON_PART_BOX, TEST_JSON_PART_CONE,
 from freecad.active_document import ActiveDocument
 from module.environment import Environment
 from json_io.json_definitions import JSON_ELEMENT_STL_PATH
+from json_io.parts.json_part_none import JsonPartNone
 
 
 class TestJsonPartFactory(AWorkingDirectoryTest):
@@ -62,8 +63,9 @@ class TestJsonPartFactory(AWorkingDirectoryTest):
         active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("PartBox")
         json_part.write_to_freecad(active_document)
         freecad_object = active_document.app_active_document.Objects[0]
+        freecad_sheet = active_document.app_active_document.Objects[1]
 
-        json_part_freecad = JsonPartFactory().create_from_freecad(freecad_object)
+        json_part_freecad = JsonPartFactory().create_from_freecad(freecad_object, freecad_sheet)
         self.assertIsInstance(json_part_freecad, JsonPartBox, "Created correct object")
 
     def test_create_cone(self):
@@ -77,8 +79,9 @@ class TestJsonPartFactory(AWorkingDirectoryTest):
         active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("PartCone")
         json_part.write_to_freecad(active_document)
         freecad_object = active_document.app_active_document.Objects[0]
+        freecad_sheet = active_document.app_active_document.Objects[1]
 
-        json_part_freecad = JsonPartFactory().create_from_freecad(freecad_object)
+        json_part_freecad = JsonPartFactory().create_from_freecad(freecad_object, freecad_sheet)
         self.assertIsInstance(json_part_freecad, JsonPartCone, "Created correct object")
 
     def test_create_cylinder(self):
@@ -92,8 +95,9 @@ class TestJsonPartFactory(AWorkingDirectoryTest):
         active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("PartCylinder")
         json_part.write_to_freecad(active_document)
         freecad_object = active_document.app_active_document.Objects[0]
+        freecad_sheet = active_document.app_active_document.Objects[1]
 
-        json_part_freecad = JsonPartFactory().create_from_freecad(freecad_object)
+        json_part_freecad = JsonPartFactory().create_from_freecad(freecad_object, freecad_sheet)
         self.assertIsInstance(json_part_freecad, JsonPartCylinder, "Created correct object")
 
     def test_create_sphere(self):
@@ -107,8 +111,9 @@ class TestJsonPartFactory(AWorkingDirectoryTest):
         active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("PartSphere")
         json_part.write_to_freecad(active_document)
         freecad_object = active_document.app_active_document.Objects[0]
+        freecad_sheet = active_document.app_active_document.Objects[1]
 
-        json_part_freecad = JsonPartFactory().create_from_freecad(freecad_object)
+        json_part_freecad = JsonPartFactory().create_from_freecad(freecad_object, freecad_sheet)
         self.assertIsInstance(json_part_freecad, JsonPartSphere, "Created correct object")
 
     def test_create_geometry(self):
@@ -128,8 +133,9 @@ class TestJsonPartFactory(AWorkingDirectoryTest):
         json_part.write_to_freecad(active_document)
         # first 3 objects belong to the stl
         freecad_object = active_document.app_active_document.Objects[3]
+        freecad_sheet = active_document.app_active_document.Objects[4]
 
-        json_part_freecad = JsonPartFactory().create_from_freecad(freecad_object)
+        json_part_freecad = JsonPartFactory().create_from_freecad(freecad_object, freecad_sheet)
         self.assertIsInstance(json_part_freecad, JsonPartGeometry, "Created correct object")
 
     def test_create_none(self):
@@ -138,4 +144,12 @@ class TestJsonPartFactory(AWorkingDirectoryTest):
         json_object = json.loads(json_data)
         json_part = JsonPartFactory().create_from_json(json_object)
 
-        self.assertIsNone(json_part, "Created no object")
+        self.assertIsInstance(json_part, JsonPartNone, "Created correct object")
+
+        active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("PartNone")
+        json_part.write_to_freecad(active_document)
+        freecad_object = active_document.app_active_document.Objects[0]
+        freecad_sheet = active_document.app_active_document.Objects[1]
+
+        json_part_freecad = JsonPartFactory().create_from_freecad(freecad_object, freecad_sheet)
+        self.assertIsInstance(json_part_freecad, JsonPartNone, "Created correct object")

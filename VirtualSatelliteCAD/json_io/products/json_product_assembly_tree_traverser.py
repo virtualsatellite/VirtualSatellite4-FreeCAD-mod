@@ -76,7 +76,7 @@ class JsonProductAssemblyTreeTraverser(object):
                 json_product = JsonProductAssembly().parse_from_json(assembly)
                 active_document = ActiveDocument(self.working_output_directory).open_set_and_get_document(json_product.get_product_unique_name())
 
-                json_product.write_to_freecad(active_document)  # TODO: , self.part_file_names)
+                json_product.write_to_freecad(active_document)
                 active_document.save_and_close_active_document(json_product.get_product_unique_name())
 
         # the last json_product is the root of the assembly, open it again for the UI

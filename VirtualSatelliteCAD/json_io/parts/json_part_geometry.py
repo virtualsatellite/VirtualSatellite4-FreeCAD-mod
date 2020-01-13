@@ -56,7 +56,6 @@ class JsonPartGeometry(AJsonPart):
         # use already read in sheet
         self.stl_path = self.sheet.read_sheet_attribute_from_freecad(freecad_sheet, "stl_path")
 
-        # TODO: here?
         self._export_to_stl(freecad_object)
 
     # this part has no FreeCAD properties
@@ -103,13 +102,9 @@ class JsonPartGeometry(AJsonPart):
 
     def _export_to_stl(self, freecad_object):
 
-        # object_name_and_type = self.get_shape_type()
-        # document_object = active_document.app_active_document.getObject(object_name_and_type)
+        shape = freecad_object.Shape
 
-        if freecad_object is not None:
-            shape = freecad_object.Shape
+        meshed_object = freecad_object.Document.addObject("Mesh::Feature", "Mesh")
+        meshed_object.Mesh = MeshPart.meshFromShape(Shape=shape, MaxLength=520)
 
-            meshed_object = freecad_object.Document.addObject("Mesh::Feature", "Mesh")
-            meshed_object.Mesh = MeshPart.meshFromShape(Shape=shape, MaxLength=520)
-
-            meshed_object.Mesh.write(self.stl_path)
+        meshed_object.Mesh.write(self.stl_path)
