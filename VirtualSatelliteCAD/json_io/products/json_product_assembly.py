@@ -25,8 +25,15 @@
 #
 
 from json_io.products.json_product import AJsonProduct
-from json_io.json_definitions import JSON_ELEMNT_CHILDREN, PRODUCT_IDENTIFIER, _get_combined_name_uuid
+from json_io.json_definitions import JSON_ELEMNT_CHILDREN, PRODUCT_IDENTIFIER, PART_IDENTIFIER, \
+ _get_combined_name_uuid, JSON_ELEMENT_NAME, JSON_ELEMENT_UUID
 from json_io.products.json_product_child import JsonProductChild
+from json_io.json_spread_sheet import FREECAD_PART_SHEET_NAME
+from freecad.active_document import ActiveDocument
+import FreeCAD
+import os
+
+Log = FreeCAD.Console.PrintLog
 
 
 class JsonProductAssembly(AJsonProduct):
@@ -79,6 +86,29 @@ class JsonProductAssembly(AJsonProduct):
         else:
             return None
 
+    def parse_to_json(self, isRoot=False):
+        if(isRoot):
+            json_dict = {
+                JSON_ELEMENT_NAME: self.name.replace("_", "-"),
+                JSON_ELEMENT_UUID: self.uuid.replace("_", "-")
+            }
+        else:
+            json_dict = super().parse_to_json()
+
+        children_dicts = []
+        for child in self.children:
+
+            if(isRoot):
+                children_dicts.append(child.parse_to_json())
+            else:
+                # ignore part of product assembly
+                if(not child.get_unique_name() == self.get_unique_name()):
+                    children_dicts.append(child.parse_to_json())
+
+        json_dict[JSON_ELEMNT_CHILDREN] = children_dicts
+
+        return json_dict
+
     def write_to_freecad(self, active_document):
         # This assembly may refer to a part as well
         # hence if there is a partUuid and if there is a part name, than
@@ -90,6 +120,69 @@ class JsonProductAssembly(AJsonProduct):
         # part or a product
         for child in self.children:
             child.write_to_freecad(active_document)
+
+    def read_from_freecad(self, active_document, working_output_directory, part_list, freecad_object=None, freecad_sheet=None):
+        """
+        Reads an ProductAssembly from FreeCAD
+        Then calls read_from_freecad of his children (either another assembly or a ProductChild)
+        """
+        products_with_sheets = self.get_products_of_active_document(active_document)
+        # read the assembly
+        super().read_from_freecad(active_document, working_output_directory, part_list, freecad_object, freecad_sheet)
+
+        self.children = []
+        # read the children
+        for product, sheet in products_with_sheets:
+            name, label = product.Name, product.Label
+            # use the source file of a2plus part
+            # then get the file name (.split(os.path.sep)[-1]) and ignore the FreeCAD file ending ([:-6])
+            child_file_name = product.sourceFile.split(os.path.sep)[-1][:-6]
+
+            # open the document for this child
+            child_document = ActiveDocument(working_output_directory).open_set_and_get_document(child_file_name)
+
+            if(PRODUCT_IDENTIFIER in name):
+                Log(f"Read ProductAssembly '{label}'\n")
+                child = JsonProductAssembly()
+            else:
+                Log(f"Read Product '{label}'\n")
+                child = AJsonProduct()
+
+            child.read_from_freecad(child_document, working_output_directory, part_list, freecad_object=product, freecad_sheet=sheet)
+            child_document.close_active_document(child_file_name)
+
+            self.children.append(child)
+
+    def get_products_of_active_document(self, active_document):
+        """
+        Accesses, sorts and filters objects of the current document.
+        NOTE: A document always contains productAssemblies or productChild as long as it is an assembly itself
+            Only a document that references one part, thus contains the PART_IDENTIFIER in it's name, references a part
+        Returns a list of found products (that have a sheet) and the corresponding sheets
+        """
+        products, sheets = [], []
+
+        for obj in active_document.app_active_document.Objects:
+            name, label = obj.Name, obj.Label
+            Log("Object: {}, {}\n".format(name, label))
+
+            if(FREECAD_PART_SHEET_NAME in name):
+                sheets.append(obj)
+                Log("Object is sheet\n")
+            elif(PRODUCT_IDENTIFIER in name or PART_IDENTIFIER in name):
+                products.append(obj)
+                Log("Object is product\n")
+
+        products_with_sheets = []
+
+        for product in products:
+            for sheet in sheets:
+                if(product.Label in sheet.Label):
+                    products_with_sheets.append((product, sheet))
+
+        Log(f"Found products with sheets: '{[(p.Label, s.Label) for p, s in products_with_sheets]}'\n")
+
+        return products_with_sheets
 
     def get_product_unique_name(self):
         return PRODUCT_IDENTIFIER + _get_combined_name_uuid(self.name, self.uuid)

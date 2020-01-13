@@ -66,16 +66,7 @@ class TestJsonPart(AWorkingDirectoryTest):
         self.assertEqual(json_part.color, 12632256 << 8, "Property is correctly set")
 
     def test_create_part(self):
-        json_data = """{
-            "color": 12632256,
-            "shape": "BOX",
-            "name": "Beam",
-            "lengthX": 0.04,
-            "lengthY": 0.01,
-            "lengthZ": 0.3,
-            "radius": 0.0,
-            "uuid": "6201a731-d703-43f8-ab37-6a0581dfe022"
-        }"""
+        json_data = TEST_JSON_PART_BOX
 
         active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("PartSheetTest_Write")
         json_object = json.loads(json_data)
@@ -89,17 +80,27 @@ class TestJsonPart(AWorkingDirectoryTest):
                           (0.7529411911964417, 0.7529411911964417, 0.7529411911964417, 0.0),
                           "Shape has correct color")
 
+    def test_create_and_read_part(self):
+        json_data = TEST_JSON_PART_BOX
+
+        active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("PartSheetTest_Write")
+        json_object = json.loads(json_data)
+
+        json_part = AJsonPart()
+        json_part.parse_from_json(json_object)
+        json_part.write_to_freecad(active_document)
+
+        read_part = AJsonPart()
+        freecad_object = active_document.app_active_document.Objects[0]
+        freecad_sheet = active_document.app_active_document.Objects[1]
+
+        read_part.read_from_freecad(freecad_object, freecad_sheet)
+        read_json = read_part.parse_to_json()
+
+        self.assertJsonObjectsEqual(json_object, read_json, "Equal JSON objects")
+
     def test_get_part_unique_name(self):
-        json_data = """{
-            "color": 12632256,
-            "shape": "BOX",
-            "name": "Beam",
-            "lengthX": 0.04,
-            "lengthY": 0.01,
-            "lengthZ": 0.3,
-            "radius": 0.0,
-            "uuid": "6201a731-d703-43f8-ab37-6a0581dfe022"
-        }"""
+        json_data = TEST_JSON_PART_BOX
 
         json_object = json.loads(json_data)
 

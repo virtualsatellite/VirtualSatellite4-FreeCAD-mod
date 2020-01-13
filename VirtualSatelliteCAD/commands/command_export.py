@@ -23,16 +23,46 @@
 #
 # SPDX-License-Identifier: LGPL-3.0-or-later
 #
-
+import os
 import FreeCAD
 import FreeCADGui
 from module.environment import Environment, ICON_EXPORT
 from commands.command_definitions import COMMAND_ID_EXPORT_2_VIRTUAL_SATELLITE
+from PySide2.QtWidgets import QFileDialog
+from json_io.json_exporter import JsonExporter
+import json
+from freecad.active_document import ActiveDocument
+
+Log = FreeCAD.Console.PrintMessage
 
 
 class CommandExport:
     def Activated(self):
-        FreeCAD.Console.PrintMessage("Calling the exporter\n")
+        Log("Calling the exporter\n")
+
+        # call pyqt dialog: returns (filename, filter)
+        filename = QFileDialog.getSaveFileName(
+            None,  # ui parent
+            "Save JSON file",  # dialog caption
+            Environment.get_appdata_module_path(),
+            "JSON(*.json)")[0]  # filter
+
+        if filename != '':
+            json_exporter = JsonExporter(Environment.get_appdata_module_path() + os.sep)
+
+            if(FreeCAD.ActiveDocument is not None):
+                document_name = FreeCAD.ActiveDocument.Label
+                active_document = ActiveDocument(Environment.get_appdata_module_path()).open_set_and_get_document(document_name)
+                json_dict = json_exporter.full_export(active_document)
+                json_str = json.dumps(json_dict)
+
+                # after export open the file again for the UI
+                active_document = ActiveDocument(Environment.get_appdata_module_path()).open_set_and_get_document(document_name)
+
+                with open(filename, 'w') as file:
+                    file.write(json_str)
+            else:
+                Log("Error: First open a document to export it\n")
 
     def IsActive(self):
         return True

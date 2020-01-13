@@ -35,3 +35,6 @@ class JsonPartSphere(AJsonPart):
         sphere = active_document.app_active_document.getObject(object_name_and_type)
 
         sphere.Radius = self.radius
+
+    def _get_freecad_properties(self, sphere):
+        self.radius = float(sphere.Radius)

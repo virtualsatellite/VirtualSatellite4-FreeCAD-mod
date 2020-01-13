@@ -32,8 +32,13 @@ import FreeCADGui
 from json_io.products.json_product_assembly import JsonProductAssembly
 from freecad.active_document import ActiveDocument
 from test.json_io.test_json_data import TEST_JSON_PRODUCT_WITH_CHILDREN,\
-    TEST_JSON_PRODUCT_WITHOUT_CHILDREN, TEST_JSON_PRODUCT_WITH_CHILDREN_WITH_CHILD
-from json_io.json_definitions import JSON_ELEMNT_CHILDREN, PRODUCT_IDENTIFIER
+    TEST_JSON_PRODUCT_WITHOUT_CHILDREN, TEST_JSON_PRODUCT_WITH_CHILDREN_WITH_CHILD,\
+    TEST_JSON_PRODUCT_ROOT
+from json_io.json_definitions import JSON_ELEMNT_CHILDREN, PRODUCT_IDENTIFIER, \
+    JSON_ELEMENT_POS_X, JSON_ELEMENT_POS_Y, JSON_ELEMENT_POS_Z, \
+    JSON_ELEMENT_ROT_X, JSON_ELEMENT_ROT_Y, JSON_ELEMENT_ROT_Z
+from json_io.json_spread_sheet import FREECAD_PART_SHEET_NAME
+from json_io.products.json_product_assembly_tree_traverser import JsonProductAssemblyTreeTraverser
 
 App = FreeCAD
 Gui = FreeCADGui
@@ -51,7 +56,7 @@ class TestJsonProductAssembly(AWorkingDirectoryTest):
     def tearDown(self):
         super().tearDown()
 
-    def test_parse_with_children(self):
+    def test_parse_from_json_with_children(self):
         json_object = json.loads(self.json_data)
         json_product = JsonProductAssembly().parse_from_json(json_object)
 
@@ -96,13 +101,25 @@ class TestJsonProductAssembly(AWorkingDirectoryTest):
         self.assertEqual(json_product_child_2.rot_y, 0.0, "Property is correctly set")
         self.assertEqual(json_product_child_2.rot_z, 0.0, "Property is correctly set")
 
-    def test_parse_with_no_children(self):
+    def test_parse_from_json_with_no_children(self):
         json_data = TEST_JSON_PRODUCT_WITHOUT_CHILDREN
 
         json_object = json.loads(json_data)
         json_product = JsonProductAssembly().parse_from_json(json_object)
 
         self.assertIsNone(json_product, "There is no assembly if there are no children")
+
+    def test_parse_to_json(self):
+        json_object = json.loads(self.json_data)
+        json_product = JsonProductAssembly().parse_from_json(json_object)
+
+        read_json = json_product.parse_to_json()
+
+        # positions and rotations of root assembly won't be parsed
+        diff = [JSON_ELEMENT_POS_X, JSON_ELEMENT_POS_Y, JSON_ELEMENT_POS_Z,
+                JSON_ELEMENT_ROT_X, JSON_ELEMENT_ROT_Y, JSON_ELEMENT_ROT_Z]
+
+        self.assertJsonObjectsAlmostEqual(json_object, read_json, diff, "Equal JSON objects")
 
     def test_create_part_product_assembly_with_root_part(self):
         self.create_Test_Part()
@@ -181,3 +198,43 @@ class TestJsonProductAssembly(AWorkingDirectoryTest):
         active_document.save_as("ProductAssemblyAndSubassemblyRootPart")
 
         self.assertEquals(len(active_document.app_active_document.RootObjects), 6, "Found correct amount of root objects 3 objects plus 3 sheets")
+
+    def test_get_products_of_active_document(self):
+        active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("ProductAssemblyRootPart")
+        json_object = json.loads(self.json_data)
+        json_product = JsonProductAssembly().parse_from_json(json_object)
+
+        json_product.write_to_freecad(active_document)
+
+        products = JsonProductAssembly().get_products_of_active_document(active_document)
+
+        self.assertEqual(len(products), 3, "Found correct number of 3 products")
+
+        self.assertEqual(products[0][0].Label, "BasePlateBottom1_e8794f3d_86ec_44c5_9618_8b7170c45484", "Found correct product")
+        self.assertEqual(products[0][1].Label, FREECAD_PART_SHEET_NAME + "_" + "BasePlateBottom1_e8794f3d_86ec_44c5_9618_8b7170c45484", "Found correct sheet")
+        self.assertEqual(products[1][0].Label, "BasePlateBottom2_e8794f3d_86ec_44c5_9618_8b7170c45484", "Found correct product")
+        self.assertEqual(products[1][1].Label, FREECAD_PART_SHEET_NAME + "_" + "BasePlateBottom2_e8794f3d_86ec_44c5_9618_8b7170c45484", "Found correct sheet")
+        self.assertEqual(products[2][0].Label, "BasePlateTop_a199e3bd_3bc1_426d_8321_e9bd829339b3", "Found correct product")
+        self.assertEqual(products[2][1].Label, FREECAD_PART_SHEET_NAME + "_" + "BasePlateTop_a199e3bd_3bc1_426d_8321_e9bd829339b3", "Found correct sheet")
+
+    def test_read_from_freecad(self):
+        self.create_Test_Part()
+
+        json_object = json.loads(TEST_JSON_PRODUCT_ROOT)
+        traverser = JsonProductAssemblyTreeTraverser(self._WORKING_DIRECTORY)
+        json_product, active_document = traverser.traverse_and_parse_from_json(json_object)
+
+        json_product.write_to_freecad(active_document)
+
+        part_list = []
+        root_assembly = JsonProductAssembly()
+
+        root_assembly.read_from_freecad(active_document, self._WORKING_DIRECTORY, part_list)
+
+        self.assertEqual(len(part_list), 1, "Found correct number of 1 part")
+        self.assertEqual(part_list[0][0], "part_BasePlate_3d3708fd_5c6c_4af9_b710_d68778466084", "Found correct part")
+
+        json_products_dict = root_assembly.parse_to_json(isRoot=True)
+
+        self.assertJsonObjectsAlmostEqual(json_products_dict, json_object, msg="Found equal dictionaries (except y rotation floats)",
+                                          static_keys=[JSON_ELEMENT_ROT_Y])

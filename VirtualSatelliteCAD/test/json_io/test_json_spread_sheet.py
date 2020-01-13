@@ -89,6 +89,19 @@ class TestJsonSpreadSheet(AWorkingDirectoryTest):
 
         self.assertEquals(attribute, 300, "Got correct value")
 
+    def test_read_sheet_attribute_from_freecad(self):
+        active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("PartSheetTest_Read")
+        json_part = AJsonPart().parse_from_json(self._json_test_object)
+        json_spread_sheet = JsonSpreadSheet(json_part)
+
+        json_spread_sheet.write_to_freecad(active_document)
+
+        freecad_sheet = active_document.app_active_document.getObject(json_spread_sheet.create_sheet_name())
+
+        attribute = json_spread_sheet.read_sheet_attribute_from_freecad(freecad_sheet, "height")
+
+        self.assertEquals(attribute, 300, "Got correct value")
+
     def test_is_sheet_attached(self):
         active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("PartSheetTest_Attached")
         json_part = AJsonPart().parse_from_json(self._json_test_object)

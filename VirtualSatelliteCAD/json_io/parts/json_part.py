@@ -75,6 +75,23 @@ class AJsonPart():
 
         return self
 
+    def parse_to_json(self):
+        json_dict = {
+            JSON_ELEMENT_NAME: self.name,
+            JSON_ELEMENT_UUID: self.uuid.replace("_", "-"),
+            JSON_ELEMENT_SHAPE: self.shape,
+
+            JSON_ELEMENT_LENGTH_X: self.length / M_TO_MM,
+            JSON_ELEMENT_LENGTH_Y: self.width / M_TO_MM,
+            JSON_ELEMENT_LENGTH_Z: self.height / M_TO_MM,
+
+            JSON_ELEMENT_RADIUS: self.radius / M_TO_MM,
+
+            JSON_ELEMENT_COLOR: self.color >> 8
+        }
+
+        return json_dict
+
     def _clean_freecad_object(self, active_document):
         '''
         This method checks if the object to be created complies with the one
@@ -132,6 +149,31 @@ class AJsonPart():
         # Recompute the object on FreeCAD side
         object_name_and_type = self.get_shape_type()
         active_document.app_active_document.getObject(object_name_and_type).recompute()
+
+    def _get_freecad_properties(self, freecad_object):
+        """
+        Function to be overwritten by concrete part implementations
+        """
+        pass
+
+    def read_from_freecad(self, freecad_object, freecad_sheet):
+        sheet = JsonSpreadSheet(self)
+
+        self.name = sheet.read_sheet_attribute_from_freecad(freecad_sheet, "name")
+        self.shape = sheet.read_sheet_attribute_from_freecad(freecad_sheet, "shape")
+        self.uuid = sheet.read_sheet_attribute_from_freecad(freecad_sheet, "uuid")
+
+        # initialize with values of the sheet
+        self.length = float(sheet.read_sheet_attribute_from_freecad(freecad_sheet, "length"))
+        self.width = float(sheet.read_sheet_attribute_from_freecad(freecad_sheet, "width"))
+        self.height = float(sheet.read_sheet_attribute_from_freecad(freecad_sheet, "height"))
+        self.radius = float(sheet.read_sheet_attribute_from_freecad(freecad_sheet, "radius"))
+        self.color = int(sheet.read_sheet_attribute_from_freecad(freecad_sheet, "color"))
+
+        # then overwrite with the values of the FreeCAD object
+        self._get_freecad_properties(freecad_object)
+
+        self.sheet = sheet
 
     def get_shape_type(self):
         shape_type = self.shape.lower().capitalize()

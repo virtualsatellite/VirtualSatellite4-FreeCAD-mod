@@ -55,3 +55,8 @@ class JsonPartBox(AJsonPart):
             vector_rotation)
 
         box.Placement = placement
+
+    def _get_freecad_properties(self, box):
+        self.length = float(box.Length)
+        self.height = float(box.Height)
+        self.width = float(box.Width)

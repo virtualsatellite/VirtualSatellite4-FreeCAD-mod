@@ -32,6 +32,7 @@ import FreeCAD
 import FreeCADGui
 from json_io.parts.json_part_box import JsonPartBox
 from test.json_io.test_json_data import TEST_JSON_PART_BOX
+from json_io.json_definitions import JSON_ELEMENT_LENGTH_X, JSON_ELEMENT_LENGTH_Y, JSON_ELEMENT_LENGTH_Z
 
 App = FreeCAD
 Gui = FreeCADGui
@@ -69,3 +70,54 @@ class TestJsonPartBox(AWorkingDirectoryTest):
                           "Shape has correct color")
 
         active_document.save_and_close_active_document("PartBox")
+
+    def test_create_and_read_part_box(self):
+        json_data = TEST_JSON_PART_BOX
+
+        active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("PartBox")
+        json_object = json.loads(json_data)
+
+        json_part = JsonPartBox()
+        json_part.parse_from_json(json_object)
+        json_part.write_to_freecad(active_document)
+
+        read_part = JsonPartBox()
+        freecad_object = active_document.app_active_document.Objects[0]
+        freecad_sheet = active_document.app_active_document.Objects[1]
+
+        read_part.read_from_freecad(freecad_object, freecad_sheet)
+        read_json = read_part.parse_to_json()
+
+        self.assertJsonObjectsEqual(json_object, read_json, "Equal JSON objects")
+
+    def test_create_change_and_read_part_box(self):
+        json_data = TEST_JSON_PART_BOX
+
+        active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("PartBox")
+        json_object = json.loads(json_data)
+
+        json_part = JsonPartBox()
+        json_part.parse_from_json(json_object)
+        json_part.write_to_freecad(active_document)
+
+        read_part = JsonPartBox()
+        freecad_object = active_document.app_active_document.Objects[0]
+        freecad_sheet = active_document.app_active_document.Objects[1]
+
+        # Change box properties
+        freecad_object.Length = 50
+        freecad_object.Width = 60
+        freecad_object.Height = 70
+
+        read_part.read_from_freecad(freecad_object, freecad_sheet)
+        read_json = read_part.parse_to_json()
+
+        # check that only the expected values got changed
+        self.assertJsonObjectsAlmostEqual(
+            read_json, json_object, [JSON_ELEMENT_LENGTH_X, JSON_ELEMENT_LENGTH_Y, JSON_ELEMENT_LENGTH_Z],
+            "JSON objects at most differ in lengthX, lengthY, lengthZ")
+
+        # check that the values got changed correct
+        self.assertEqual(read_json[JSON_ELEMENT_LENGTH_X], 0.05, "Length set correct")
+        self.assertEqual(read_json[JSON_ELEMENT_LENGTH_Y], 0.06, "Width set correct")
+        self.assertEqual(read_json[JSON_ELEMENT_LENGTH_Z], 0.07, "Height set correct")

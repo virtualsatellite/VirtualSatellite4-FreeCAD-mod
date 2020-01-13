@@ -33,13 +33,13 @@ class JsonPartCylinder(AJsonPart):
 
     def _set_freecad_properties(self, active_document):
         object_name_and_type = self.get_shape_type()
-        cone = active_document.app_active_document.getObject(object_name_and_type)
+        cylinder = active_document.app_active_document.getObject(object_name_and_type)
 
-        cone.Radius = self.radius
-        cone.Height = self.width
+        cylinder.Radius = self.radius
+        cylinder.Height = self.width
 
         # Now virtual satellite axis correction
-        # 1. the cone is aligned on the y axis
+        # 1. the cylinder is aligned on the y axis
         # 2. the origin is in the center of it
         # hence:
         # 1. turn it by 90° on the x axis
@@ -52,4 +52,8 @@ class JsonPartCylinder(AJsonPart):
             vector_rotation,
             VECTOR_ZERO)
 
-        cone.Placement = placement
+        cylinder.Placement = placement
+
+    def _get_freecad_properties(self, cylinder):
+        self.radius = float(cylinder.Radius)
+        self.width = float(cylinder.Height)

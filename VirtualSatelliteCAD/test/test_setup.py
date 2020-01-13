@@ -33,6 +33,7 @@ import FreeCADGui
 from freecad.active_document import ActiveDocument
 import json
 from json_io.parts.json_part_box import JsonPartBox
+from copy import deepcopy
 
 App = FreeCAD
 Gui = FreeCADGui
@@ -107,3 +108,72 @@ class AWorkingDirectoryTest(unittest.TestCase):
         self.assertEqual(len(first), len(second), msg)
         for index in range(len(first)):
             self.assertAlmostEqual(first[index], second[index], places, msg)
+
+    def _order(self, obj):
+        """
+        Recursive orders object with nested lists and dictionaries
+        """
+        if isinstance(obj, dict):
+            return sorted((k, self._order(v)) for k, v in obj.items())
+        if isinstance(obj, list):
+            return sorted(self._order(x) for x in obj)
+        else:
+            return obj
+
+    def assertJsonObjectsEqual(self, first, second, msg=None):
+        self.assertEqual(self._order(first), self._order(second), msg)
+
+    def _ignore(self, obj, keys):
+        """
+        Recursive ignore objects
+        keys: URI like "key1.key2" ignores obj["key1"]["key2"]
+        """
+        key = keys[0]
+
+        if isinstance(obj, dict):
+            # last key
+            if len(keys) == 1:
+                obj[key] = None
+            else:
+                if key in obj:
+                    self._ignore(obj[key], ".".keys[1:])
+
+    def _ignore_static(self, obj, static_keys):
+        """
+        Recursive ignore objects
+        static_keys: list of attributes to be ignored at any position like "*.static_key"
+        """
+
+        # dead call if the list is empty
+        if(static_keys == []):
+            return
+
+        if isinstance(obj, dict):
+            for static_key in static_keys:
+                if static_key in obj:
+                    obj[static_key] = None
+
+            for _, value in obj.items():
+                self._ignore_static(value, static_keys)
+
+        elif isinstance(obj, list):
+            for item in obj:
+                self._ignore_static(item, static_keys)
+
+    def assertJsonObjectsAlmostEqual(self, first, second, diff=[], msg="", static_keys=[]):
+        """
+        Ignores differences to be specified as URIs like "key1.key2" in diff
+        Checks for equality in the resulting JSON objects
+        """
+        # copy objects so we don't change the real ones
+        first_copy, second_copy = deepcopy(first), deepcopy(second)
+
+        for uri in diff:
+            keys = uri.split(".")
+            self._ignore(first_copy, keys)
+            self._ignore(second_copy, keys)
+
+        self._ignore_static(first_copy, static_keys)
+        self._ignore_static(second_copy, static_keys)
+
+        self.assertEqual(self._order(first_copy), self._order(second_copy), msg)
