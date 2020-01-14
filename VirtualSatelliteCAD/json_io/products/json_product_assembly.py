@@ -33,6 +33,7 @@ from freecad.active_document import ActiveDocument
 from itertools import compress
 import FreeCAD
 import os
+from A2plus.a2p_importpart import updateImportedParts
 
 Log = FreeCAD.Console.PrintLog
 
@@ -116,49 +117,42 @@ class JsonProductAssembly(AJsonProduct):
 
         old_products = self.get_products_of_active_document(active_document)
         old_product_names = [o[0].Label for o in old_products]
-        # print([o.Label for o in active_document.app_active_document.RootObjects])
-        # print(old_product_names)
 
-        # TODO: parts can get referenced multiple times so we have to save if a product is referenced afterwards?
-        # maybe this is not needed
+        # parts can get referenced multiple times so we have to save if a product is referenced afterwards
+        # TODO: maybe this is not needed
         delete_products = [True] * len(old_product_names)
-        # print(delete_products)
 
         if self.is_part_reference():
-            # print("Part " + _get_combined_name_uuid(self.part_name, self.part_uuid))
-            # print(_get_combined_name_uuid(self.part_name, self.part_uuid) in old_product_names)
             name = _get_combined_name_uuid(self.part_name, self.part_uuid)
             if(name in old_product_names):
-                # TODO: update
-                super().write_to_freecad(active_document)
+                # update
+                super().write_to_freecad(active_document, create=False)
                 delete_products[old_product_names.index(name)] = False
             else:
-                # TODO: create
+                # create
                 super().write_to_freecad(active_document)
 
         # And now write the children, they decide on their own if they reference
         # part or a product
         for child in self.children:
-            # print("Child " + child.get_unique_name())
-            # print(child.get_unique_name() in old_product_names)
             name = child.get_unique_name()
             if(name in old_product_names):
-                # TODO: update
-                child.write_to_freecad(active_document)
+                # update
+                child.write_to_freecad(active_document, create=False)
                 delete_products[old_product_names.index(name)] = False
             else:
-                # TODO: create
+                # create
                 child.write_to_freecad(active_document)
-
-        # print(delete_products)
 
         # delete remaining old products
         old_products = list(compress(old_products, delete_products))
         for old_product in old_products:
-            # delete part and sheet
-            # print("Delete: " + old_product[0].Label)
             active_document.app_active_document.removeObject(old_product[0].Name)
             active_document.app_active_document.removeObject(old_product[1].Name)
+
+        # update parts
+        # TODO: do this before writing? so written files won't get updated to save computation time?
+        updateImportedParts(active_document.app_active_document)
 
     def read_from_freecad(self, active_document, working_output_directory, part_list, freecad_object=None, freecad_sheet=None):
         """

@@ -35,7 +35,9 @@ from test.test_setup import AWorkingDirectoryTest
 from freecad.active_document import FREECAD_FILE_EXTENSION, ActiveDocument
 from module.environment import Environment
 from json_io.json_definitions import JSON_ELEMENT_STL_PATH, PART_IDENTIFIER, PRODUCT_IDENTIFIER, \
-    JSON_PARTS, JSON_PRODUCTS, JSON_ELEMNT_CHILDREN
+    JSON_PARTS, JSON_PRODUCTS, JSON_ELEMNT_CHILDREN, JSON_ELEMENT_ROT_X,\
+    JSON_ELEMENT_ROT_Y, JSON_ELEMENT_ROT_Z, JSON_ELEMENT_POS_X,\
+    JSON_ELEMENT_POS_Y, JSON_ELEMENT_POS_Z
 from test.json_io.test_json_data import TEST_JSON_FULL_VISCUBE, TEST_JSON_FULL_NONE_SHAPE, TEST_JSON_FULL_NONE_SHAPE_ASSEMBLY, \
     TEST_JSON_FULL_GEOMETRY
 from json_io.json_spread_sheet import FREECAD_PART_SHEET_NAME, JsonSpreadSheet
@@ -372,10 +374,10 @@ class TestJsonImporter(AWorkingDirectoryTest):
         # Check that the extra attribute for the STL files got written to the sheet
         self.assertEqual(stl_path, stl_test_resource_path_cp, "The path is written to the spreadsheet")
 
-    # @unittest.SkipTest
     def test_full_import_again(self):
         """
         Importing the same file again should not result in changes
+        TODO
         """
 
         json_importer = JsonImporter(self._WORKING_DIRECTORY)
@@ -409,11 +411,67 @@ class TestJsonImporter(AWorkingDirectoryTest):
             child2 = json_product2.children[i]
             child1.has_equal_values(child2)
 
-    def test_full_import_again_with_changes(self):
-        # TODO
-        pass
+    def test_full_import_again_with_changes_in_product(self):
+        """
+        After importing the default JSON:
+        importing a file with updated product values should result in the values being updated in the FreeCAD object
+        """
+        json_importer = JsonImporter(self._WORKING_DIRECTORY)
+        json_object = json.loads(TEST_JSON_FULL_VISCUBE)
+
+        # First import
+        part_file_names, json_product, active_document = json_importer.full_import(json_object)
+
+        # Check that the right number of parts was found
+        self.assertEqual(len(part_file_names), 7, "Found 7 files")
+
+        # Check that the right number of children and root objects got created
+        self.assertEqual(len(json_product.children), 5, "Correct amount of children")
+        self.assertEqual(len(active_document.app_active_document.RootObjects), 10, "Found correct amount of root objects 7 plus 7 sheets")
+
+        # save values of first import
+        child = active_document.app_active_document.RootObjects[0]
+        old_rot_x, old_rot_y, old_rot_z = child.Placement.Base
+        old_pos_z, old_pos_y, old_pos_x = child.Placement.Rotation.toEuler()
+
+        # Changes in the file
+        json_child = json_object[JSON_PRODUCTS][JSON_ELEMNT_CHILDREN][0]
+
+        json_child[JSON_ELEMENT_ROT_X] = 0.5
+        json_child[JSON_ELEMENT_ROT_Y] = 0.5
+        json_child[JSON_ELEMENT_ROT_Z] = 0.5
+
+        json_child[JSON_ELEMENT_POS_X] = 500
+        json_child[JSON_ELEMENT_POS_Y] = 500
+        json_child[JSON_ELEMENT_POS_Z] = 500
+
+        # Second import
+        part_file_names2, json_product2, active_document2 = json_importer.full_import(json_object)
+
+        # Check that the right number of parts was found
+        self.assertEqual(len(part_file_names2), 7, "Found 7 files")
+
+        # Check that the right number of children and root objects got created
+        self.assertEquals(len(json_product2.children), 5, "Correct amount of children")
+        self.assertEquals(len(active_document2.app_active_document.RootObjects), 10, "Found correct amount of root objects 4 plus 4 sheets")
+
+        child2 = active_document2.app_active_document.RootObjects[0]
+        new_rot_x, new_rot_y, new_rot_z = child2.Placement.Base
+        new_pos_z, new_pos_y, new_pos_x = child2.Placement.Rotation.toEuler()
+
+        self.assertNotAlmostEqual(new_rot_x, old_rot_x, msg="Rotation X changed")
+        self.assertNotAlmostEqual(new_rot_y, old_rot_y, msg="Rotation Y changed")
+        self.assertNotAlmostEqual(new_rot_z, old_rot_z, msg="Rotation Z changed")
+
+        self.assertNotAlmostEqual(new_pos_x, old_pos_x, msg="Position X changed")
+        self.assertNotAlmostEqual(new_pos_y, old_pos_y, msg="Position Y changed")
+        self.assertNotAlmostEqual(new_pos_z, old_pos_z, msg="Position Z changed")
 
     def test_full_import_again_with_deletion(self):
+        """
+        After importing the default JSON:
+        importing a file with a missing product (in this case one children) should delete the corresponding FreeCAD object from the assembly
+        """
         json_importer = JsonImporter(self._WORKING_DIRECTORY)
         json_object = json.loads(TEST_JSON_FULL_VISCUBE)
 

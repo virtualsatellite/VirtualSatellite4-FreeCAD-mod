@@ -180,19 +180,31 @@ class AJsonProduct():
 
         product_part.Placement = placement
 
+    def _reset_freecad_position_and_rotation(self, active_document):
+        product_part_name = self.get_unique_name()
+
+        product_part = active_document.app_active_document.getObjectsByLabel(product_part_name)[0]
+        product_part.Placement = FreeCAD.Placement()
+
     def _write_freecad_part(self, active_document):
-        # check if the object doesn't exist already
-        if not active_document.app_active_document.getObjectsByLabel(self.get_unique_name()):
-            # this is a new object: create
-            self._create_or_update_freecad_part(active_document)
-            self._set_freecad_position_and_rotation(active_document)
+        # TODO: rename to create?
+        self._create_or_update_freecad_part(active_document)
+        self._set_freecad_position_and_rotation(active_document)
+
+    def _update_freecad_part(self, active_document):
+        self._reset_freecad_position_and_rotation(active_document)
+        self._set_freecad_position_and_rotation(active_document)
+
+    def write_to_freecad(self, active_document, create=True):
+
+        if(create):
+            self._write_freecad_part(active_document)
+        # only update the existing part
         else:
-            # TODO: replace / update
-            pass
+            self._update_freecad_part(active_document)
+            # TODO: remove the existing sheet?
+            active_document.app_active_document.removeObject(self.sheet.create_sheet_name())
 
-    def write_to_freecad(self, active_document):
-
-        self._write_freecad_part(active_document)
         self.sheet.write_to_freecad(active_document)
 
     def _get_freecad_rotation(self, freecad_object):
