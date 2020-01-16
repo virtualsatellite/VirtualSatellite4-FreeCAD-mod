@@ -118,14 +118,16 @@ class JsonProductAssembly(AJsonProduct):
         old_products = self.get_products_of_active_document(active_document)
         old_product_names = [o[0].Label for o in old_products]
 
-        # parts can get referenced multiple times so we have to save if a product is referenced afterwards
-        # TODO: maybe this is not needed
+        # store if a product has to be deleted
+        # (because it doesn't exist in the new imported JSON file)
         delete_products = [True] * len(old_product_names)
+        update_count = 0
 
         if self.is_part_reference():
             name = _get_combined_name_uuid(self.part_name, self.part_uuid)
             if(name in old_product_names):
                 # update
+                update_count += 1
                 super().write_to_freecad(active_document, create=False)
                 delete_products[old_product_names.index(name)] = False
             else:
@@ -138,6 +140,7 @@ class JsonProductAssembly(AJsonProduct):
             name = child.get_unique_name()
             if(name in old_product_names):
                 # update
+                update_count += 1
                 child.write_to_freecad(active_document, create=False)
                 delete_products[old_product_names.index(name)] = False
             else:
@@ -150,9 +153,10 @@ class JsonProductAssembly(AJsonProduct):
             active_document.app_active_document.removeObject(old_product[0].Name)
             active_document.app_active_document.removeObject(old_product[1].Name)
 
-        # update parts
-        # TODO: do this before writing? so written files won't get updated to save computation time?
-        updateImportedParts(active_document.app_active_document)
+        # only if there were updates instead of creates
+        if(update_count > 0):
+            # update already read in parts
+            updateImportedParts(active_document.app_active_document)
 
     def read_from_freecad(self, active_document, working_output_directory, part_list, freecad_object=None, freecad_sheet=None):
         """

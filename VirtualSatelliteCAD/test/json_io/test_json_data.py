@@ -311,6 +311,20 @@ TEST_JSON_PRODUCT_WITHOUT_CHILDREN = """{
     }
     """
 
+TEST_JSON_PRODUCT_WITHOUT_CHILDREN_WITHOUT_PART = """{
+        "name": "BasePlateBottom",
+        "uuid": "e8794f3d-86ec-44c5-9618-8b7170c45484",
+        "posX": 0.02,
+        "posY": 0.03,
+        "posZ": 0.04,
+        "rotX": 0.3490659,
+        "rotY": 0.6981317,
+        "rotZ": 1.0471976,
+        "children": [
+        ]
+    }
+    """
+
 TEST_JSON_PRODUCT_WITH_ONE_CHILD = """{
         "name": "BasePlateBottom",
         "uuid": "e8794f3d-86ec-44c5-9618-8b7170c45484",

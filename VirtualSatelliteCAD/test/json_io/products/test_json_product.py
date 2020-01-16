@@ -30,7 +30,7 @@ from test.test_setup import AWorkingDirectoryTest
 import FreeCAD
 import FreeCADGui
 from json_io.products.json_product import AJsonProduct
-from test.json_io.test_json_data import TEST_JSON_PRODUCT_WITHOUT_CHILDREN
+from test.json_io.test_json_data import TEST_JSON_PRODUCT_WITHOUT_CHILDREN, TEST_JSON_PRODUCT_WITHOUT_CHILDREN_WITHOUT_PART
 from json_io.json_definitions import PART_IDENTIFIER, \
     JSON_ELEMENT_ROT_X, JSON_ELEMENT_ROT_Y, JSON_ELEMENT_ROT_Z
 from freecad.active_document import ActiveDocument
@@ -91,19 +91,7 @@ class TestJsonProduct(AWorkingDirectoryTest):
         self.assertEquals(json_product.get_part_unique_name(), PART_IDENTIFIER + "BasePlate_3d3708fd_5c6c_4af9_b710_d68778466084", "Correct unique name")
 
     def test_is_part_reference(self):
-        json_data = """{
-                "name": "BasePlateBottom",
-                "uuid": "e8794f3d-86ec-44c5-9618-8b7170c45484",
-                "posX": 2.0,
-                "posY": 3.0,
-                "posZ": 4.0,
-                "rotX": 0.1,
-                "rotY": 0.2,
-                "rotZ": 0.3,
-                "children": [
-                ]
-            }
-            """
+        json_data = TEST_JSON_PRODUCT_WITHOUT_CHILDREN_WITHOUT_PART
 
         json_object = json.loads(json_data)
         json_product = AJsonProduct().parse_from_json(json_object)

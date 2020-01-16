@@ -123,12 +123,12 @@ class AJsonProduct():
 
         return json_dict
 
-    def _create_or_update_freecad_part(self, active_document):
+    def _create_freecad_part(self, active_document):
         '''
         This method imports the part referenced by the product.
         The referenced part will be placed under the product part name into
         the assembly. E.g. A BasePlate will be added as BasePlateBottom to the
-        assembly. In case the object already exists, it will be recreated.
+        assembly.
         '''
         import_part_file_name = self.get_part_unique_name()
         import_part_name_in_product = self.get_unique_name()
@@ -187,8 +187,7 @@ class AJsonProduct():
         product_part.Placement = FreeCAD.Placement()
 
     def _write_freecad_part(self, active_document):
-        # TODO: rename to create?
-        self._create_or_update_freecad_part(active_document)
+        self._create_freecad_part(active_document)
         self._set_freecad_position_and_rotation(active_document)
 
     def _update_freecad_part(self, active_document):
@@ -202,7 +201,7 @@ class AJsonProduct():
         # only update the existing part
         else:
             self._update_freecad_part(active_document)
-            # TODO: remove the existing sheet?
+            # remove the existing sheet
             active_document.app_active_document.removeObject(self.sheet.create_sheet_name())
 
         self.sheet.write_to_freecad(active_document)
