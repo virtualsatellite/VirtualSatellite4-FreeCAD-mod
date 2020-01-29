@@ -123,23 +123,16 @@ class AJsonProduct():
 
         return json_dict
 
-    def _create_or_update_freecad_part(self, active_document):
+    def _create_freecad_part(self, active_document):
         '''
         This method imports the part referenced by the product.
         The referenced part will be placed under the product part name into
         the assembly. E.g. A BasePlate will be added as BasePlateBottom to the
-        assembly. In case the object already exists, it will be recreated.
+        assembly.
         '''
         import_part_file_name = self.get_part_unique_name()
         import_part_name_in_product = self.get_unique_name()
         import_part_full_path = active_document.get_file_full_path(import_part_file_name)
-        import_part_ref = active_document.app_active_document.getObjectsByLabel(import_part_name_in_product)
-
-        # print(f"Called with '{import_part_name_in_product}'")
-        # TODO: CRUD
-        # If the part doesn't exists (the returned list is not empty) update (delete and recreate) it
-        if import_part_ref:
-            active_document.app_active_document.removeObject(import_part_ref[0].Name)
 
         imported_product_part = importPartFromFile(
             active_document.app_active_document,
@@ -187,13 +180,30 @@ class AJsonProduct():
 
         product_part.Placement = placement
 
+    def _reset_freecad_position_and_rotation(self, active_document):
+        product_part_name = self.get_unique_name()
+
+        product_part = active_document.app_active_document.getObjectsByLabel(product_part_name)[0]
+        product_part.Placement = FreeCAD.Placement()
+
     def _write_freecad_part(self, active_document):
-        self._create_or_update_freecad_part(active_document)
+        self._create_freecad_part(active_document)
         self._set_freecad_position_and_rotation(active_document)
 
-    def write_to_freecad(self, active_document):
+    def _update_freecad_part(self, active_document):
+        self._reset_freecad_position_and_rotation(active_document)
+        self._set_freecad_position_and_rotation(active_document)
 
-        self._write_freecad_part(active_document)
+    def write_to_freecad(self, active_document, create=True):
+
+        if(create):
+            self._write_freecad_part(active_document)
+        # only update the existing part
+        else:
+            self._update_freecad_part(active_document)
+            # remove the existing sheet
+            active_document.app_active_document.removeObject(self.sheet.create_sheet_name())
+
         self.sheet.write_to_freecad(active_document)
 
     def _get_freecad_rotation(self, freecad_object):

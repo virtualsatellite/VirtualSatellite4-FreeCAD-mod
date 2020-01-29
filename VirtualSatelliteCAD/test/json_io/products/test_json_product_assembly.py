@@ -200,7 +200,7 @@ class TestJsonProductAssembly(AWorkingDirectoryTest):
         self.assertEquals(len(active_document.app_active_document.RootObjects), 6, "Found correct amount of root objects 3 objects plus 3 sheets")
 
     def test_get_products_of_active_document(self):
-        active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("ProductAssemblyRootPart")
+        active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("ProductAssemblyActiveDocuments")
         json_object = json.loads(self.json_data)
         json_product = JsonProductAssembly().parse_from_json(json_object)
 
@@ -236,5 +236,5 @@ class TestJsonProductAssembly(AWorkingDirectoryTest):
 
         json_products_dict = root_assembly.parse_to_json(isRoot=True)
 
-        self.assertJsonObjectsAlmostEqual(json_products_dict, json_object, msg="Found equal dictionaries (except y rotation floats)",
-                                          static_keys=[JSON_ELEMENT_ROT_Y])
+        self.assertJsonObjectsAlmostEqual(json_products_dict, json_object, msg="Found equal dictionaries (except rotation floats)",
+                                          static_keys=[JSON_ELEMENT_ROT_X, JSON_ELEMENT_ROT_Y, JSON_ELEMENT_ROT_Z])

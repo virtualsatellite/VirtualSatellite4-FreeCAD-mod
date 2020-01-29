@@ -30,8 +30,10 @@ from json_io.json_definitions import JSON_ELEMNT_CHILDREN, PRODUCT_IDENTIFIER, P
 from json_io.products.json_product_child import JsonProductChild
 from json_io.json_spread_sheet import FREECAD_PART_SHEET_NAME
 from freecad.active_document import ActiveDocument
+from itertools import compress
 import FreeCAD
 import os
+from A2plus.a2p_importpart import updateImportedParts
 
 Log = FreeCAD.Console.PrintLog
 
@@ -112,13 +114,49 @@ class JsonProductAssembly(AJsonProduct):
         # This assembly may refer to a part as well
         # hence if there is a partUuid and if there is a part name, than
         # it should be written to the FreeCAD document as well.
+
+        old_products = self.get_products_of_active_document(active_document)
+        old_product_names = [o[0].Label for o in old_products]
+
+        # store if a product has to be deleted
+        # (because it doesn't exist in the new imported JSON file)
+        delete_products = [True] * len(old_product_names)
+        update_count = 0
+
         if self.is_part_reference():
-            super().write_to_freecad(active_document)
+            name = _get_combined_name_uuid(self.part_name, self.part_uuid)
+            if(name in old_product_names):
+                # update
+                update_count += 1
+                super().write_to_freecad(active_document, create=False)
+                delete_products[old_product_names.index(name)] = False
+            else:
+                # create
+                super().write_to_freecad(active_document)
 
         # And now write the children, they decide on their own if they reference
         # part or a product
         for child in self.children:
-            child.write_to_freecad(active_document)
+            name = child.get_unique_name()
+            if(name in old_product_names):
+                # update
+                update_count += 1
+                child.write_to_freecad(active_document, create=False)
+                delete_products[old_product_names.index(name)] = False
+            else:
+                # create
+                child.write_to_freecad(active_document)
+
+        # delete remaining old products
+        old_products = list(compress(old_products, delete_products))
+        for old_product in old_products:
+            active_document.app_active_document.removeObject(old_product[0].Name)
+            active_document.app_active_document.removeObject(old_product[1].Name)
+
+        # only if there were updates instead of creates
+        if(update_count > 0):
+            # update already read in parts
+            updateImportedParts(active_document.app_active_document)
 
     def read_from_freecad(self, active_document, working_output_directory, part_list, freecad_object=None, freecad_sheet=None):
         """
