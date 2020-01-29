@@ -379,10 +379,10 @@ TEST_JSON_PRODUCT_ROOT = """{
 
 TEST_JSON_FULL_NONE_SHAPE = """{
     "Products": {
-        "name": "SpaceCube",
+        "name": "NoneShape",
         "uuid": "a3533e02-125c-4066-bffe-d046d8d8342a",
         "children": [{
-                "name": "Top",
+                "name": "None",
                 "uuid": "cc14e2c7-9d7e-4cf2-8d6d-9b8cf5e96d56",
                 "posX": 0.0,
                 "posY": 0.0,
@@ -391,13 +391,13 @@ TEST_JSON_FULL_NONE_SHAPE = """{
                 "rotY": 0.0,
                 "rotZ": 0.0,
                 "partUuid": "cc14e2c7-9d7e-4cf2-8d6d-9b8cf5e96d56",
-                "partName": "Top",
+                "partName": "None",
                 "children": []
             }
         ]
     },
     "Parts": [{
-            "name": "Top",
+            "name": "None",
             "uuid": "cc14e2c7-9d7e-4cf2-8d6d-9b8cf5e96d56",
             "shape": "NONE",
             "lengthX": 1.0,
@@ -406,6 +406,81 @@ TEST_JSON_FULL_NONE_SHAPE = """{
             "radius": 0.05,
             "color": 32768
         }]
+}"""
+
+TEST_JSON_FULL_NONE_SHAPE_ASSEMBLY = """{
+    "Products": {
+        "name": "NoneShapeAssembly",
+        "uuid": "a3533e02-125c-4066-bffe-d046d8d8342a",
+        "children": [{
+            "posX": 0.0,
+            "posY": 0.0,
+            "posZ": 0.5,
+            "rotX": 0.0,
+            "children": [{
+                "name": "None",
+                "uuid": "cc14e2c7-9d7e-4cf2-8d6d-9b8cf5e96d56",
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 1.0,
+                "rotX": 0.0,
+                "rotY": 0.0,
+                "rotZ": 0.0,
+                "partUuid": "cc14e2c7-9d7e-4cf2-8d6d-9b8cf5e96d56",
+                "partName": "None",
+                "children": []
+            }
+            ],
+            "rotZ": 0.0,
+            "rotY": 0.0,
+            "name": "NoneAssembly",
+            "uuid": "2afb23c9-f458-4bdb-a4e7-fc863364644f",
+            "partUuid": "cc14e2c7-9d7e-4cf2-8d6d-9b8cf5e96d56",
+            "partName": "None"
+        }]
+    },
+    "Parts": [{
+            "name": "None",
+            "uuid": "cc14e2c7-9d7e-4cf2-8d6d-9b8cf5e96d56",
+            "shape": "NONE",
+            "lengthX": 1.0,
+            "lengthY": 1.0,
+            "lengthZ": 0.02,
+            "radius": 0.05,
+            "color": 32768
+        }]
+}"""
+
+TEST_JSON_FULL_GEOMETRY = """{
+    "Products": {
+        "name": "GeometryShape",
+        "uuid": "a3533e02-125c-4066-bffe-d046d8d8342a",
+        "children": [{
+                "name": "Geometry",
+                "uuid": "cc14e2c7-9d7e-4cf2-8d6d-9b8cf5e96d56",
+                "posX": 0.0,
+                "posY": 0.0,
+                "posZ": 1.0,
+                "rotX": 0.0,
+                "rotY": 0.0,
+                "rotZ": 0.0,
+                "partUuid": "38eae3a5-8338-4a51-b1df-5583058f9e77",
+                "partName": "Geometry",
+                "children": []
+            }
+        ]
+    },
+    "Parts": [{
+        "color": 66280,
+        "shape": "GEOMETRY",
+        "name": "Geometry",
+        "lengthY": 1.0,
+        "lengthX": 0.0,
+        "radius": 1.0,
+        "lengthZ": 0.0,
+        "uuid": "38eae3a5-8338-4a51-b1df-5583058f9e77",
+        "stlPath": "Test.stl"
+    }]
 }"""
 
 TEST_JSON_FULL_VISCUBE = """{

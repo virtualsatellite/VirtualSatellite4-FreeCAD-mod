@@ -187,10 +187,13 @@ class AJsonProduct():
 
         product_part.Placement = placement
 
-    def write_to_freecad(self, active_document):
+    def _write_freecad_part(self, active_document):
         self._create_or_update_freecad_part(active_document)
         self._set_freecad_position_and_rotation(active_document)
-        # to the FreeCAD document
+
+    def write_to_freecad(self, active_document):
+
+        self._write_freecad_part(active_document)
         self.sheet.write_to_freecad(active_document)
 
     def _get_freecad_rotation(self, freecad_object):
@@ -251,7 +254,7 @@ class AJsonProduct():
                     elif(FREECAD_PART_SHEET_NAME in obj.Label):
                         part_sheet = obj
                 factory = JsonPartFactory()
-                part = factory.create_from_freecad(part_object)
+                part = factory.create_from_freecad(part_object, part_sheet)
                 part.read_from_freecad(part_object, part_sheet)
                 part_list.append((part_name, part))
 

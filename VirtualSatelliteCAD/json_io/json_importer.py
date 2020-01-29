@@ -83,7 +83,7 @@ class JsonImporter(object):
         for part in json_parts:
             part_file_names.append(self.create_or_update_part(part))
 
-        traverser = JsonProductAssemblyTreeTraverser(self.working_output_directory)
+        traverser = JsonProductAssemblyTreeTraverser(self.working_output_directory, part_file_names)
         json_product, active_document = traverser.traverse_and_parse_from_json(json_object[JSON_PRODUCTS])
 
         Log(f"Import successful\n")

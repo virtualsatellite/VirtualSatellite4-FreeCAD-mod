@@ -34,6 +34,8 @@ from json_io.parts.json_part_geometry import JsonPartGeometry
 from module.environment import Environment
 from json_io.json_definitions import JSON_ELEMENT_STL_PATH
 from test.json_io.test_json_data import TEST_JSON_PART_GEOMETRY
+from shutil import copyfile
+import os
 
 App = FreeCAD
 Gui = FreeCADGui
@@ -77,7 +79,7 @@ class TestJsonPartGeometry(AWorkingDirectoryTest):
                           (0.003921568859368563, 0.007843137718737125, 0.9098039269447327, 0.0),
                           "Shape has correct color")
 
-    def test_create_and_read_part_sphere(self):
+    def test_create_and_read_part_geometry(self):
         json_data = TEST_JSON_PART_GEOMETRY
 
         active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("PartGeometry")
@@ -86,7 +88,9 @@ class TestJsonPartGeometry(AWorkingDirectoryTest):
         # get the current module path and get the directory for the test resource
         # place that path into the json object before executing the transformations
         stl_test_resource_path = Environment.get_test_resource_path("Switch.stl")
-        json_object[JSON_ELEMENT_STL_PATH] = stl_test_resource_path
+        stl_test_resource_path_cp = os.path.join(self._WORKING_DIRECTORY, "Switch_cp.stl")
+        copyfile(stl_test_resource_path, stl_test_resource_path_cp)
+        json_object[JSON_ELEMENT_STL_PATH] = stl_test_resource_path_cp
 
         json_part = JsonPartGeometry()
         json_part.parse_from_json(json_object)
