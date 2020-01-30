@@ -103,7 +103,7 @@ class AJsonPart():
             # the json, it means it has been changed and needs to be updated
             # therefore all previous objects should be removed
             if current_shape_type != self.shape:
-                root_objects = list(active_document.app_active_document.RootObjects)
+                root_objects = list(active_document.app_active_document.Objects)
                 for root_object in root_objects:
                     active_document.app_active_document.removeObject(root_object.Name)
 
