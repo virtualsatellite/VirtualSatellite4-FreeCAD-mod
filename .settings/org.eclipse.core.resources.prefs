@@ -1,11 +1,5 @@
 eclipse.preferences.version=1
 encoding//.settings/org.python.pydev.analysis.yaml=UTF-8
-encoding//commands/__init__.py=utf-8
-encoding//commands/definitions.py=utf-8
-encoding//commands/example_command.py=utf-8
-encoding//module/__init__.py=utf-8
-encoding//module/environment.py=utf-8
+encoding//VirtualSatelliteCAD/commands/command_import.py=utf-8
+encoding//VirtualSatelliteCAD/json_io/json_importer.py=utf-8
 encoding/<project>=UTF-8
-encoding/Init.py=utf-8
-encoding/InitGui.py=utf-8
-encoding/TestVirtualSatelliteApp.py=utf-8
