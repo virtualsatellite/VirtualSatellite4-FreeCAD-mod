@@ -1,4 +1,4 @@
-VirSat Core Release Notes
+VirSat FreeCAD Mod Release Notes
 -------------------------
 Release 0.1.0 (10th February 2020)
 ----------------------------------
