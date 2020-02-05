@@ -31,11 +31,14 @@ class VirtualSatelliteWorkbench(Workbench):  # NOQA @UndefinedVariable
     geometries from and to Virtual Satellite
     '''
 
+    global FREECAD_MOD_VERSION
+    FREECAD_MOD_VERSION = '0.1.0 Beta'
+
     def __init__(self):
         from module.environment import ICON_WORKBENCH, Environment
         self.__class__.Icon = Environment().get_icon_path(ICON_WORKBENCH)
-        self.__class__.MenuText = 'Virtual Satellite'
-        self.__class__.ToolTip = 'Virtual Satellite 4 Workbench'
+        self.__class__.MenuText = 'Virtual Satellite ' + FREECAD_MOD_VERSION
+        self.__class__.ToolTip = 'Workbench for Virtual Satellite 4'
 
     def Initialize(self):
         # Required method by FreeCAD framework
