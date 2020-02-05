@@ -1,0 +1,13 @@
+VirSat Core Release Notes
+-------------------------
+Release 0.1.0 (10th February 2020)
+----------------------------------
+
+New Features:
+   Implemented Export from FreeCAD #6 Feature
+   Implemented Import to FreeCAD with CRUD and special shapes #5 #18 #20 Feature
+   Added Build Process #1 #3 #10 Build
+
+Usability Updates:
+
+Fixed Bugs:
