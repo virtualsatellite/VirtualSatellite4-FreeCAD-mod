@@ -75,7 +75,7 @@ class JsonImporter(object):
         '''
         Import a whole json file's products and parts into a FreeCAD document
         '''
-        Log(f"Calling the importer'\n")
+        Log("Calling the importer\n")
 
         json_parts = json_object[JSON_PARTS]
 
@@ -86,6 +86,6 @@ class JsonImporter(object):
         traverser = JsonProductAssemblyTreeTraverser(self.working_output_directory, part_file_names)
         json_product, active_document = traverser.traverse_and_parse_from_json(json_object[JSON_PRODUCTS])
 
-        Log(f"Import successful\n")
+        Log("Import successful\n")
 
         return part_file_names, json_product, active_document
