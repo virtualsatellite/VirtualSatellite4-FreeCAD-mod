@@ -75,6 +75,6 @@ class JsonExporter(object):
 
         Log(f"Created JSON dictionary: '{json_dict}'\n")
 
-        Log(f"Export successful\n")
+        Log("Export successful\n")
 
         return json_dict

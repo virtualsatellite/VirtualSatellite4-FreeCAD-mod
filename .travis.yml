@@ -30,7 +30,7 @@ stages:
 
 env:
   global:
-  - VERSION=4.9.0
+  - VERSION=0.1.0
   
   # ---------------------------------------------
   # API Token for access to github
