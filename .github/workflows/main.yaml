@@ -78,7 +78,15 @@ jobs:
         with:
           python-version: 3.6
           architecture: x64
-        
+      
+      # --------------------------------------------
+      # Install dependencies
+      # --------------------------------------------
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8
+      
       # --------------------------------------------
       # Run flake8
       # --------------------------------------------
@@ -125,7 +133,7 @@ jobs:
       # Run module tests
       # --------------------------------------------
       - name: Run - Module tests
-        run: ./squashfs-root/AppRun -M $(pwd)/VirtualSatelliteCAD -t TestVirtualSatelliteApp -l --log-file "FreeCAD.log"
+        run: ./squashfs-root/AppRun -M $GITHUB_WORKSPACE/VirtualSatelliteCAD -t TestVirtualSatelliteApp -l --log-file "FreeCAD.log"
 
   # -----------------------------------------------------
   # Build and Test - FreeCAD All Tests
@@ -167,7 +175,7 @@ jobs:
       # Run FreeCAD tests
       # --------------------------------------------
       - name: Run - FreeCAD tests
-        run: ./squashfs-root/AppRun -M $(pwd) -t 0 -l --log-file "FreeCAD.log"
+        run: ./squashfs-root/AppRun -M $GITHUB_WORKSPACE -t 0 -l --log-file "FreeCAD.log"
       
 
   # -----------------------------------------------------
