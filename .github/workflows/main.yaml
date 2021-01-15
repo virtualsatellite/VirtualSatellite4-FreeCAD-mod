@@ -83,7 +83,7 @@ jobs:
       # Run flake8
       # --------------------------------------------
       - name: Run - flake8
-        uses: flake8 ./VirtualSatelliteCAD --count --show-source --statistics
+        run: flake8 ./VirtualSatelliteCAD --count --show-source --statistics
 
   # -----------------------------------------------------
   # Build and Test - FreeCAD Module Tests
