@@ -1,0 +1,234 @@
+# --------------------------------------------
+# This is a basic workflow to help you get started with Actions
+# --------------------------------------------
+name: Build
+
+on:
+  # --------------------------------------------
+  # Controls when the automatic build job will be run.
+  # By default uses the default branch. Runs at 03:00 UTC.
+  # --------------------------------------------
+  # TODO: ?
+  # schedule:
+  #   - cron: '0 3 * * *'
+      
+  # --------------------------------------------
+  # Run this workflow every time a new commit pushed to the repository
+  # --------------------------------------------
+  push:
+  
+  # --------------------------------------------
+  # Run this workflow every time a pull request is created or commited to it
+  # --------------------------------------------
+  pull_request:
+    branches:
+      - '**'
+
+env:
+  # -------------------------------------------------------------
+  # Setting up locale to have correct keyboard mapping
+  # -------------------------------------------------------------
+  LANG: "en_US.UTF-8"
+  VERSION: "0.1.0"
+# --------------------------------------------
+# Defines the list of jobs
+# --------------------------------------------
+jobs:
+  # --------------------------------------------
+  # Verify Job
+  #---------------------------------------------
+  verify:
+    name: Verify
+    runs-on: ubuntu-18.04
+    
+    steps:
+      # --------------------------------------------
+      # Checks out a copy of the repository
+      # --------------------------------------------
+      - name: Setup - Checkout code
+        uses: actions/checkout@v2
+        
+      # --------------------------------------------
+      # Run a quick sanity check if all commits are
+      # handed in by known users
+      #---------------------------------------------
+      - name: Verify - Authors Sanity Check
+        uses: virtualsatellite/ci-actions/ci-verify-authors-action@master
+          
+  # -----------------------------------------------------
+  # Build and Test - FreeCAD Module flake8
+  # -----------------------------------------------------
+  flake:
+    name: Build and Test - FreeCAD Module flake8
+    runs-on: ubuntu-18.04
+    needs: [verify]
+
+    steps:
+      # --------------------------------------------
+      # Checks out a copy of the repository
+      # --------------------------------------------
+      - name: Setup - Checkout code
+        uses: actions/checkout@v2
+      
+      # --------------------------------------------
+      # Setup python
+      # --------------------------------------------
+      - name: Setup - Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.6
+          architecture: x64
+        
+      # --------------------------------------------
+      # Run flake8
+      # --------------------------------------------
+      - name: Run - flake8
+        uses: flake8 ./VirtualSatelliteCAD --count --show-source --statistics
+
+  # -----------------------------------------------------
+  # Build and Test - FreeCAD Module Tests
+  # -----------------------------------------------------
+  moduleTests:
+    name: Build and Test - FreeCAD Module Tests
+    runs-on: ubuntu-18.04
+    needs: [verify]
+
+    steps:
+      # --------------------------------------------
+      # Checks out a copy of the repository
+      # --------------------------------------------
+      - name: Setup - Checkout code
+        uses: actions/checkout@v2
+      
+      # --------------------------------------------
+      # Setup python
+      # --------------------------------------------
+      - name: Setup - Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.6
+          architecture: x64
+      
+      # --------------------------------------------
+      # Setup Environment via Ant
+      # TODO: description
+      # TODO: action
+      # -------------------------------------------- 
+      - name: Setup - JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Build with Ant
+        run: ant SetupEnvironment
+        
+      # --------------------------------------------
+      # Run module tests
+      # --------------------------------------------
+      - name: Run - Module tests
+        run: ./squashfs-root/AppRun -M $(pwd)/VirtualSatelliteCAD -t TestVirtualSatelliteApp -l --log-file "FreeCAD.log"
+
+  # -----------------------------------------------------
+  # Build and Test - FreeCAD All Tests
+  # -----------------------------------------------------
+  freeCadTests:
+    name: Build and Test - FreeCAD All Tests
+    runs-on: ubuntu-18.04
+    needs: [verify]
+
+    steps:
+      # --------------------------------------------
+      # Checks out a copy of the repository
+      # --------------------------------------------
+      - name: Setup - Checkout code
+        uses: actions/checkout@v2
+      
+      # --------------------------------------------
+      # Setup python
+      # --------------------------------------------
+      - name: Setup Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.6
+          architecture: x64
+      
+      # --------------------------------------------
+      # Setup Environment via Ant
+      # TODO: description
+      # TODO: action
+      # -------------------------------------------- 
+      - name: Setup - JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Build with Ant
+        run: ant SetupEnvironment
+        
+      # --------------------------------------------
+      # Run FreeCAD tests
+      # --------------------------------------------
+      - name: Run - FreeCAD tests
+        run: ./squashfs-root/AppRun -M $(pwd) -t 0 -l --log-file "FreeCAD.log"
+      
+
+  # -----------------------------------------------------
+  # Build, Assemble and Deploy Job
+  # -----------------------------------------------------
+  deploy:
+    name: Build, Assemble and Deploy
+    runs-on: ubuntu-18.04
+    needs: [flake, moduleTests, freeCadTests]
+    
+    steps:
+      # --------------------------------------------
+      # Checks out a copy of your repository
+      # --------------------------------------------
+      - name: Setup - Checkout code
+        uses: actions/checkout@v2
+
+      # --------------------------------------------
+      # Perform various setup operations
+      # --------------------------------------------
+      - name: Setup - Prepare OS
+        uses: virtualsatellite/ci-actions/ci-setup-action@master
+
+      # --------------------------------------------
+      # Build and Deploy Decision
+      # --------------------------------------------
+      - name: Build - Build and Deploy Decision
+        id: build_decision
+        uses: virtualsatellite/ci-actions/ci-build-decision-action@master
+
+      # --------------------------------------------
+      # Development and Feature branches
+      # --------------------------------------------
+      - name: Build - Assemble
+        run: |
+          pushd .
+          cd ..  
+          zip -r VirtualSatellite4_FreeCAD_mod_Release_$VERSION.zip VirtualSatellite4-FreeCAD-mod/VirtualSatelliteCAD -x "*/.*"
+          tar --exclude="*/.*" -czvf VirtualSatellite4_FreeCAD_mod_Release_$VERSION.tar.gz VirtualSatellite4-FreeCAD-mod/VirtualSatelliteCAD
+          popd
+#         uses: virtualsatellite/ci-actions/ci-maven-build-action@master
+#         with:
+#           build_job: assemble
+#           build_profile: ${{ steps.build_decision.outputs.build_type }}
+     
+      # ---------------------------------------------
+      # Deploying to github releases
+      # --------------------------------------------
+      - name: Build - Deploy GH
+#         uses: virtualsatellite/ci-actions/ci-deploy-gh-product-action@master
+#         with:
+#           build_profile: ${{ steps.build_decision.outputs.build_type }}
+#           gh_token: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "--- About to deploy to GitHub Releases"
+          ${{ github.action_path }}/../bash/deploy_github_release.sh \
+            --profile ${{ steps.build_decision.outputs.build_type }} \
+            --token ${{ secrets.GITHUB_TOKEN }} \
+            --ref ${{ github.ref}} \
+            --repository ${{ github.repository }} \
+            --sha ${{ github.sha }}
+        shell: bashh
+        if: ${{ steps.build_decision.outputs.deploy_type == 'deploy' }}
+      
