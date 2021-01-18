@@ -133,7 +133,7 @@ jobs:
       # Run module tests
       # --------------------------------------------
       - name: Run - Module tests
-        run: ./squashfs-root/AppRun -M $GITHUB_WORKSPACE/VirtualSatelliteCAD -t TestVirtualSatelliteApp -l --log-file "FreeCAD.log"
+        run: ./squashfs-root/AppRun -M $GITHUB_WORKSPACE/VirtualSatelliteCAD -t TestVirtualSatelliteApp -l #--log-file "FreeCAD.log"
 
       # --------------------------------------------
       # Upload FreeCAD log
