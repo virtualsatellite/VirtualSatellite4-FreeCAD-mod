@@ -192,62 +192,62 @@ jobs:
   # -----------------------------------------------------
   # Build, Assemble and Deploy Job
   # -----------------------------------------------------
-  deploy:
-    name: Build, Assemble and Deploy
-    runs-on: ubuntu-18.04
-    needs: [flake, moduleTests, freeCadTests]
-    
-    steps:
+#   deploy:
+#     name: Build, Assemble and Deploy
+#     runs-on: ubuntu-18.04
+#     needs: [flake, moduleTests, freeCadTests]
+#     
+#     steps:
       # --------------------------------------------
       # Checks out a copy of your repository
       # --------------------------------------------
-      - name: Setup - Checkout code
-        uses: actions/checkout@v2
+#       - name: Setup - Checkout code
+#         uses: actions/checkout@v2
 
       # --------------------------------------------
       # Perform various setup operations
       # --------------------------------------------
-      - name: Setup - Prepare OS
-        uses: virtualsatellite/ci-actions/ci-setup-action@master
+#       - name: Setup - Prepare OS
+#         uses: virtualsatellite/ci-actions/ci-setup-action@master
 
       # --------------------------------------------
       # Build and Deploy Decision
       # --------------------------------------------
-      - name: Build - Build and Deploy Decision
-        id: build_decision
-        uses: virtualsatellite/ci-actions/ci-build-decision-action@master
+#       - name: Build - Build and Deploy Decision
+#         id: build_decision
+#         uses: virtualsatellite/ci-actions/ci-build-decision-action@master
 
       # --------------------------------------------
       # Development and Feature branches
       # --------------------------------------------
-      - name: Build - Assemble
-        run: |
-          pushd .
-          cd ..  
-          zip -r VirtualSatellite4_FreeCAD_mod_Release_$VERSION.zip VirtualSatellite4-FreeCAD-mod/VirtualSatelliteCAD -x "*/.*"
-          tar --exclude="*/.*" -czvf VirtualSatellite4_FreeCAD_mod_Release_$VERSION.tar.gz VirtualSatellite4-FreeCAD-mod/VirtualSatelliteCAD
-          popd
-#         uses: virtualsatellite/ci-actions/ci-maven-build-action@master
-#         with:
-#           build_job: assemble
-#           build_profile: ${{ steps.build_decision.outputs.build_type }}
+#       - name: Build - Assemble
+#         run: |
+#           pushd .
+#           cd ..  
+#           zip -r VirtualSatellite4_FreeCAD_mod_Release_$VERSION.zip VirtualSatellite4-FreeCAD-mod/VirtualSatelliteCAD -x "*/.*"
+#           tar --exclude="*/.*" -czvf VirtualSatellite4_FreeCAD_mod_Release_$VERSION.tar.gz VirtualSatellite4-FreeCAD-mod/VirtualSatelliteCAD
+#           popd
+##         uses: virtualsatellite/ci-actions/ci-maven-build-action@master
+##         with:
+##           build_job: assemble
+##           build_profile: ${{ steps.build_decision.outputs.build_type }}
      
       # ---------------------------------------------
       # Deploying to github releases
       # --------------------------------------------
-      - name: Build - Deploy GH
-#         uses: virtualsatellite/ci-actions/ci-deploy-gh-product-action@master
-#         with:
-#           build_profile: ${{ steps.build_decision.outputs.build_type }}
-#           gh_token: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "--- About to deploy to GitHub Releases"
-          ${{ github.action_path }}/../bash/deploy_github_release.sh \
-            --profile ${{ steps.build_decision.outputs.build_type }} \
-            --token ${{ secrets.GITHUB_TOKEN }} \
-            --ref ${{ github.ref}} \
-            --repository ${{ github.repository }} \
-            --sha ${{ github.sha }}
-        shell: bashh
-        if: ${{ steps.build_decision.outputs.deploy_type == 'deploy' }}
+#       - name: Build - Deploy GH
+##         uses: virtualsatellite/ci-actions/ci-deploy-gh-product-action@master
+##         with:
+##           build_profile: ${{ steps.build_decision.outputs.build_type }}
+##           gh_token: ${{ secrets.GITHUB_TOKEN }}
+#         run: |
+#           echo "--- About to deploy to GitHub Releases"
+#           ${{ github.action_path }}/../bash/deploy_github_release.sh \
+#             --profile ${{ steps.build_decision.outputs.build_type }} \
+#             --token ${{ secrets.GITHUB_TOKEN }} \
+#             --ref ${{ github.ref}} \
+#             --repository ${{ github.repository }} \
+#             --sha ${{ github.sha }}
+#         shell: bashh
+#         if: ${{ steps.build_decision.outputs.deploy_type == 'deploy' }}
       
