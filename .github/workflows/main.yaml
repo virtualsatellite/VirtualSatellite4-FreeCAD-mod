@@ -254,7 +254,7 @@ jobs:
 ##           gh_token: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "--- About to deploy to GitHub Releases"
-          ./.github/bash/deploy_github_release.sh \
+          ./bash/deploy_github_release.sh \
             --profile ${{ steps.build_decision.outputs.build_type }} \
             --token ${{ secrets.GITHUB_TOKEN }} \
             --ref ${{ github.ref}} \
