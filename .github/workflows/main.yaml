@@ -255,6 +255,7 @@ jobs:
         run: |
           echo "--- About to deploy to GitHub Releases"
           chmod +x ./bash/deploy_github_release.sh
+          chmod +x ./bash/github_release_api.sh
           ./bash/deploy_github_release.sh \
             --profile ${{ steps.build_decision.outputs.build_type }} \
             --token ${{ secrets.GITHUB_TOKEN }} \
