@@ -58,40 +58,40 @@ jobs:
   # -----------------------------------------------------
   # Build and Test - FreeCAD Module flake8
   # -----------------------------------------------------
-  flake:
-    name: Build and Test - FreeCAD Module flake8
-    runs-on: ubuntu-18.04
-    needs: [verify]
-
-    steps:
+#   flake:
+#     name: Build and Test - FreeCAD Module flake8
+#     runs-on: ubuntu-18.04
+#     needs: [verify]
+# 
+#     steps:
       # --------------------------------------------
       # Checks out a copy of the repository
       # --------------------------------------------
-      - name: Setup - Checkout code
-        uses: actions/checkout@v2
+#       - name: Setup - Checkout code
+#         uses: actions/checkout@v2
       
       # --------------------------------------------
       # Setup python
       # --------------------------------------------
-      - name: Setup - Python
-        uses: actions/setup-python@v1
-        with:
-          python-version: 3.6
-          architecture: x64
+#       - name: Setup - Python
+#         uses: actions/setup-python@v1
+#         with:
+#           python-version: 3.6
+#           architecture: x64
       
       # --------------------------------------------
       # Install dependencies
       # --------------------------------------------
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install flake8
+#       - name: Install dependencies
+#         run: |
+#           python -m pip install --upgrade pip
+#           pip install flake8
       
       # --------------------------------------------
       # Run flake8
       # --------------------------------------------
-      - name: Run - flake8
-        run: flake8 ./VirtualSatelliteCAD --count --show-source --statistics
+#       - name: Run - flake8
+#         run: flake8 ./VirtualSatelliteCAD --count --show-source --statistics
 
   # -----------------------------------------------------
   # Build and Test - FreeCAD Module Tests
@@ -135,47 +135,58 @@ jobs:
       - name: Run - Module tests
         run: ./squashfs-root/AppRun -M $GITHUB_WORKSPACE/VirtualSatelliteCAD -t TestVirtualSatelliteApp -l --log-file "FreeCAD.log"
 
+      # --------------------------------------------
+      # Upload FreeCAD log
+      # --------------------------------------------
+      - name: Failure - Upload FreeCAD log
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: SWTBot Screenshots
+          path: 
+            ~/.FreeCAD/FreeCAD.log
+
   # -----------------------------------------------------
   # Build and Test - FreeCAD All Tests
   # -----------------------------------------------------
-  freeCadTests:
-    name: Build and Test - FreeCAD All Tests
-    runs-on: ubuntu-18.04
-    needs: [verify]
-
-    steps:
+#   freeCadTests:
+#     name: Build and Test - FreeCAD All Tests
+#     runs-on: ubuntu-18.04
+#     needs: [verify]
+# 
+#     steps:
       # --------------------------------------------
       # Checks out a copy of the repository
       # --------------------------------------------
-      - name: Setup - Checkout code
-        uses: actions/checkout@v2
+#       - name: Setup - Checkout code
+#         uses: actions/checkout@v2
       
       # --------------------------------------------
       # Setup python
       # --------------------------------------------
-      - name: Setup Python
-        uses: actions/setup-python@v1
-        with:
-          python-version: 3.6
-          architecture: x64
+#       - name: Setup Python
+#         uses: actions/setup-python@v1
+#         with:
+#           python-version: 3.6
+#           architecture: x64
       
       # --------------------------------------------
       # Setup Environment via Ant
       # TODO: description
       # TODO: action
       # -------------------------------------------- 
-      - name: Setup - JDK 1.8
-        uses: actions/setup-java@v1
-        with:
-          java-version: 1.8
-      - name: Build with Ant
-        run: ant SetupEnvironment
-        
+#       - name: Setup - JDK 1.8
+#         uses: actions/setup-java@v1
+#         with:
+#           java-version: 1.8
+#       - name: Build with Ant
+#         run: ant SetupEnvironment
+#         
       # --------------------------------------------
       # Run FreeCAD tests
       # --------------------------------------------
-      - name: Run - FreeCAD tests
-        run: ./squashfs-root/AppRun -M $GITHUB_WORKSPACE -t 0 -l --log-file "FreeCAD.log"
+#       - name: Run - FreeCAD tests
+#         run: ./squashfs-root/AppRun -M $GITHUB_WORKSPACE -t 0 -l --log-file "FreeCAD.log"
       
 
   # -----------------------------------------------------
