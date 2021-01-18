@@ -91,7 +91,7 @@ jobs:
       # Run flake8
       # --------------------------------------------
       - name: Run - flake8
-        run: flake8 ./VirtualSatelliteCAD --count --show-source --statistics
+        run: flake8 ./VirtualSatelliteCAD --count --show-source --statistics --benchmark
 
   # -----------------------------------------------------
   # Build and Test - FreeCAD Module Tests
@@ -241,15 +241,13 @@ jobs:
           zip -r VirtualSatellite4_FreeCAD_mod_Release_$VERSION.zip VirtualSatellite4-FreeCAD-mod/VirtualSatelliteCAD -x "*/.*"
           tar --exclude="*/.*" -czvf VirtualSatellite4_FreeCAD_mod_Release_$VERSION.tar.gz VirtualSatellite4-FreeCAD-mod/VirtualSatelliteCAD
           popd
-##         uses: virtualsatellite/ci-actions/ci-maven-build-action@master
-##         with:
-##           build_job: assemble
-##           build_profile: ${{ steps.build_decision.outputs.build_type }}
+        if: ${{ steps.build_decision.outputs.deploy_type == 'deploy' }}
      
       # ---------------------------------------------
       # Deploying to github releases
       # --------------------------------------------
       - name: Build - Deploy GH
+      # TODO: update virsat deploy action to also work for freecad
 ##         uses: virtualsatellite/ci-actions/ci-deploy-gh-product-action@master
 ##         with:
 ##           build_profile: ${{ steps.build_decision.outputs.build_type }}
@@ -262,6 +260,6 @@ jobs:
             --ref ${{ github.ref}} \
             --repository ${{ github.repository }} \
             --sha ${{ github.sha }}
-        shell: bashh
+        shell: bash
         if: ${{ steps.build_decision.outputs.deploy_type == 'deploy' }}
       
