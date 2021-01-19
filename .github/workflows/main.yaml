@@ -8,9 +8,8 @@ on:
   # Controls when the automatic build job will be run.
   # By default uses the default branch. Runs at 03:00 UTC.
   # --------------------------------------------
-  # TODO: ?
-  # schedule:
-  #   - cron: '0 3 * * *'
+  schedule:
+    - cron: '0 3 * * *'
       
   # --------------------------------------------
   # Run this workflow every time a new commit pushed to the repository
@@ -253,12 +252,12 @@ jobs:
       - name: Build - Assemble
         run: |
           pushd .
-          cd ..
+          cd $GITHUB_WORKSPACE
           mkdir ./deploy
           mkdir ./deploy/unsecured
-          cd ./deploy/unsecured
-          zip -r VirtualSatellite4_FreeCAD_mod_Integration_$VERSION.zip $GITHUB_WORKSPACE/VirtualSatelliteCAD -x "*/.*"
-          tar --exclude="*/.*" -czvf VirtualSatellite4_FreeCAD_mod_Integration_$VERSION.tar.gz $GITHUB_WORKSPACE/VirtualSatelliteCAD
+          # cd ./deploy/unsecured
+          zip -r ./deploy/unsecured/VirtualSatellite4_FreeCAD_mod_Integration_$VERSION.zip $GITHUB_WORKSPACE/VirtualSatelliteCAD -x "*/.*"
+          tar --exclude="*/.*" -czvf ./deploy/unsecured/VirtualSatellite4_FreeCAD_mod_Integration_$VERSION.tar.gz $GITHUB_WORKSPACE/VirtualSatelliteCAD
           popd
         if: ${{ steps.build_decision.outputs.deploy_type == 'deploy' && steps.build_decision.outputs.build_type == 'integration' }}
         
@@ -281,21 +280,20 @@ jobs:
       # Deploying to github releases
       # --------------------------------------------
       - name: Build - Deploy GH
-      # TODO: update virsat deploy action to also work for freecad
-##         uses: virtualsatellite/ci-actions/ci-deploy-gh-product-action@master
-##         with:
-##           build_profile: ${{ steps.build_decision.outputs.build_type }}
-##           gh_token: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "--- About to deploy to GitHub Releases"
-          chmod +x ./bash/deploy_github_release.sh
-          chmod +x ./bash/github_release_api.sh
-          ./bash/deploy_github_release.sh \
-            --profile ${{ steps.build_decision.outputs.build_type }} \
-            --token ${{ secrets.GITHUB_TOKEN }} \
-            --ref ${{ github.ref}} \
-            --repository ${{ github.repository }} \
-            --sha ${{ github.sha }}
-        shell: bash
+        uses: virtualsatellite/ci-actions/ci-deploy-gh-product-action@master
+        with:
+          build_profile: ${{ steps.build_decision.outputs.build_type }}
+          gh_token: ${{ secrets.GITHUB_TOKEN }}
+#         run: |
+#           echo "--- About to deploy to GitHub Releases"
+#           chmod +x ./bash/deploy_github_release.sh
+#           chmod +x ./bash/github_release_api.sh
+#           ./bash/deploy_github_release.sh \
+#             --profile ${{ steps.build_decision.outputs.build_type }} \
+#             --token ${{ secrets.GITHUB_TOKEN }} \
+#             --ref ${{ github.ref}} \
+#             --repository ${{ github.repository }} \
+#             --sha ${{ github.sha }}
+#         shell: bash
         if: ${{ steps.build_decision.outputs.deploy_type == 'deploy' }}
       
