@@ -240,7 +240,7 @@ jobs:
           mkdir ./deploy
           mkdir ./deploy/unsecured
           zip -r ./deploy/unsecured/VirtualSatellite4_FreeCAD_mod_Development_$VERSION.zip ./VirtualSatelliteCAD -x "*/.*"
-          tar --exclude="*/.*" -czvf ./deploy/unsecured/VirtualSatellite4_FreeCAD_mod_Development_$VERSION.tar.gz ./VirtualSatelliteCAD
+          tar --xform s:'^./':: --exclude="*/.*" -czvf ./deploy/unsecured/VirtualSatellite4_FreeCAD_mod_Development_$VERSION.tar.gz ./VirtualSatelliteCAD
           popd
         if: ${{ steps.build_decision.outputs.deploy_type == 'deploy' && steps.build_decision.outputs.build_type == 'development' }}
       
@@ -254,7 +254,7 @@ jobs:
           mkdir ./deploy
           mkdir ./deploy/unsecured
           zip -r ./deploy/unsecured/VirtualSatellite4_FreeCAD_mod_Integration_$VERSION.zip ./VirtualSatelliteCAD -x "*/.*"
-          tar --exclude="*/.*" -czvf ./deploy/unsecured/VirtualSatellite4_FreeCAD_mod_Integration_$VERSION.tar.gz ./VirtualSatelliteCAD
+          tar --xform s:'^./':: --exclude="*/.*" -czvf ./deploy/unsecured/VirtualSatellite4_FreeCAD_mod_Integration_$VERSION.tar.gz ./VirtualSatelliteCAD
           popd
         if: ${{ steps.build_decision.outputs.deploy_type == 'deploy' && steps.build_decision.outputs.build_type == 'integration' }}
         
@@ -268,7 +268,7 @@ jobs:
           mkdir ./deploy
           mkdir ./deploy/secured
           zip -r ./deploy/secured/VirtualSatellite4_FreeCAD_mod_Release_$VERSION.zip ./VirtualSatelliteCAD -x "*/.*"
-          tar --exclude="*/.*" -czvf ./deploy/secured/VirtualSatellite4_FreeCAD_mod_Release_$VERSION.tar.gz ./VirtualSatelliteCAD
+          tar --xform s:'^./':: --exclude="*/.*" -czvf ./deploy/secured/VirtualSatellite4_FreeCAD_mod_Release_$VERSION.tar.gz ./VirtualSatelliteCAD
           popd
         if: ${{ steps.build_decision.outputs.deploy_type == 'release'}}
      
