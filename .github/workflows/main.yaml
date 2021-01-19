@@ -233,20 +233,34 @@ jobs:
 
       # TODO: improve, Action?
       # --------------------------------------------
-      # Development and Integration branch
+      # Development branch
       # --------------------------------------------
       - name: Build - Assemble
         run: |
           pushd .
           cd ..
           mkdir ./deploy
-          cd ./deploy
-          mkdir ./unsecured
-          cd ./unsecured
-          zip -r VirtualSatellite4_FreeCAD_mod_Release_$VERSION.zip $GITHUB_WORKSPACE/VirtualSatelliteCAD -x "*/.*"
-          tar --exclude="*/.*" -czvf VirtualSatellite4_FreeCAD_mod_Release_$VERSION.tar.gz $GITHUB_WORKSPACE/VirtualSatelliteCAD
+          mkdir ./deploy/unsecured
+          cd ./deploy/unsecured
+          zip -r VirtualSatellite4_FreeCAD_mod_Development_$VERSION.zip $GITHUB_WORKSPACE/VirtualSatelliteCAD -x "*/.*"
+          tar --exclude="*/.*" -czvf VirtualSatellite4_FreeCAD_mod_Development_$VERSION.tar.gz $GITHUB_WORKSPACE/VirtualSatelliteCAD
           popd
-        if: ${{ steps.build_decision.outputs.deploy_type == 'deploy' }}
+        if: ${{ steps.build_decision.outputs.deploy_type == 'deploy' && steps.build_decision.outputs.build_type == 'development' }}
+      
+      # --------------------------------------------
+      # Integration branch
+      # --------------------------------------------
+      - name: Build - Assemble
+        run: |
+          pushd .
+          cd ..
+          mkdir ./deploy
+          mkdir ./deploy/unsecured
+          cd ./deploy/unsecured
+          zip -r VirtualSatellite4_FreeCAD_mod_Integration_$VERSION.zip $GITHUB_WORKSPACE/VirtualSatelliteCAD -x "*/.*"
+          tar --exclude="*/.*" -czvf VirtualSatellite4_FreeCAD_mod_Integration_$VERSION.tar.gz $GITHUB_WORKSPACE/VirtualSatelliteCAD
+          popd
+        if: ${{ steps.build_decision.outputs.deploy_type == 'deploy' && steps.build_decision.outputs.build_type == 'integration' }}
         
       # --------------------------------------------
       # Release branch
@@ -262,7 +276,7 @@ jobs:
           zip -r VirtualSatellite4_FreeCAD_mod_Release_$VERSION.zip $GITHUB_WORKSPACE/VirtualSatelliteCAD -x "*/.*"
           tar --exclude="*/.*" -czvf VirtualSatellite4_FreeCAD_mod_Release_$VERSION.tar.gz $GITHUB_WORKSPACE/VirtualSatelliteCAD
           popd
-        if: ${{ steps.build_decision.outputs.deploy_type == 'release' }}
+        if: ${{ steps.build_decision.outputs.deploy_type == 'release'}}
      
       # ---------------------------------------------
       # Deploying to github releases
