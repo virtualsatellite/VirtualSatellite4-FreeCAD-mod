@@ -208,7 +208,7 @@ jobs:
   deploy:
     name: Build, Assemble and Deploy
     runs-on: ubuntu-18.04
-#     needs: [flake, moduleTests, freeCadTests]
+    needs: [flake, moduleTests, freeCadTests]
     
     steps:
       # --------------------------------------------
@@ -230,19 +230,17 @@ jobs:
         id: build_decision
         uses: virtualsatellite/ci-actions/ci-build-decision-action@master
 
-      # TODO: improve, Action?
       # --------------------------------------------
       # Development branch
       # --------------------------------------------
       - name: Build - Assemble
         run: |
           pushd .
-          cd ..
+          cd $GITHUB_WORKSPACE
           mkdir ./deploy
           mkdir ./deploy/unsecured
-          cd ./deploy/unsecured
-          zip -r VirtualSatellite4_FreeCAD_mod_Development_$VERSION.zip $GITHUB_WORKSPACE/VirtualSatelliteCAD -x "*/.*"
-          tar --exclude="*/.*" -czvf VirtualSatellite4_FreeCAD_mod_Development_$VERSION.tar.gz $GITHUB_WORKSPACE/VirtualSatelliteCAD
+          zip -r ./deploy/unsecured/VirtualSatellite4_FreeCAD_mod_Development_$VERSION.zip ./VirtualSatelliteCAD -x "*/.*"
+          tar --exclude="*/.*" -czvf ./deploy/unsecured/VirtualSatellite4_FreeCAD_mod_Development_$VERSION.tar.gz ./VirtualSatelliteCAD
           popd
         if: ${{ steps.build_decision.outputs.deploy_type == 'deploy' && steps.build_decision.outputs.build_type == 'development' }}
       
@@ -255,7 +253,6 @@ jobs:
           cd $GITHUB_WORKSPACE
           mkdir ./deploy
           mkdir ./deploy/unsecured
-          # cd ./deploy/unsecured
           zip -r ./deploy/unsecured/VirtualSatellite4_FreeCAD_mod_Integration_$VERSION.zip ./VirtualSatelliteCAD -x "*/.*"
           tar --exclude="*/.*" -czvf ./deploy/unsecured/VirtualSatellite4_FreeCAD_mod_Integration_$VERSION.tar.gz ./VirtualSatelliteCAD
           popd
@@ -267,12 +264,11 @@ jobs:
       - name: Build - Assemble
         run: |
           pushd .
-          cd ..
+          cd $GITHUB_WORKSPACE
           mkdir ./deploy
           mkdir ./deploy/secured
-          cd ./deploy/secured
-          zip -r VirtualSatellite4_FreeCAD_mod_Release_$VERSION.zip $GITHUB_WORKSPACE/VirtualSatelliteCAD -x "*/.*"
-          tar --exclude="*/.*" -czvf VirtualSatellite4_FreeCAD_mod_Release_$VERSION.tar.gz $GITHUB_WORKSPACE/VirtualSatelliteCAD
+          zip -r ./deploy/secured/VirtualSatellite4_FreeCAD_mod_Release_$VERSION.zip ./VirtualSatelliteCAD -x "*/.*"
+          tar --exclude="*/.*" -czvf ./deploy/secured/VirtualSatellite4_FreeCAD_mod_Release_$VERSION.tar.gz ./VirtualSatelliteCAD
           popd
         if: ${{ steps.build_decision.outputs.deploy_type == 'release'}}
      
@@ -284,16 +280,5 @@ jobs:
         with:
           build_profile: ${{ steps.build_decision.outputs.build_type }}
           gh_token: ${{ secrets.GITHUB_TOKEN }}
-#         run: |
-#           echo "--- About to deploy to GitHub Releases"
-#           chmod +x ./bash/deploy_github_release.sh
-#           chmod +x ./bash/github_release_api.sh
-#           ./bash/deploy_github_release.sh \
-#             --profile ${{ steps.build_decision.outputs.build_type }} \
-#             --token ${{ secrets.GITHUB_TOKEN }} \
-#             --ref ${{ github.ref}} \
-#             --repository ${{ github.repository }} \
-#             --sha ${{ github.sha }}
-#         shell: bash
         if: ${{ steps.build_decision.outputs.deploy_type == 'deploy' }}
       
