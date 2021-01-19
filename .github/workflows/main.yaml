@@ -57,150 +57,150 @@ jobs:
   # -----------------------------------------------------
   # Build and Test - FreeCAD Module flake8
   # -----------------------------------------------------
-  flake:
-    name: Build and Test - FreeCAD Module flake8
-    runs-on: ubuntu-18.04
-    needs: [verify]
-
-    steps:
+#   flake:
+#     name: Build and Test - FreeCAD Module flake8
+#     runs-on: ubuntu-18.04
+#     needs: [verify]
+# 
+#     steps:
       # --------------------------------------------
       # Checks out a copy of the repository
       # --------------------------------------------
-      - name: Setup - Checkout code
-        uses: actions/checkout@v2
+#       - name: Setup - Checkout code
+#         uses: actions/checkout@v2
       
       # --------------------------------------------
       # Setup python
       # --------------------------------------------
-      - name: Setup - Python
-        uses: actions/setup-python@v1
-        with:
-          python-version: 3.6
-          architecture: x64
+#       - name: Setup - Python
+#         uses: actions/setup-python@v1
+#         with:
+#           python-version: 3.6
+#           architecture: x64
       
       # --------------------------------------------
       # Install dependencies
       # --------------------------------------------
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install flake8
+#       - name: Install dependencies
+#         run: |
+#           python -m pip install --upgrade pip
+#           pip install flake8
       
       # --------------------------------------------
       # Run flake8
       # --------------------------------------------
-      - name: Run - flake8
-        run: flake8 ./VirtualSatelliteCAD --count --show-source --statistics --benchmark
+#       - name: Run - flake8
+#         run: flake8 ./VirtualSatelliteCAD --count --show-source --statistics --benchmark
 
   # -----------------------------------------------------
   # Build and Test - FreeCAD Module Tests
   # -----------------------------------------------------
-  moduleTests:
-    name: Build and Test - FreeCAD Module Tests
-    runs-on: ubuntu-18.04
-    needs: [verify]
-
-    steps:
+#   moduleTests:
+#     name: Build and Test - FreeCAD Module Tests
+#     runs-on: ubuntu-18.04
+#     needs: [verify]
+# 
+#     steps:
       # --------------------------------------------
       # Checks out a copy of the repository
       # --------------------------------------------
-      - name: Setup - Checkout code
-        uses: actions/checkout@v2
+#       - name: Setup - Checkout code
+#         uses: actions/checkout@v2
       
       # --------------------------------------------
       # Setup python
       # --------------------------------------------
-      - name: Setup - Python
-        uses: actions/setup-python@v1
-        with:
-          python-version: 3.6
-          architecture: x64
+#       - name: Setup - Python
+#         uses: actions/setup-python@v1
+#         with:
+#           python-version: 3.6
+#           architecture: x64
       
       # --------------------------------------------
       # Setup Java and xvfb
       # --------------------------------------------      
-      - name: Setup - Prepare OS
-        uses: virtualsatellite/ci-actions/ci-setup-action@v2
-        with:
-           xvfb: -x
+#       - name: Setup - Prepare OS
+#         uses: virtualsatellite/ci-actions/ci-setup-action@v2
+#         with:
+#            xvfb: -x
            
       # --------------------------------------------
       # Setup Environment via Ant
       # -------------------------------------------- 
-      - name: Build with Ant
-        run: ant SetupEnvironment
+#       - name: Build with Ant
+#         run: ant SetupEnvironment
         
       # --------------------------------------------
       # Run module tests
       # --------------------------------------------
-      - name: Run - Module tests
-        run: xvfb-run ./squashfs-root/AppRun -M $GITHUB_WORKSPACE/VirtualSatelliteCAD -t TestVirtualSatelliteApp -l
+#       - name: Run - Module tests
+#         run: xvfb-run ./squashfs-root/AppRun -M $GITHUB_WORKSPACE/VirtualSatelliteCAD -t TestVirtualSatelliteApp -l
 
       # --------------------------------------------
       # Upload FreeCAD log
       # --------------------------------------------
-      - name: Failure - Upload FreeCAD log
-        if: ${{ failure() }}
-        uses: actions/upload-artifact@v2
-        with:
-          name: Module test log
-          path: 
-            ~/.FreeCAD/FreeCAD.log
+#       - name: Failure - Upload FreeCAD log
+#         if: ${{ failure() }}
+#         uses: actions/upload-artifact@v2
+#         with:
+#           name: Module test log
+#           path: 
+#             ~/.FreeCAD/FreeCAD.log
 
   # -----------------------------------------------------
   # Build and Test - FreeCAD All Tests
   # -----------------------------------------------------
-  freeCadTests:
-    name: Build and Test - FreeCAD All Tests
-    runs-on: ubuntu-18.04
-    needs: [verify]
-
-    steps:
+#   freeCadTests:
+#     name: Build and Test - FreeCAD All Tests
+#     runs-on: ubuntu-18.04
+#     needs: [verify]
+# 
+#     steps:
       # --------------------------------------------
       # Checks out a copy of the repository
       # --------------------------------------------
-      - name: Setup - Checkout code
-        uses: actions/checkout@v2
+#       - name: Setup - Checkout code
+#         uses: actions/checkout@v2
       
       # --------------------------------------------
       # Setup python
       # --------------------------------------------
-      - name: Setup Python
-        uses: actions/setup-python@v1
-        with:
-          python-version: 3.6
-          architecture: x64
+#       - name: Setup Python
+#         uses: actions/setup-python@v1
+#         with:
+#           python-version: 3.6
+#           architecture: x64
       
       # --------------------------------------------
       # Setup Java and xvfb
       # --------------------------------------------      
-      - name: Setup - Prepare OS
-        uses: virtualsatellite/ci-actions/ci-setup-action@v2
-        with:
-           xvfb: -x
+#       - name: Setup - Prepare OS
+#         uses: virtualsatellite/ci-actions/ci-setup-action@v2
+#         with:
+#            xvfb: -x
            
       # --------------------------------------------
       # Setup Environment via Ant
       # -------------------------------------------- 
-      - name: Build with Ant
-        run: ant SetupEnvironment
+#       - name: Build with Ant
+#         run: ant SetupEnvironment
         
       # --------------------------------------------
       # Run FreeCAD tests
       # --------------------------------------------
-      - name: Run - FreeCAD tests
-        run: xvfb-run ./squashfs-root/AppRun -M $GITHUB_WORKSPACE -t 0 -l
+#       - name: Run - FreeCAD tests
+#         run: xvfb-run ./squashfs-root/AppRun -M $GITHUB_WORKSPACE -t 0 -l
 
       # --------------------------------------------
       # Upload FreeCAD log
       # --------------------------------------------
-      - name: Failure - Upload FreeCAD log
-        if: ${{ failure() }}
-        uses: actions/upload-artifact@v2
-        with:
-          name: FreeCAD test log
-          path: 
-            ~/.FreeCAD/FreeCAD.log
+#       - name: Failure - Upload FreeCAD log
+#         if: ${{ failure() }}
+#         uses: actions/upload-artifact@v2
+#         with:
+#           name: FreeCAD test log
+#           path: 
+#             ~/.FreeCAD/FreeCAD.log
 
   # -----------------------------------------------------
   # Build, Assemble and Deploy Job
@@ -208,7 +208,7 @@ jobs:
   deploy:
     name: Build, Assemble and Deploy
     runs-on: ubuntu-18.04
-    needs: [flake, moduleTests, freeCadTests]
+#     needs: [flake, moduleTests, freeCadTests]
     
     steps:
       # --------------------------------------------
@@ -256,8 +256,8 @@ jobs:
           mkdir ./deploy
           mkdir ./deploy/unsecured
           # cd ./deploy/unsecured
-          zip -r ./deploy/unsecured/VirtualSatellite4_FreeCAD_mod_Integration_$VERSION.zip $GITHUB_WORKSPACE/VirtualSatelliteCAD -x "*/.*"
-          tar --exclude="*/.*" -czvf ./deploy/unsecured/VirtualSatellite4_FreeCAD_mod_Integration_$VERSION.tar.gz $GITHUB_WORKSPACE/VirtualSatelliteCAD
+          zip -r ./deploy/unsecured/VirtualSatellite4_FreeCAD_mod_Integration_$VERSION.zip ./VirtualSatelliteCAD -x "*/.*"
+          tar --exclude="*/.*" -czvf ./deploy/unsecured/VirtualSatellite4_FreeCAD_mod_Integration_$VERSION.tar.gz ./VirtualSatelliteCAD
           popd
         if: ${{ steps.build_decision.outputs.deploy_type == 'deploy' && steps.build_decision.outputs.build_type == 'integration' }}
         
