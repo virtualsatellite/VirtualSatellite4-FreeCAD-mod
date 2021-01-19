@@ -270,9 +270,8 @@ jobs:
           pushd .
           cd ..
           mkdir ./deploy
-          cd ./deploy
-          mkdir ./secured
-          cd ./secured
+          mkdir ./deploy/secured
+          cd ./deploy/secured
           zip -r VirtualSatellite4_FreeCAD_mod_Release_$VERSION.zip $GITHUB_WORKSPACE/VirtualSatelliteCAD -x "*/.*"
           tar --exclude="*/.*" -czvf VirtualSatellite4_FreeCAD_mod_Release_$VERSION.tar.gz $GITHUB_WORKSPACE/VirtualSatelliteCAD
           popd
