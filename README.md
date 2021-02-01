@@ -11,11 +11,11 @@ This extension allows to create a round-trip engineering workflow with Virtual S
 |:------:|:-----------:| 
 |[![Master][master-status]][master-builds]|[![Development][development-status]][development-builds]| 
 
-[master-status]: https://travis-ci.com/virtualsatellite/VirtualSatellite4-FreeCAD-mod.svg?branch=master 
+[master-status]: https://github.com/virtualsatellite/VirtualSatellite4-FreeCAD-mod/workflows/Build/badge.svg?branch=master 
 
 [master-builds]: https://travis-ci.com/virtualsatellite/VirtualSatellite4-FreeCAD-mod 
 
-[development-status]: https://travis-ci.com/virtualsatellite/VirtualSatellite4-FreeCAD-mod.svg?branch=development 
+[development-status]: https://github.com/virtualsatellite/VirtualSatellite4-FreeCAD-mod/workflows/Build/badge.svg?branch=development 
 
 [development-builds]: https://travis-ci.com/virtualsatellite/VirtualSatellite4-FreeCAD-mod
 
