@@ -36,6 +36,10 @@ class VirtualSatelliteWorkbench(Workbench):  # NOQA @UndefinedVariable
 
     def __init__(self):
         from module.environment import ICON_WORKBENCH, Environment
+
+        import plugin.plugin_loader as loader
+        loader.loadPlugins(Environment().get_module_path())
+
         self.__class__.Icon = Environment().get_icon_path(ICON_WORKBENCH)
         self.__class__.MenuText = 'Virtual Satellite ' + FREECAD_MOD_VERSION
         self.__class__.ToolTip = 'Workbench for Virtual Satellite 4'
