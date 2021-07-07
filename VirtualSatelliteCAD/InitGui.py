@@ -34,11 +34,10 @@ class VirtualSatelliteWorkbench(Workbench):  # NOQA @UndefinedVariable
     global FREECAD_MOD_VERSION
     FREECAD_MOD_VERSION = '0.1.0 Beta'
 
-    def __init__(self):
-        from module.environment import ICON_WORKBENCH, Environment
+    def __init__(self, plugins):
+        self.plugins = plugins
 
-        import plugin.plugin_loader as loader
-        loader.loadPlugins(Environment().get_module_path())
+        from module.environment import ICON_WORKBENCH, Environment
 
         self.__class__.Icon = Environment().get_icon_path(ICON_WORKBENCH)
         self.__class__.MenuText = 'Virtual Satellite ' + FREECAD_MOD_VERSION
@@ -62,5 +61,33 @@ class VirtualSatelliteWorkbench(Workbench):  # NOQA @UndefinedVariable
         return "Gui::PythonWorkbench"
 
 
+from module.environment import Environment
+import plugin.plugin_loader as loader
+import os
+
+# First load the plugins that are required in workbench and settings
+loader.load_plugins(Environment().get_module_path())
+
 # Finally add the Virtual Satellite Workbench to the FreeCAD application
-Gui.addWorkbench(VirtualSatelliteWorkbench())  # NOQA @UndefinedVariable
+Gui.addWorkbench(VirtualSatelliteWorkbench(loader.plugins))  # NOQA @UndefinedVariable
+
+# Build the preferences ui
+preferences_ui = ""
+with open(Environment().get_ui_path('preferences_header.ui'), 'r') as file:
+    preferences_ui += file.read()
+
+for plugin in loader.plugins:
+    if(plugin.hasPreferencesUi):
+        with open(os.path.join(Environment().get_plugin_path(plugin.directory), 'preferences.ui'), 'r') as file:
+            content = file.read()
+            preferences_ui += content
+
+with open(Environment().get_ui_path('preferences_footer.ui'), 'r') as file:
+    preferences_ui += file.read()
+
+with open(Environment().get_ui_path('preferences.ui'), 'w') as file:
+    file.write(preferences_ui)
+
+# Add the preferences page
+Gui.addIconPath(Environment().get_icons_path())  # NOQA @UndefinedVariable
+Gui.addPreferencePage(Environment().get_ui_path('preferences.ui'), 'Virtual Satellite')  # NOQA @UndefinedVariable

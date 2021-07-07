@@ -34,6 +34,8 @@ ICON_EXPORT = 'VirtualSatelliteExport.svg'
 PATH_RESOURCE = "Resources"
 PATH_ICONS = "Icons"
 PATH_TEST_RESOURCE = "Tests"
+PATH_UI = "Ui"
+PATH_PLUGINS = "plugins"
 
 
 class Environment:
@@ -89,6 +91,38 @@ class Environment:
         This method hands back the resource path of the named test resource.
         '''
         path = os.path.join(cls.get_tests_resource_path(), test_resource_name)
+        return path
+
+    @classmethod
+    def get_uis_path(cls):
+        '''
+        This method hands back the ui resource path of the current module.
+        '''
+        path = os.path.join(cls.get_resource_path(), PATH_UI)
+        return path
+
+    @classmethod
+    def get_ui_path(cls, filename):
+        '''
+        This method hands back the resource path of the named ui.
+        '''
+        path = os.path.join(cls.get_uis_path(), filename)
+        return path
+
+    @classmethod
+    def get_plugins_path(cls):
+        '''
+        This method hands back the plugin path of the current module.
+        '''
+        path = os.path.join(cls.get_module_path(), PATH_PLUGINS)
+        return path
+
+    @classmethod
+    def get_plugin_path(cls, pluginname):
+        '''
+        This method hands back the path of the named plugin.
+        '''
+        path = os.path.join(cls.get_plugins_path(), pluginname)
         return path
 
     # TODO: Update user file handling

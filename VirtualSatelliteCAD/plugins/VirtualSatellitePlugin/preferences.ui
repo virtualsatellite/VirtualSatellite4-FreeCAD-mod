@@ -1,0 +1,48 @@
+  <widget class="QGroupBox" name="groupBox_VirSat">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>150</y>
+     <width>621</width>
+     <height>131</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="title">
+    <string>VirSat preference group</string>
+   </property>
+   <widget class="QWidget" name="layoutWidget_VirSat">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>20</y>
+      <width>158</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout_VirSat">
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Some plugins specific preference</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="Gui::PrefLineEdit" name="lineEdit_VirSat">
+       <property name="prefEntry" stdset="0">
+        <cstring>VirSatPref</cstring>
+       </property>
+       <property name="prefPath" stdset="0">
+        <cstring>Mod/VirtualSatelliteCAD</cstring>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>

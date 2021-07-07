@@ -1,14 +1,15 @@
 import os
 import FreeCAD
+import traceback
+from module.environment import Environment
 from plugin.plugin import Plugin
 
-PLUGIN_DIR_NAME = "plugins"
 Log = FreeCAD.Console.PrintLog
 Err = FreeCAD.Console.PrintError
 plugins = []
 
 
-def loadPlugins(module_path):
+def load_plugins(module_path):
     '''
     Crawls all directories in the plugin directory.
     For each directory: if an init file exists, it is executed.
@@ -18,23 +19,22 @@ def loadPlugins(module_path):
     used e.g. by this FreeCADMod.
     '''
     Log("Importing Virtual Satellite Plugins\n")
-    plugin_dir = os.path.join(module_path, PLUGIN_DIR_NAME)
 
-    Log(os.listdir(plugin_dir))
-    for dir_name in os.listdir(plugin_dir):
-        dir_path = os.path.join(plugin_dir, dir_name)
+    for dir_name in os.listdir(Environment().get_plugins_path()):
+        dir_path = Environment().get_plugin_path(dir_name)
         plugin_path = os.path.join(dir_path, "init_plugin.py")
-        if os.path.isdir(dir_path) or os.path.exists(plugin_path):
+        if os.path.exists(plugin_path):
             try:
                 with open(file=plugin_path, encoding="utf-8") as f:
                     exec(f.read())
             except Exception:
                 Log('Init:      Initializing ' + dir_path + '... failed\n')
+                Log(traceback.format_exc())
             else:
                 Log('Init:      Initializing ' + dir_path + '... done\n')
 
 
-def registerPlugin(plugin):
+def register_plugin(plugin):
     '''
     Registers a new concrete Plugin
     '''

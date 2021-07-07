@@ -1,13 +1,13 @@
 import FreeCAD
-from plugin.plugin_loader import registerPlugin
+from plugin.plugin_loader import register_plugin
 from plugin.plugin import Plugin
 
 Log = FreeCAD.Console.PrintLog
 Log("Called init of plugin\n")
 
 
-class ConcretePlugin(Plugin):
+class VirSatPlugin(Plugin):
     pass
 
 
-registerPlugin(ConcretePlugin("name"))
+register_plugin(VirSatPlugin("Virtual Satellite Plugin", "VirtualSatellitePlugin", True))
