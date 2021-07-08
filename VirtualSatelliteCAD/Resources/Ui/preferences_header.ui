@@ -29,35 +29,15 @@
     </sizepolicy>
    </property>
    <property name="title">
-    <string>General</string>
+    <string>Select active plugin</string>
    </property>
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
       <y>20</y>
-      <width>135</width>
+      <width>600</width>
       <height>41</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
-     <item>
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Some general preference</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="Gui::PrefLineEdit" name="lineEdit">
-       <property name="prefEntry" stdset="0">
-        <cstring>GeneralPref</cstring>
-       </property>
-       <property name="prefPath" stdset="0">
-        <cstring>Mod/VirtualSatelliteCAD</cstring>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-  </widget>

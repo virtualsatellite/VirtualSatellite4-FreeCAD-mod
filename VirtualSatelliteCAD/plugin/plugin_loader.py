@@ -39,7 +39,7 @@ def register_plugin(plugin):
     Registers a new concrete Plugin
     '''
     if isinstance(plugin, Plugin):
-        Err('Registered plugin:' + plugin.name + '\n')
+        Log('Registered plugin:' + plugin.name + '\n')
         plugins.append(plugin)
     else:
-        Err(plugin.name + 'is not a plugin\n')
+        Log(plugin.name + 'is not a plugin\n')

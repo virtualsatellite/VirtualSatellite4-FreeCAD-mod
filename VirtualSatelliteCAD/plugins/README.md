@@ -17,9 +17,12 @@ A minimal plugin looks like this:
 from plugin.plugin_loader import register_plugin
 from plugin.plugin import Plugin
 
+@Plugin.register
 class MyPlugin(Plugin):
-    pass
-
+    def importToDict(self):
+        return
+    def exportFromDict(self, data_dict):
+        return
 register_plugin(MyPlugin(display_name, directory_name, providesUi))
 ```
 The newly created ```MyPlugin``` extends the base class ```Plugin``` and registers itself via ```register_plugin```.
