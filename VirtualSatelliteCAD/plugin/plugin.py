@@ -14,14 +14,18 @@ class Plugin(metaclass=abc.ABCMeta):
 
     @abc.abstractmethod
     def importToDict(self) -> typing.Dict[str, str]:
-        ''' TODO
-        Will be called by the CommandImport
+        '''
+        Import information via a plugin specific interface.
+        Has to return the internal data structure.
+        Will be called by the CommandImport.
         '''
         return
 
     @abc.abstractmethod
     def exportFromDict(self, data_dict: typing.Dict[str, str]):
-        ''' TODO
-        Will be called by the CommandExport
+        '''
+        Export information from the internal data structure
+        via a plugin specific interface.
+        Will be called by the CommandExport.
         '''
         return
