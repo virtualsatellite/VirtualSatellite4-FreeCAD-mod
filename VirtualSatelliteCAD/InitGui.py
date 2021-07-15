@@ -23,6 +23,9 @@
 #
 # SPDX-License-Identifier: LGPL-3.0-or-later
 #
+from module.environment import Environment
+import plugin.plugin_loader as loader
+import os
 
 
 class VirtualSatelliteWorkbench(Workbench):  # NOQA @UndefinedVariable
@@ -41,7 +44,7 @@ class VirtualSatelliteWorkbench(Workbench):  # NOQA @UndefinedVariable
         import FreeCAD
         self.preferences = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/VirtualSatelliteCAD")
 
-        from module.environment import ICON_WORKBENCH, Environment
+        from module.environment import ICON_WORKBENCH, Environment  # NOQA 
         self.__class__.Icon = Environment().get_icon_path(ICON_WORKBENCH)
         self.__class__.MenuText = 'Virtual Satellite ' + FREECAD_MOD_VERSION
         self.__class__.ToolTip = 'Workbench for Virtual Satellite 4'
@@ -79,9 +82,6 @@ class VirtualSatelliteWorkbench(Workbench):  # NOQA @UndefinedVariable
         return None
 
 
-from module.environment import Environment
-import plugin.plugin_loader as loader
-import os
 # First load the plugins that are required in workbench and settings
 loader.load_plugins(Environment().get_module_path())
 
