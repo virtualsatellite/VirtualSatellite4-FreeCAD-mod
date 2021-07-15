@@ -40,19 +40,23 @@ class CommandExport:
     def Activated(self):
         Log("Calling the exporter\n")
 
-        json_exporter = JsonExporter(Environment.get_appdata_module_path() + os.sep)
+        file_directory_path = Environment.get_file_directory_path()
+        if file_directory_path is None:
+            return
+
+        json_exporter = JsonExporter(file_directory_path + os.sep)
 
         if(FreeCAD.ActiveDocument is not None):
             # Export into the interim format
             document_name = FreeCAD.ActiveDocument.Label
-            active_document = ActiveDocument(Environment.get_appdata_module_path()).open_set_and_get_document(document_name)
+            active_document = ActiveDocument(file_directory_path).open_set_and_get_document(document_name)
             json_dict = json_exporter.full_export(active_document)
 
             # call the export from the plugin
             self.workbench.getActivePlugin().exportFromDict(json_dict)
 
             # after export open the file again for the UI
-            active_document = ActiveDocument(Environment.get_appdata_module_path()).open_set_and_get_document(document_name)
+            active_document = ActiveDocument(file_directory_path).open_set_and_get_document(document_name)
 
         else:
             Log("Error: First open a document to export it\n")

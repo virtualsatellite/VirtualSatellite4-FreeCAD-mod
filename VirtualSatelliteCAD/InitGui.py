@@ -79,52 +79,47 @@ class VirtualSatelliteWorkbench(Workbench):  # NOQA @UndefinedVariable
         return None
 
 
-def initWorkbench():
-    from module.environment import Environment
-    import plugin.plugin_loader as loader
-    import os
-    # First load the plugins that are required in workbench and settings
-    loader.load_plugins(Environment().get_module_path())
+from module.environment import Environment
+import plugin.plugin_loader as loader
+import os
+# First load the plugins that are required in workbench and settings
+loader.load_plugins(Environment().get_module_path())
 
-    # Finally add the Virtual Satellite Workbench to the FreeCAD application
-    Gui.addWorkbench(VirtualSatelliteWorkbench(loader.plugins))  # NOQA @UndefinedVariable
+# Finally add the Virtual Satellite Workbench to the FreeCAD application
+Gui.addWorkbench(VirtualSatelliteWorkbench(loader.plugins))  # NOQA @UndefinedVariable
 
-    # Build the preferences ui
-    preferences_ui = ""
-    with open(Environment().get_ui_path('preferences_header.ui'), 'r') as file:
-        preferences_ui += file.read()
+# Build the preferences ui
+preferences_ui = ""
+with open(Environment().get_ui_path('preferences_header.ui'), 'r') as file:
+    preferences_ui += file.read()
 
-    # Build general uis plugin selection
-    with open(Environment().get_ui_path('preferences_plugin_radiobutton.ui'), 'r') as file:
-        TEMPLATE = file.read()
+# Build general uis plugin selection
+with open(Environment().get_ui_path('preferences_plugin_radiobutton.ui'), 'r') as file:
+    TEMPLATE = file.read()
 
-    # For each plugin create a radiobutton
-    for i, plugin in enumerate(loader.plugins):
-        ui = TEMPLATE
-        ui = ui.replace('ID', str(i))
-        ui = ui.replace('PLUGIN_NAME', plugin.name)
-        ui = ui.replace('IS_CHECKED', str(i == 0))
-        preferences_ui += ui
+# For each plugin create a radiobutton
+for i, plugin in enumerate(loader.plugins):
+    ui = TEMPLATE
+    ui = ui.replace('ID', str(i))
+    ui = ui.replace('PLUGIN_NAME', plugin.name)
+    preferences_ui += ui
 
-    with open(Environment().get_ui_path('preferences_after_general_section.ui'), 'r') as file:
-        preferences_ui += file.read()
+with open(Environment().get_ui_path('preferences_after_general_section.ui'), 'r') as file:
+    preferences_ui += file.read()
 
-    # Add custom plugin UI
-    for plugin in loader.plugins:
-        if(plugin.hasPreferencesUi):
-            with open(os.path.join(Environment().get_plugin_path(plugin.directory), 'preferences.ui'), 'r') as file:
-                content = file.read()
-                preferences_ui += content
+# Add custom plugin UI
+for plugin in loader.plugins:
+    if(plugin.hasPreferencesUi):
+        with open(os.path.join(Environment().get_plugin_path(plugin.directory), 'preferences.ui'), 'r') as file:
+            content = file.read()
+            preferences_ui += content
 
-    with open(Environment().get_ui_path('preferences_footer.ui'), 'r') as file:
-        preferences_ui += file.read()
+with open(Environment().get_ui_path('preferences_footer.ui'), 'r') as file:
+    preferences_ui += file.read()
 
-    with open(Environment().get_ui_path('preferences.ui'), 'w') as file:
-        file.write(preferences_ui)
+with open(Environment().get_ui_path('preferences.ui'), 'w') as file:
+    file.write(preferences_ui)
 
-    # Add the preferences page
-    Gui.addIconPath(Environment().get_icons_path())  # NOQA @UndefinedVariable
-    Gui.addPreferencePage(Environment().get_ui_path('preferences.ui'), 'Virtual Satellite')  # NOQA @UndefinedVariable
-
-
-initWorkbench()
+# Add the preferences page
+Gui.addIconPath(Environment().get_icons_path())  # NOQA @UndefinedVariable
+Gui.addPreferencePage(Environment().get_ui_path('preferences.ui'), 'Virtual Satellite')  # NOQA @UndefinedVariable

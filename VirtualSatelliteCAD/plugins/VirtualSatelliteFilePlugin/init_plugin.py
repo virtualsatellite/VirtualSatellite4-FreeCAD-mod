@@ -15,12 +15,16 @@ class VirSatFilePlugin(Plugin):
         from module.environment import Environment
         import json
 
+        file_directory_path = Environment.get_file_directory_path()
+        if file_directory_path is None:
+            return
+
         # call pyqt dialog: returns (filename, filter)
         filename = QFileDialog.getOpenFileName(
             None,  # ui parent
             "Open JSON file",  # dialog caption
-            Environment.get_appdata_module_path(),
-            "JSON(*.json)")[0]  # filter
+            file_directory_path,
+            "JSON(*.json)")[0]
 
         if filename != '':
             (f"Selected file '{filename}'\n")
@@ -38,12 +42,16 @@ class VirSatFilePlugin(Plugin):
         from module.environment import Environment
         import json
 
+        file_directory_path = Environment.get_file_directory_path()
+        if file_directory_path is None:
+            return
+
         # call pyqt dialog: returns (filename, filter)
         filename = QFileDialog.getSaveFileName(
             None,  # ui parent
             "Save JSON file",  # dialog caption
-            Environment.get_appdata_module_path(),
-            "JSON(*.json)")[0]  # filter
+            file_directory_path,
+            "JSON(*.json)")[0]
         if filename != '':
             json_str = json.dumps(data_dict)
 
@@ -51,4 +59,4 @@ class VirSatFilePlugin(Plugin):
                 file.write(json_str)
 
 
-register_plugin(VirSatFilePlugin("Virtual Satellite File Plugin", "VirtualSatelliteFilePlugin", False))
+register_plugin(VirSatFilePlugin("Virtual Satellite File Plugin (Legacy)", "VirtualSatelliteFilePlugin", False))

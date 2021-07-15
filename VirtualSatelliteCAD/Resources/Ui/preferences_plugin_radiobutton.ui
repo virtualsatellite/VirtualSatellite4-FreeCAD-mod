@@ -4,9 +4,6 @@
        <property name="text">
         <string>PLUGIN_NAME</string>
        </property>
-       <property name="checked">
-        <bool>IS_CHECKED</bool>
-       </property>
        <property name="prefEntry" stdset="0">
         <cstring>PLUGIN_NAME</cstring>
        </property>

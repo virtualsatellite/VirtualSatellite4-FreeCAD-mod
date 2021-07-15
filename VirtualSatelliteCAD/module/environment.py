@@ -26,6 +26,8 @@
 
 import os
 import Init
+import FreeCAD
+from PySide2.QtWidgets import QMessageBox
 
 ICON_WORKBENCH = 'VirtualSatelliteWorkbench2.svg'
 ICON_IMPORT = 'VirtualSatelliteImport.svg'
@@ -125,10 +127,31 @@ class Environment:
         path = os.path.join(cls.get_plugins_path(), pluginname)
         return path
 
-    # TODO: Update user file handling
     @classmethod
     def get_appdata_module_path(cls):
         '''
         This method hands back the module path of the local Appdata directory.
         '''
         return Init.APPDATA_DIR
+
+    @classmethod
+    def get_file_directory_path(cls):
+        '''
+        This method hands back the path of the directory to store freecad files to.
+        Will return the path specified via the preferences ui.
+        If no valid directory is specified the user will be informed via a dialog
+        '''
+        preferences = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/VirtualSatelliteCAD")
+        path = preferences.GetString("FileDirectory")
+
+        if not os.path.isdir(path):
+            msgBox = QMessageBox()
+            msgBox.setText('No valid directory to store FreeCAD files (.FCstd) specified.')
+            msgBox.setInformativeText(
+                f'\'{path}\' is not a valid directory.\n' +
+                'Please specify one in the preferences.')
+            msgBox.exec_()
+
+            return None
+
+        return path

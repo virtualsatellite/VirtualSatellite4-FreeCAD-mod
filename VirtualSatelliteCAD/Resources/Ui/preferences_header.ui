@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>697</width>
-    <height>387</height>
+    <height>621</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,7 +18,7 @@
     <rect>
      <x>0</x>
      <y>10</y>
-     <width>621</width>
+     <width>615</width>
      <height>131</height>
     </rect>
    </property>
@@ -29,7 +29,7 @@
     </sizepolicy>
    </property>
    <property name="title">
-    <string>Select active plugin</string>
+    <string>General settings</string>
    </property>
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
@@ -37,7 +37,34 @@
       <x>10</x>
       <y>20</y>
       <width>600</width>
-      <height>41</height>
+      <height>106</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+      <widget class="QLabel" name="labelFileDirectory">
+       <property name="text">
+        <string>Local file directory (to store FCstd files)</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="Gui::PrefFileChooser" name="fileDirectoryChooser">
+       <property name="prefEntry" stdset="0">
+        <cstring>FileDirectory</cstring>
+       </property>
+       <property name="prefPath" stdset="0">
+        <cstring>Mod/VirtualSatelliteCAD</cstring>
+       </property>
+       <property name="mode">
+        <enum>Gui::FileChooser::Directory</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Select active Plugin</string>
+       </property>
+      </widget>
+     </item>

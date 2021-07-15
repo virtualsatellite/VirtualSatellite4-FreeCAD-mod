@@ -39,6 +39,11 @@ class CommandImport:
 
     def Activated(self):
         Log("Calling the importer\n")
+
+        file_directory_path = Environment.get_file_directory_path()
+        if file_directory_path is None:
+            return
+
         # call the import from the plugin
         json_object = self.workbench.getActivePlugin().importToDict()
 
@@ -46,7 +51,7 @@ class CommandImport:
             Log("Plugin import returned None\n")
             return
 
-        json_importer = JsonImporter(Environment.get_appdata_module_path() + os.sep)
+        json_importer = JsonImporter(file_directory_path + os.sep)
         json_importer.full_import(json_object)
 
     def IsActive(self):
