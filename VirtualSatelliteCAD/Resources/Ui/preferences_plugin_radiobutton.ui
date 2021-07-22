@@ -1,0 +1,14 @@
+
+     <item>
+      <widget class="Gui::PrefRadioButton" name="radioButtonID">
+       <property name="text">
+        <string>PLUGIN_NAME</string>
+       </property>
+       <property name="prefEntry" stdset="0">
+        <cstring>PLUGIN_NAME</cstring>
+       </property>
+       <property name="prefPath" stdset="0">
+        <cstring>Mod/VirtualSatelliteCAD</cstring>
+       </property>
+      </widget>
+     </item>

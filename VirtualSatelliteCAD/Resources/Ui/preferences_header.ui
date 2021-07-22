@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>697</width>
+    <height>621</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>VirtualSatellitePreferences</string>
+  </property>
+  <widget class="QGroupBox" name="groupBox">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>10</y>
+     <width>615</width>
+     <height>131</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="title">
+    <string>General settings</string>
+   </property>
+   <widget class="QWidget" name="layoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>20</y>
+      <width>600</width>
+      <height>106</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+      <widget class="QLabel" name="labelFileDirectory">
+       <property name="text">
+        <string>Local file directory (to store FCstd files)</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="Gui::PrefFileChooser" name="fileDirectoryChooser">
+       <property name="prefEntry" stdset="0">
+        <cstring>FileDirectory</cstring>
+       </property>
+       <property name="prefPath" stdset="0">
+        <cstring>Mod/VirtualSatelliteCAD</cstring>
+       </property>
+       <property name="mode">
+        <enum>Gui::FileChooser::Directory</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Select active Plugin</string>
+       </property>
+      </widget>
+     </item>
