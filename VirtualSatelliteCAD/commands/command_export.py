@@ -53,7 +53,7 @@ class CommandExport:
             json_dict = json_exporter.full_export(active_document)
 
             # call the export from the plugin
-            self.workbench.getActivePlugin().exportFromDict(json_dict)
+            self.workbench.getActivePlugin().exportFromDict(json_dict, file_directory_path)
 
             # after export open the file again for the UI
             active_document = ActiveDocument(file_directory_path).open_set_and_get_document(document_name)

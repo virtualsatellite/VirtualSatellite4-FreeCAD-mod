@@ -71,11 +71,9 @@ class VirtualSatelliteWorkbench(Workbench):  # NOQA @UndefinedVariable
         return "Gui::PythonWorkbench"
 
     def getActivePlugin(self):
-        import FreeCAD
-        preferences = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/VirtualSatelliteCAD")
 
         for plugin in self.plugins:
-            isSelected = preferences.GetBool(plugin.name)
+            isSelected = self.preferences.GetBool(plugin.name)
             if isSelected:
                 return plugin
 

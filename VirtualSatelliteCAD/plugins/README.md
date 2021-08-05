@@ -19,9 +19,9 @@ from plugin.plugin import Plugin
 
 @Plugin.register
 class MyPlugin(Plugin):
-    def importToDict(self):
+    def importToDict(self, project_directory):
         return
-    def exportFromDict(self, data_dict):
+    def exportFromDict(self, data_dict, project_directory):
         return
 register_plugin(MyPlugin(display_name, directory_name, providesUi))
 ```

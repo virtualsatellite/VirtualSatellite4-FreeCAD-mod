@@ -7,10 +7,10 @@ class VirSatPlugin(Plugin):
     '''
     Plugin that connects to a Virtual Satellite Server
     '''
-    def importToDict(self):
+    def importToDict(self, project_directory):
         return
 
-    def exportFromDict(self, data_dict):
+    def exportFromDict(self, data_dict, project_directory):
         return
 
 

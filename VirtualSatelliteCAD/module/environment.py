@@ -135,6 +135,13 @@ class Environment:
         return Init.APPDATA_DIR
 
     @classmethod
+    def get_user_home_path(cls):
+        '''
+        This method hands back the home of the current user (e.g. documents)
+        '''
+        return FreeCAD.ConfigGet("UserHomePath")
+
+    @classmethod
     def get_file_directory_path(cls):
         '''
         This method hands back the path of the directory to store freecad files to.
@@ -142,16 +149,27 @@ class Environment:
         If no valid directory is specified the user will be informed via a dialog
         '''
         preferences = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/VirtualSatelliteCAD")
-        path = preferences.GetString("FileDirectory")
+        usePref = preferences.GetBool("UseStaticFileDirectory")
 
-        if not os.path.isdir(path):
-            msgBox = QMessageBox()
-            msgBox.setText('No valid directory to store FreeCAD files (.FCstd) specified.')
-            msgBox.setInformativeText(
-                f'\'{path}\' is not a valid directory.\n' +
-                'Please specify one in the preferences.')
-            msgBox.exec_()
+        if usePref:
+            path = preferences.GetString("FileDirectory")
 
-            return None
+            if not os.path.isdir(path):
+                msgBox = QMessageBox()
+                msgBox.setText('No valid directory to store FreeCAD files (.FCstd) specified.')
+                msgBox.setInformativeText(
+                    f'\'{path}\' is not a valid directory.\n' +
+                    'Please specify one in the preferences.')
+                msgBox.exec_()
+                return None
+
+        else:
+            from PySide2.QtWidgets import QFileDialog
+
+            # call pyqt dialog: returns (filename, filter)
+            path = QFileDialog.getExistingDirectory(
+                None,  # ui parent
+                "Open directory for FreeCAD files (.FCstd) (can be disabled in preferences)",  # dialog caption
+                cls.get_user_home_path())
 
         return path
