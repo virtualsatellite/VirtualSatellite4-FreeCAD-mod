@@ -104,16 +104,6 @@ for i, plugin in enumerate(loader.plugins):
     ui = ui.replace('PLUGIN_NAME', plugin.name)
     preferences_ui += ui
 
-with open(Environment().get_ui_path('preferences_after_general_section.ui'), 'r') as file:
-    preferences_ui += file.read()
-
-# Add custom plugin UI
-for plugin in loader.plugins:
-    if(plugin.hasPreferencesUi):
-        with open(os.path.join(Environment().get_plugin_path(plugin.directory), 'preferences.ui'), 'r') as file:
-            content = file.read()
-            preferences_ui += content
-
 with open(Environment().get_ui_path('preferences_footer.ui'), 'r') as file:
     preferences_ui += file.read()
 
@@ -123,3 +113,8 @@ with open(Environment().get_ui_path('preferences.ui'), 'w') as file:
 # Add the preferences page
 Gui.addIconPath(Environment().get_icons_path())  # NOQA @UndefinedVariable
 Gui.addPreferencePage(Environment().get_ui_path('preferences.ui'), 'Virtual Satellite')  # NOQA @UndefinedVariable
+
+# Add custom plugin UI
+for plugin in loader.plugins:
+    if(plugin.hasPreferencesUi):
+        Gui.addPreferencePage(os.path.join(Environment().get_plugin_path(plugin.directory), 'preferences.ui'), 'Virtual Satellite')  # NOQA @UndefinedVariable

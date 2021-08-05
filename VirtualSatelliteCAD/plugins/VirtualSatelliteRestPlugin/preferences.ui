@@ -1,48 +1,82 @@
-  <widget class="QGroupBox" name="groupBox_VirSat">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>150</y>
-     <width>615</width>
-     <height>131</height>
-    </rect>
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>894</width>
+    <height>621</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>VirtualSatelliteRESTPlugin</string>
+  </property>
+  <layout class="QVBoxLayout">
+   <property name="spacing">
+    <number>6</number>
    </property>
-   <property name="sizePolicy">
-    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-     <horstretch>0</horstretch>
-     <verstretch>0</verstretch>
-    </sizepolicy>
+   <property name="leftMargin">
+    <number>9</number>
    </property>
-   <property name="title">
-    <string>VirSat preference group</string>
+   <property name="topMargin">
+    <number>9</number>
    </property>
-   <widget class="QWidget" name="layoutWidget_VirSat">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>20</y>
-      <width>158</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <layout class="QVBoxLayout" name="verticalLayout_VirSat">
-     <item>
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>Some plugins specific preference</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="Gui::PrefLineEdit" name="lineEdit_VirSat">
-       <property name="prefEntry" stdset="0">
-        <cstring>VirSatPref</cstring>
-       </property>
-       <property name="prefPath" stdset="0">
-        <cstring>Mod/VirtualSatelliteCAD</cstring>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-  </widget>
+   <property name="rightMargin">
+    <number>9</number>
+   </property>
+   <property name="bottomMargin">
+    <number>9</number>
+   </property>
+   <item>
+    <widget class="QGroupBox" name="groupBox_VirSat">
+     <property name="title">
+      <string>VirSat preference group</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_VirSat">
+      <item>
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Some plugins specific preference</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="Gui::PrefLineEdit" name="lineEdit_VirSat">
+        <property name="prefEntry" stdset="0">
+         <cstring>VirSatPref</cstring>
+        </property>
+        <property name="prefPath" stdset="0">
+         <cstring>Mod/VirtualSatelliteCAD</cstring>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>Gui::PrefLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>Gui/PrefWidgets.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
