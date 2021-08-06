@@ -28,6 +28,7 @@ import os
 import Init
 import FreeCAD
 from PySide2.QtWidgets import QMessageBox
+from PySide2.QtWidgets import QFileDialog
 
 ICON_WORKBENCH = 'VirtualSatelliteWorkbench2.svg'
 ICON_IMPORT = 'VirtualSatelliteImport.svg'
@@ -145,8 +146,11 @@ class Environment:
     def get_file_directory_path(cls):
         '''
         This method hands back the path of the directory to store freecad files to.
-        Will return the path specified via the preferences ui.
-        If no valid directory is specified the user will be informed via a dialog
+        Depending on the preferences it will either:
+          Return the path specified via the preferences ui.
+          If no valid directory is specified the user will be informed via a dialog
+        Or:
+          Open a directory selection dialog every time this method is called.
         '''
         preferences = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/VirtualSatelliteCAD")
         usePref = preferences.GetBool("UseStaticFileDirectory")
@@ -164,12 +168,9 @@ class Environment:
                 return None
 
         else:
-            from PySide2.QtWidgets import QFileDialog
-
-            # call pyqt dialog: returns (filename, filter)
             path = QFileDialog.getExistingDirectory(
-                None,  # ui parent
-                "Open directory for FreeCAD files (.FCstd) (can be disabled in preferences)",  # dialog caption
+                None,
+                "Open directory for FreeCAD files (.FCstd) (can be disabled in preferences)",
                 cls.get_user_home_path())
 
         return path
