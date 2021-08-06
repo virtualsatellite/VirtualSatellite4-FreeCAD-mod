@@ -77,6 +77,12 @@ class VirtualSatelliteWorkbench(Workbench):  # NOQA @UndefinedVariable
             if isSelected:
                 return plugin
 
+        # Inform the user that he has to select an active plugin
+        from PySide2.QtWidgets import QMessageBox
+        msgBox = QMessageBox()
+        msgBox.setText('No Plugin selected!')
+        msgBox.setInformativeText('Please select one in the preferences!')
+        msgBox.exec_()
         return None
 
 
