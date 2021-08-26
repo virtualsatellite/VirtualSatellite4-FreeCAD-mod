@@ -34,6 +34,7 @@ class ApiSwitch():
             # Configure HTTP basic authorization: basic
             configuration = v0_0_1_client.Configuration()
             print(configuration.host)
+            # TODO: parameter
             configuration.username = 'admin'
             configuration.password = 'secure'
 

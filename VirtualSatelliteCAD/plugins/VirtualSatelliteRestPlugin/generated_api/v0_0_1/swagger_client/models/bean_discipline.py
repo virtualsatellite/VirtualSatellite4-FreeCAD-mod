@@ -79,8 +79,8 @@ class BeanDiscipline(object):
         :param uuid: The uuid of this BeanDiscipline.  # noqa: E501
         :type: str
         """
-        if self._configuration.client_side_validation and uuid is None:
-            raise ValueError("Invalid value for `uuid`, must not be `None`")  # noqa: E501
+        # if self._configuration.client_side_validation and uuid is None:
+        #     raise ValueError("Invalid value for `uuid`, must not be `None`")  # noqa: E501
 
         self._uuid = uuid
 
@@ -104,8 +104,8 @@ class BeanDiscipline(object):
         :param user: The user of this BeanDiscipline.  # noqa: E501
         :type: str
         """
-        if self._configuration.client_side_validation and user is None:
-            raise ValueError("Invalid value for `user`, must not be `None`")  # noqa: E501
+        # if self._configuration.client_side_validation and user is None:
+        #     raise ValueError("Invalid value for `user`, must not be `None`")  # noqa: E501
 
         self._user = user
 
@@ -129,8 +129,8 @@ class BeanDiscipline(object):
         :param name: The name of this BeanDiscipline.  # noqa: E501
         :type: str
         """
-        if self._configuration.client_side_validation and name is None:
-            raise ValueError("Invalid value for `name`, must not be `None`")  # noqa: E501
+        # if self._configuration.client_side_validation and name is None:
+        #     raise ValueError("Invalid value for `name`, must not be `None`")  # noqa: E501
 
         self._name = name
 

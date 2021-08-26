@@ -34,26 +34,30 @@ class VirSatPlugin(Plugin):
     '''
     def importToDict(self):
         import json_io.json_definitions as jd
-
+        from plugins.VirtualSatelliteRestPlugin.tree_crawler import TreeCrawler
         from plugins.VirtualSatelliteRestPlugin.api_switch import ApiSwitch
-        # TODO: global
-        api_instance = ApiSwitch().get_api("0.0.1")
-
-        # TODO: preferences
+        api_instance = ApiSwitch().get_api("0.0.1")  # TODO: preferences
         # TODO: select starting sei via dialog / preferences?
         # TODO: look export dialog: only product trees???
         repo_name = 'visDemo'
 
         # TOOD: reverse engineer virsat cad exporter
         try:
-            # Get root Seis
-            root_seis = api_instance.get_root_seis(repo_name)
+            # Read tree
+            root_seis, seis, _, visualisations = TreeCrawler().crawlTree(api_instance, repo_name)
             seis2products = {}
             parts = []
-            for root_sei in root_seis:
-                # TODO param
-                if(root_sei.name == "ConfigurationTree"):
-                    products = self.recurseChildren(root_sei, api_instance, repo_name, seis2products, parts, isRoot=True)
+            print(seis)
+            print(_)
+            print(visualisations)
+
+            # Find the selected starting sei
+            for sei in seis.values():
+                # TODO: param
+                if(sei.name == "ConfigurationTree"):
+
+                    # Import starting at the sei
+                    products = self.importRecursive(sei, root_seis, seis, visualisations, seis2products, parts)
                     if products is not None:
                         data_dict = {
                             jd.JSON_PRODUCTS: products,
@@ -67,23 +71,20 @@ class VirSatPlugin(Plugin):
             print(traceback.format_exc())
         return
 
-    def recurseChildren(self, sei, api_instance, repo_name, seis2products, parts, isRoot=False):
-        import json
+    def importRecursive(self, sei, root_seis, seis, visualisations, seis2products, parts):
         import json_io.json_definitions as jd
 
         print(sei.name)
-        # Search visualisation
 
+        # Search visualisation
         foundVisCa = None
         for ca_reference in sei.category_assignments:
-
-            # Don't load the content in a model object because the swagger model doesn't know the available cas
-            response = api_instance.get_ca(ca_reference.uuid, repo_name, sync=False, _preload_content=False)
-            data = json.loads(response.data)
-            if(data['type'] == 'visualisation'):
-                foundVisCa = data
+            if(ca_reference.uuid in visualisations.keys()):
+                foundVisCa = visualisations[ca_reference.uuid]
+        print(foundVisCa)
 
         # Create product
+        isRoot = sei.uuid in root_seis.keys()
         if(isRoot or foundVisCa is not None):
 
             product_dict = {
@@ -119,8 +120,7 @@ class VirSatPlugin(Plugin):
 
         # Recursion
         for child_refernce in sei.children:
-            child = api_instance.get_sei(child_refernce.uuid, repo_name, sync=False)
-            self.recurseChildren(child, api_instance, repo_name, seis2products, parts)
+            self.importRecursive(seis[child_refernce.uuid], root_seis, seis, visualisations, seis2products, parts)
 
         # Return for the initial call
         if parts:
