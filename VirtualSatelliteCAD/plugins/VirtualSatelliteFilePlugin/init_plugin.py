@@ -10,20 +10,15 @@ class VirSatFilePlugin(Plugin):
     '''
     Legacy Plugin that directly im-/exports a JSON file
     '''
-    def importToDict(self):
+    def importToDict(self, project_directory):
         from PySide2.QtWidgets import QFileDialog
-        from module.environment import Environment
         import json
-
-        file_directory_path = Environment.get_file_directory_path()
-        if file_directory_path is None:
-            return
 
         # call pyqt dialog: returns (filename, filter)
         filename = QFileDialog.getOpenFileName(
             None,  # ui parent
             "Open JSON file",  # dialog caption
-            file_directory_path,
+            project_directory,
             "JSON(*.json)")[0]
 
         if filename != '':
@@ -37,20 +32,15 @@ class VirSatFilePlugin(Plugin):
                     Log("Please provide a valid JSON\n")
         return
 
-    def exportFromDict(self, data_dict):
+    def exportFromDict(self, data_dict, project_directory):
         from PySide2.QtWidgets import QFileDialog
-        from module.environment import Environment
         import json
-
-        file_directory_path = Environment.get_file_directory_path()
-        if file_directory_path is None:
-            return
 
         # call pyqt dialog: returns (filename, filter)
         filename = QFileDialog.getSaveFileName(
             None,  # ui parent
             "Save JSON file",  # dialog caption
-            file_directory_path,
+            project_directory,
             "JSON(*.json)")[0]
         if filename != '':
             json_str = json.dumps(data_dict)
