@@ -71,14 +71,18 @@ class VirtualSatelliteWorkbench(Workbench):  # NOQA @UndefinedVariable
         return "Gui::PythonWorkbench"
 
     def getActivePlugin(self):
-        import FreeCAD
-        preferences = FreeCAD.ParamGet("User parameter:BaseApp/Preferences/Mod/VirtualSatelliteCAD")
 
         for plugin in self.plugins:
-            isSelected = preferences.GetBool(plugin.name)
+            isSelected = self.preferences.GetBool(plugin.name)
             if isSelected:
                 return plugin
 
+        # Inform the user that he has to select an active plugin
+        from PySide2.QtWidgets import QMessageBox
+        msgBox = QMessageBox()
+        msgBox.setText('No Plugin selected!')
+        msgBox.setInformativeText('Please select one in the preferences!')
+        msgBox.exec_()
         return None
 
 
@@ -104,16 +108,6 @@ for i, plugin in enumerate(loader.plugins):
     ui = ui.replace('PLUGIN_NAME', plugin.name)
     preferences_ui += ui
 
-with open(Environment().get_ui_path('preferences_after_general_section.ui'), 'r') as file:
-    preferences_ui += file.read()
-
-# Add custom plugin UI
-for plugin in loader.plugins:
-    if(plugin.hasPreferencesUi):
-        with open(os.path.join(Environment().get_plugin_path(plugin.directory), 'preferences.ui'), 'r') as file:
-            content = file.read()
-            preferences_ui += content
-
 with open(Environment().get_ui_path('preferences_footer.ui'), 'r') as file:
     preferences_ui += file.read()
 
@@ -123,3 +117,8 @@ with open(Environment().get_ui_path('preferences.ui'), 'w') as file:
 # Add the preferences page
 Gui.addIconPath(Environment().get_icons_path())  # NOQA @UndefinedVariable
 Gui.addPreferencePage(Environment().get_ui_path('preferences.ui'), 'Virtual Satellite')  # NOQA @UndefinedVariable
+
+# Add custom plugin UI
+for plugin in loader.plugins:
+    if(plugin.hasPreferencesUi):
+        Gui.addPreferencePage(os.path.join(Environment().get_plugin_path(plugin.directory), 'preferences.ui'), 'Virtual Satellite')  # NOQA @UndefinedVariable

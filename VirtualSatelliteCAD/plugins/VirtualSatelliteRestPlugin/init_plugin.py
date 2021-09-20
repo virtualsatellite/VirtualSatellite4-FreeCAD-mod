@@ -35,7 +35,7 @@ class VirSatPlugin(Plugin):
     # TODO: extract classes for im- and export
     # TODO: test
 
-    def importToDict(self):
+    def importToDict(self, project_directory):
         import json_io.json_definitions as jd
         from plugins.VirtualSatelliteRestPlugin.tree_crawler import TreeCrawler
         from plugins.VirtualSatelliteRestPlugin.api_switch import ApiSwitch
@@ -162,7 +162,7 @@ class VirSatPlugin(Plugin):
         visCa["sizeZBean"]["value"] = part[jd.JSON_ELEMENT_LENGTH_Z]
         visCa["radiusBean"]["value"] = part[jd.JSON_ELEMENT_RADIUS]
 
-    def exportFromDict(self, data_dict):
+    def exportFromDict(self, data_dict, project_directory):
         import json_io.json_definitions as jd
         from plugins.VirtualSatelliteRestPlugin.tree_crawler import TreeCrawler
         from plugins.VirtualSatelliteRestPlugin.api_switch import ApiSwitch

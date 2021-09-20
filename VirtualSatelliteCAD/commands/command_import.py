@@ -45,7 +45,7 @@ class CommandImport:
             return
 
         # call the import from the plugin
-        json_object = self.workbench.getActivePlugin().importToDict()
+        json_object = self.workbench.getActivePlugin().importToDict(file_directory_path)
 
         if(json_object is None):
             Log("Plugin import returned None\n")

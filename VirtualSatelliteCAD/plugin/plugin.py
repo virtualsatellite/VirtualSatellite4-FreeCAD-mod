@@ -13,7 +13,7 @@ class Plugin(metaclass=abc.ABCMeta):
         self.hasPreferencesUi = hasPreferencesUi
 
     @abc.abstractmethod
-    def importToDict(self) -> typing.Dict[str, str]:
+    def importToDict(self, project_directory: str) -> typing.Dict[str, str]:
         '''
         Import information via a plugin specific interface.
         Has to return the internal data structure.
@@ -22,7 +22,7 @@ class Plugin(metaclass=abc.ABCMeta):
         return
 
     @abc.abstractmethod
-    def exportFromDict(self, data_dict: typing.Dict[str, str]):
+    def exportFromDict(self, project_directory: str, data_dict: typing.Dict[str, str]):
         '''
         Export information from the internal data structure
         via a plugin specific interface.
