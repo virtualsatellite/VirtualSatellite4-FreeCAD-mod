@@ -242,8 +242,6 @@ class ABeanStructuralElementInstance(object):
         :param parent: The parent of this ABeanStructuralElementInstance.  # noqa: E501
         :type: str
         """
-        # TODO
-
         self._parent = parent
 
     def to_dict(self):
