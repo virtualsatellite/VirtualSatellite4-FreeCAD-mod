@@ -25,18 +25,21 @@
 #
 import plugins.VirtualSatelliteRestPlugin.generated_api.v0_0_1.swagger_client as v0_0_1_client
 
+API_VERSIONS = ["0.0.1"]
+
 
 class ApiSwitch():
-    API_VERSIONS = ["0.0.1"]
 
-    def get_api(self, version):
+    def get_api(self, version_idx, username, password):
+        # Should be the same order as in the preferences
+        version = API_VERSIONS[version_idx]
+
         if(version == "0.0.1"):
             # Configure HTTP basic authorization: basic
             configuration = v0_0_1_client.Configuration()
             print(configuration.host)
-            # TODO: parameter
-            configuration.username = 'admin'
-            configuration.password = 'secure'
+            configuration.username = username
+            configuration.password = password
 
             # create an instance of the API class
             return v0_0_1_client.DefaultApi(v0_0_1_client.ApiClient(configuration))
