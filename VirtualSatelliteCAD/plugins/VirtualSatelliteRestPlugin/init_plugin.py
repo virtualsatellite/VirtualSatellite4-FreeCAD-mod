@@ -41,13 +41,16 @@ class VirSatPlugin(Plugin):
 
     def importToDict(self, project_directory):
         from plugins.VirtualSatelliteRestPlugin.importer import VirSatRestImporter
+        from PySide2.QtWidgets import QDialog, QTreeWidget, QTreeWidgetItem, QVBoxLayout, QDialogButtonBox
+        import FreeCAD
+        Msg = FreeCAD.Console.PrintMessage
+        Err = FreeCAD.Console.PrintError
 
-        from PySide2.QtWidgets import QDialog, QTreeWidget, QTreeWidgetItem, QLabel, QVBoxLayout, QDialogButtonBox
+        Msg('Starting import via Virtual Satellite REST API')
 
         api_instance, repo_name = self.getPreferences()
-        # TODO: Get a starting SEI from the preferences
-        # TODO: change to uuid??? or give whole sei if selected via dialog?
-        start_sei_name = None  # 'ConfigurationTree'
+        # Get a starting SEI from the preferences
+        start_sei_uuid = None
         if(self.preferences.GetBool('AskForStartingSEI')):
             # Get all available SEIs
             from plugins.VirtualSatelliteRestPlugin.tree_crawler import TreeCrawler
@@ -57,13 +60,10 @@ class VirSatPlugin(Plugin):
             class SelectSeiDialog(QDialog):
                 def __init__(self, root_seis, seis):
                     super(SelectSeiDialog, self).__init__()
+                    self.selectedSei = None
 
-                    self.setWindowTitle("New Group")
-                    self.setGeometry(400, 400, 200, 200)
-
-                    self.lab_a = QLabel('group name:')
-                    self.lab_b = QLabel('Competition Events:')
-
+                    self.setWindowTitle("Select starting SEI")
+                    self.setMinimumWidth(500)
                     self. buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
 
                     self.tree = QTreeWidget()
@@ -87,30 +87,37 @@ class VirSatPlugin(Plugin):
 
                     self.vlayout.addWidget(self.buttons)
 
-                    self.buttons.accepted.connect(self.accept)
+                    self.buttons.accepted.connect(self.acceptSelection)
                     self.buttons.rejected.connect(self.reject)
                     self.setLayout(self.vlayout)
+
+                def acceptSelection(self):
+                    self.selectedSei = self.tree.currentItem().text(1)
+                    self.accept()
 
                 @classmethod
                 def show(cls, root_seis, seis):
                     dialog = cls(root_seis, seis)
                     dialog.exec_()
-                    # TODO: uuid?
-                    return dialog.tree.currentItem().text(0)
+                    return dialog.selectedSei
 
-            start_sei_name = SelectSeiDialog.show(root_seis, seis)
+            start_sei_uuid = SelectSeiDialog.show(root_seis, seis)
         elif(self.preferences.GetBool('UseStaticStartingSEI')):
-            start_sei_name = self.preferences.GetString('StartingSEI')
+            start_sei_uuid = self.preferences.GetString('StartingSEI')
 
-        # TODO: nullcheck
-
-        return VirSatRestImporter().importToDict(api_instance, repo_name, start_sei_name)
+        if start_sei_uuid is None:
+            Err('No starting SEI defined')
+            return None
+        else:
+            return VirSatRestImporter().importToDict(api_instance, repo_name, start_sei_uuid)
 
     def exportFromDict(self, data_dict, project_directory):
         from plugins.VirtualSatelliteRestPlugin.exporter import VirSatRestExporter
+        import FreeCAD
+        Msg = FreeCAD.Console.PrintMessage
 
-        # TODO: remove
-        print(data_dict)
+        Msg('Starting export via Virtual Satellite REST API')
+
         api_instance, repo_name = self.getPreferences()
 
         VirSatRestExporter().exportFromDict(data_dict, api_instance, repo_name)
@@ -119,14 +126,12 @@ class VirSatPlugin(Plugin):
     def getPreferences(self):
         from plugins.VirtualSatelliteRestPlugin.api_switch import ApiSwitch
 
-        # TODO: remove comments
-        username = self.preferences.GetString('Username')  # admin
-        password = self.preferences.GetString('Password')  # secure
-        repo_name = self.preferences.GetString('RepositoryName')  # visDemo
-        api_version_idx = self.preferences.GetInt('ApiVersion')  # 0
+        username = self.preferences.GetString('Username')
+        password = self.preferences.GetString('Password')
+        repo_name = self.preferences.GetString('RepositoryName')
+        api_version_idx = self.preferences.GetInt('ApiVersion')
 
         api_instance = ApiSwitch().get_api(api_version_idx, username, password)
-        # TODO: nullcheck
 
         return (api_instance, repo_name)
 

@@ -27,23 +27,23 @@
 import json_io.json_definitions as jd
 from plugins.VirtualSatelliteRestPlugin.tree_crawler import TreeCrawler
 import traceback
+import FreeCAD
+Err = FreeCAD.Console.PrintError
+# TODO: log messages
+Log = FreeCAD.Console.PrintLog
 
 
-# TODO prints
 class VirSatRestImporter():
-    def importToDict(self, api_instance, repo_name, start_sei_name):
+    def importToDict(self, api_instance, repo_name, start_sei_uuid):
         try:
             # Read tree
             root_seis, seis, _, visualisations = TreeCrawler().crawlTree(api_instance, repo_name)
             seis2products = {}
             parts = []
-            print(seis)
-            print(_)
-            print(visualisations)
 
             # Find the selected starting sei
             for sei in seis.values():
-                if(sei.name == start_sei_name):
+                if(sei.uuid == start_sei_uuid):
 
                     # Import starting at the sei
                     products = self.importRecursive(sei, root_seis, seis, visualisations, seis2products, parts)
@@ -52,23 +52,19 @@ class VirSatRestImporter():
                             jd.JSON_PRODUCTS: products,
                             jd.JSON_PARTS: parts
                         }
-                        print(data_dict)
                         return data_dict
 
         except Exception:
-            print(traceback.format_exc())
+            Err(traceback.format_exc())
         return
 
     def importRecursive(self, sei, root_seis, seis, visualisations, seis2products, parts):
-
-        print(sei.name)
 
         # Search visualisation
         foundVisCa = None
         for ca_reference in sei.category_assignments:
             if(ca_reference.uuid in visualisations.keys()):
                 foundVisCa = visualisations[ca_reference.uuid]
-        print(foundVisCa)
 
         # Create product
         isRoot = sei.uuid in root_seis.keys()

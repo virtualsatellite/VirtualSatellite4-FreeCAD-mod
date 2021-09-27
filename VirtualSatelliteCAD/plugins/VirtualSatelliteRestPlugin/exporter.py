@@ -27,9 +27,12 @@ import json_io.json_definitions as jd
 from plugins.VirtualSatelliteRestPlugin.tree_crawler import TreeCrawler
 import traceback
 import json
+import FreeCAD
+Err = FreeCAD.Console.PrintError
+# TODO: log messages
+Log = FreeCAD.Console.PrintLog
 
 
-# TODO prints
 class VirSatRestExporter():
     def exportFromDict(self, data_dict, api_instance, repo_name):
         root_product = data_dict[jd.JSON_PRODUCTS]
@@ -39,82 +42,50 @@ class VirSatRestExporter():
             # Read tree
             _, seis, _, visualisations = TreeCrawler().crawlTree(api_instance, repo_name)
 
-            # TODO: already in crawler?
-            # map uuid to sei
-            # for json products in data_dict
-            #   get the sei
-            #   add to map of uuid -> existing elements
-
-            # for part in data_dict
             for part in parts:
-                # TODO: same as above, extract function?
-                # update part:
                 uuid = part[jd.JSON_ELEMENT_UUID]
                 sei = seis[uuid]
-                # TODO: nullcheck
+                if sei is None:
+                    Err('No sei found for part:' + part[jd.JSON_ELEMENT_NAME] + '(' + part[jd.JSON_ELEMENT_UUID] + ')')
+                    return None
 
-                # get vis bean
-                # TODO: function
-                foundVisCa = None
-                for ca_reference in sei.category_assignments:
-                    if(ca_reference.uuid in visualisations.keys()):
-                        foundVisCa = visualisations[ca_reference.uuid]
-                print(foundVisCa)
+                foundVisCa = self.getVisCaForSei(sei, visualisations)
 
                 if foundVisCa is not None:
-                    # update values from data dict
-                    print(foundVisCa)
+                    # Update values from data dict
                     self.part2VisCa(part, foundVisCa)
-                    print(foundVisCa)
-                    # put vis bean again
-                    # TODO: probably doesn't work this way
+                    # Put vis bean again
                     api_instance.put_ca(foundVisCa, repo_name, sync=False, _preload_content=False)
                 else:
-                    # TODO
+                    # TODO: create?
                     pass
 
-            # for product in data_dict
             self.exportProductsRecursive(root_product, seis, visualisations, api_instance, repo_name)
             api_instance.force_synchronize(repo_name)
 
         except Exception:
-            print(traceback.format_exc())
+            Err(traceback.format_exc())
 
     def exportProductsRecursive(self, product, seis, visualisations, api_instance, repo_name):
-        # update product
-        # TODO: has properties???
-        # get vis bean
-        print(product)
         uuid = product[jd.JSON_ELEMENT_UUID]
         sei = seis[uuid]
-        # TODO: put doesn't work because type field is missing in swagger doc
+        if sei is None:
+            Err('No sei found for product:' + product[jd.JSON_ELEMENT_NAME] + '(' + product[jd.JSON_ELEMENT_UUID] + ')')
+            return None
         raw_sei = json.loads(api_instance.get_sei(uuid, repo_name, sync=False, _preload_content=False).data)
-        # TODO: nullcheck
 
-        # get vis bean
-        # TODO: function
-        foundVisCa = None
-        for ca_reference in sei.category_assignments:
-            if(ca_reference.uuid in visualisations.keys()):
-                foundVisCa = visualisations[ca_reference.uuid]
-        print(foundVisCa)
+        foundVisCa = self.getVisCaForSei(sei, visualisations)
 
         if foundVisCa is not None:
-            # update values from data dict
-            foundVisCa["positionXBean"]["value"] = product[jd.JSON_ELEMENT_POS_X]
-            foundVisCa["positionYBean"]["value"] = product[jd.JSON_ELEMENT_POS_Y]
-            foundVisCa["positionZBean"]["value"] = product[jd.JSON_ELEMENT_POS_Z]
-            foundVisCa["rotationXBean"]["value"] = product[jd.JSON_ELEMENT_ROT_X]
-            foundVisCa["rotationYBean"]["value"] = product[jd.JSON_ELEMENT_ROT_Y]
-            foundVisCa["rotationZBean"]["value"] = product[jd.JSON_ELEMENT_ROT_Z]
+            # Update values from data dict
+            self.product2VisCa(product, foundVisCa)
             raw_sei["name"] = product[jd.JSON_ELEMENT_NAME]
 
-            # put vis bean and sei again
+            # Put vis bean and sei again
             api_instance.put_ca(foundVisCa, repo_name, sync=False, _preload_content=False)
-            # api_instance.put_sei(sei, repo_name, sync=False)
             api_instance.put_sei(raw_sei, repo_name, sync=False, _preload_content=False)
         else:
-            # TODO
+            # TODO: create?
             pass
 
         # Recursion
@@ -130,3 +101,19 @@ class VirSatRestExporter():
         visCa["sizeYBean"]["value"] = part[jd.JSON_ELEMENT_LENGTH_Y]
         visCa["sizeZBean"]["value"] = part[jd.JSON_ELEMENT_LENGTH_Z]
         visCa["radiusBean"]["value"] = part[jd.JSON_ELEMENT_RADIUS]
+
+    def product2VisCa(self, product, visCa):
+        visCa["positionXBean"]["value"] = product[jd.JSON_ELEMENT_POS_X]
+        visCa["positionYBean"]["value"] = product[jd.JSON_ELEMENT_POS_Y]
+        visCa["positionZBean"]["value"] = product[jd.JSON_ELEMENT_POS_Z]
+        visCa["rotationXBean"]["value"] = product[jd.JSON_ELEMENT_ROT_X]
+        visCa["rotationYBean"]["value"] = product[jd.JSON_ELEMENT_ROT_Y]
+        visCa["rotationZBean"]["value"] = product[jd.JSON_ELEMENT_ROT_Z]
+
+    def getVisCaForSei(self, sei, visualisations):
+        # Get visualization bean
+        foundVisCa = None
+        for ca_reference in sei.category_assignments:
+            if(ca_reference.uuid in visualisations.keys()):
+                foundVisCa = visualisations[ca_reference.uuid]
+        return foundVisCa
