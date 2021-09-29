@@ -61,10 +61,7 @@ class VirSatRestImporter():
     def importRecursive(self, sei, root_seis, seis, visualisations, seis2products, parts):
 
         # Search visualisation
-        foundVisCa = None
-        for ca_reference in sei.category_assignments:
-            if(ca_reference.uuid in visualisations.keys()):
-                foundVisCa = visualisations[ca_reference.uuid]
+        foundVisCa = self.getVisCaForSei(sei, visualisations)
 
         # Create product
         isRoot = sei.uuid in root_seis.keys()
@@ -89,12 +86,12 @@ class VirSatRestImporter():
                 product_dict[jd.JSON_ELEMENT_ROT_Z] = foundVisCa["rotationZBean"]["value"]
 
                 # None shapes don't have a part
+                # TODO: geometry
                 if(foundVisCa["shapeBean"]["value"] != jd.JSON_ELEMENT_SHAPE_NONE):
                     # TODO: resolve inheritance -> find the correct part
-                    # Resolve super seis
-                    # Starting from the lowest sei (current)
+                    partVis, partSei = self.resolveInheritance(foundVisCa, sei, visualisations, seis)
                     # If there are any overrides -> use this one, else go a level above if possible
-                    part = self.visCa2Part(foundVisCa, sei)
+                    part = self.visCa2Part(partVis, partSei)
                     parts.append(part)
                     product_dict[jd.JSON_ELEMENT_PART_NAME] = part[jd.JSON_ELEMENT_NAME]
                     product_dict[jd.JSON_ELEMENT_PART_UUID] = part[jd.JSON_ELEMENT_UUID]
@@ -114,6 +111,14 @@ class VirSatRestImporter():
         else:
             return None
 
+    def getVisCaForSei(self, sei, visualisations):
+        # Get visualization bean
+        foundVisCa = None
+        for ca_reference in sei.category_assignments:
+            if(ca_reference.uuid in visualisations.keys()):
+                foundVisCa = visualisations[ca_reference.uuid]
+        return foundVisCa
+
     def visCa2Part(self, visCa, containingSei):
         # For now assume correct units
         part_dict = {
@@ -128,3 +133,39 @@ class VirSatRestImporter():
         }
 
         return part_dict
+
+    # TODO: cpmplex test
+    def resolveInheritance(self, visCa, containingSei, visualisations, seis):
+        partVis, partSei = visCa, containingSei
+
+        # Starting from the lowest sei (current) check if found vis has any overrides
+        while(partVis is not None and not self.overridesAnyPartValue(partVis)):
+            nextPartVis, nextPartSei = None, partSei
+
+            # If there were no overrides we can step upwards in the inheritance tree
+            # Until we find the next visualisation
+            while(nextPartSei.parent is not None and nextPartVis is None):
+                nextPartSei = seis[nextPartSei.parent]
+                nextPartVis = self.getVisCaForSei(nextPartSei, visualisations)
+
+            # Possibly we didn't find any visualisation in the complete inheritance tree
+            # Then we keep the current one
+            if nextPartVis is not None:
+                partVis, partSei = nextPartVis, nextPartSei
+
+            # Abort if inheritance tree is exhausted
+            if(nextPartSei.parent is None):
+                break
+
+        return (partVis, partSei)
+
+    def overridesAnyPartValue(self, visCa):
+        (
+            visCa["shapeBean"]["override"] or
+            visCa["colorBean"]["override"] or
+            visCa["sizeXBean"]["override"] or
+            visCa["sizeYBean"]["override"] or
+            visCa["sizeZBean"]["override"] or
+            visCa["radiusBean"]["override"]
+            # TODO: visCa["geometryBean"]["override"]
+        )
