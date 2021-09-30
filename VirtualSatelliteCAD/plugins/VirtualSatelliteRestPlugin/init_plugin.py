@@ -109,7 +109,7 @@ class VirSatPlugin(Plugin):
             Err('No starting SEI defined')
             return None
         else:
-            return VirSatRestImporter().importToDict(api_instance, repo_name, start_sei_uuid)
+            return VirSatRestImporter(project_directory, api_instance, repo_name).importToDict(start_sei_uuid)
 
     def exportFromDict(self, data_dict, project_directory):
         from plugins.VirtualSatelliteRestPlugin.exporter import VirSatRestExporter

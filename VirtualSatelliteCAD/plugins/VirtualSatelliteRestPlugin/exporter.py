@@ -95,13 +95,13 @@ class VirSatRestExporter():
     def part2VisCa(self, part, visCa):
         # For now assume correct units
         # For now ignore name changes
+        # For now geometry files are not exported
         visCa["shapeBean"]["value"] = part[jd.JSON_ELEMENT_SHAPE]
         visCa["colorBean"]["value"] = part[jd.JSON_ELEMENT_COLOR]
         visCa["sizeXBean"]["value"] = part[jd.JSON_ELEMENT_LENGTH_X]
         visCa["sizeYBean"]["value"] = part[jd.JSON_ELEMENT_LENGTH_Y]
         visCa["sizeZBean"]["value"] = part[jd.JSON_ELEMENT_LENGTH_Z]
         visCa["radiusBean"]["value"] = part[jd.JSON_ELEMENT_RADIUS]
-        # TODO: geometry
 
     def product2VisCa(self, product, visCa):
         visCa["positionXBean"]["value"] = product[jd.JSON_ELEMENT_POS_X]
