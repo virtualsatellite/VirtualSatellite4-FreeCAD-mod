@@ -29,7 +29,6 @@ from json_io.json_definitions import JSON_ELEMENT_NAME, JSON_ELEMENT_SHAPE,\
     JSON_ELEMENT_LENGTH_Z, JSON_ELEMENT_RADIUS, JSON_ELEMENT_COLOR, M_TO_MM,\
     _get_combined_name_uuid, PART_IDENTIFIER
 from json_io.json_spread_sheet import JsonSpreadSheet
-import freecad.name_converter as nc
 
 
 class AJsonPart():

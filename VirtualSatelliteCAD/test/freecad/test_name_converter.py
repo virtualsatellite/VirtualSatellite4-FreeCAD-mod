@@ -33,11 +33,11 @@ class TestNameConverter(unittest.TestCase):
     TEST_FREECAD_NAME = "Many__Special___Characters____Test_____file"
 
     def test_toFreeCad(self):
-        assert(self.TEST_FREECAD_NAME, nc.toFreeCad(self.TEST_NAME))
+        self.assertEqual(self.TEST_FREECAD_NAME, nc.toFreeCad(self.TEST_NAME))
 
     def test_fromFreeCad(self):
-        assert(self.TEST_NAME, nc.fromFreeCad(self.TEST_FREECAD_NAME))
+        self.assertEqual(self.TEST_NAME, nc.fromFreeCad(self.TEST_FREECAD_NAME))
 
     def test_Roundtrip(self):
-        assert(self.TEST_NAME, nc.fromFreeCad(nc.toFreeCad(self.TEST_NAME)))
-        assert(self.TEST_FREECAD_NAME, nc.toFreeCad(nc.fromFreeCad(self.TEST_FREECAD_NAME)))
+        self.assertEqual(self.TEST_NAME, nc.fromFreeCad(nc.toFreeCad(self.TEST_NAME)))
+        self.assertEqual(self.TEST_FREECAD_NAME, nc.toFreeCad(nc.fromFreeCad(self.TEST_FREECAD_NAME)))
