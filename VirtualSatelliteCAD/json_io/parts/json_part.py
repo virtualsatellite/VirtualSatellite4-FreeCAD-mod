@@ -29,6 +29,7 @@ from json_io.json_definitions import JSON_ELEMENT_NAME, JSON_ELEMENT_SHAPE,\
     JSON_ELEMENT_LENGTH_Z, JSON_ELEMENT_RADIUS, JSON_ELEMENT_COLOR, M_TO_MM,\
     _get_combined_name_uuid, PART_IDENTIFIER
 from json_io.json_spread_sheet import JsonSpreadSheet
+import freecad.name_converter as nc
 
 
 class AJsonPart():
@@ -58,7 +59,7 @@ class AJsonPart():
         '''
         self.name = str(json_object[JSON_ELEMENT_NAME])
         self.shape = str(json_object[JSON_ELEMENT_SHAPE])
-        self.uuid = str(json_object[JSON_ELEMENT_UUID]).replace("-", "_")
+        self.uuid = str(json_object[JSON_ELEMENT_UUID])
 
         # the coordinate system between virtual satellite and FreeCAD seem
         # to be identical. no Further adjustments or transformations needed.
@@ -78,7 +79,7 @@ class AJsonPart():
     def parse_to_json(self):
         json_dict = {
             JSON_ELEMENT_NAME: self.name,
-            JSON_ELEMENT_UUID: self.uuid.replace("_", "-"),
+            JSON_ELEMENT_UUID: self.uuid,
             JSON_ELEMENT_SHAPE: self.shape,
 
             JSON_ELEMENT_LENGTH_X: self.length / M_TO_MM,

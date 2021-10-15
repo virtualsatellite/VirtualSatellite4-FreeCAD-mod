@@ -24,6 +24,15 @@
 # SPDX-License-Identifier: LGPL-3.0-or-later
 #
 
+BEAM_UNIQ_NAME = "Beam_6201a731___d703___43f8___ab37___6a0581dfe022"
+BEAMSTRUCTURE_UNIQ_NAME = "BeamStructure_2afb23c9___f458___4bdb___a4e7___fc863364644f"
+BASEPLATEBOTTOM_UNIQ_NAME = "BasePlateBottom_e8794f3d___86ec___44c5___9618___8b7170c45484"
+BASEPLATEBOTTOM1_UNIQ_NAME = "BasePlateBottom1_e8794f3d___86ec___44c5___9618___8b7170c45484"
+BASEPLATEBOTTOM2_UNIQ_NAME = "BasePlateBottom2_e8794f3d___86ec___44c5___9618___8b7170c45484"
+BASEPLATETOP_UNIQ_NAME = "BasePlateTop_a199e3bd___3bc1___426d___8321___e9bd829339b3"
+BASEPLATE_UNIQ_NAME = "BasePlate_3d3708fd___5c6c___4af9___b710___d68778466084"
+NONE_UNIQ_NAME = 'None_cc14e2c7___9d7e___4cf2___8d6d___9b8cf5e96d56'
+
 TEST_JSON_PART_BOX = """{
         "color": 12632256,
         "shape": "BOX",

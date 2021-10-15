@@ -39,7 +39,7 @@ from json_io.json_definitions import JSON_ELEMENT_STL_PATH, PART_IDENTIFIER, PRO
     JSON_ELEMENT_ROT_Y, JSON_ELEMENT_ROT_Z, JSON_ELEMENT_POS_X,\
     JSON_ELEMENT_POS_Y, JSON_ELEMENT_POS_Z, JSON_ELEMENT_LENGTH_Y
 from test.json_io.test_json_data import TEST_JSON_FULL_VISCUBE, TEST_JSON_FULL_NONE_SHAPE, TEST_JSON_FULL_NONE_SHAPE_ASSEMBLY, \
-    TEST_JSON_FULL_GEOMETRY, TEST_JSON_PART_BOX, TEST_JSON_PART_NONE
+    TEST_JSON_FULL_GEOMETRY, TEST_JSON_PART_BOX, TEST_JSON_PART_NONE, BEAM_UNIQ_NAME, BEAMSTRUCTURE_UNIQ_NAME, NONE_UNIQ_NAME
 from json_io.json_spread_sheet import FREECAD_PART_SHEET_NAME, JsonSpreadSheet
 from json_io.parts.json_part_geometry import JsonPartGeometry
 from shutil import copyfile
@@ -69,7 +69,7 @@ class TestJsonImporter(AWorkingDirectoryTest):
         json_importer.create_or_update_part(json_object)
 
         # Check the file got created
-        test_file_name = self._WORKING_DIRECTORY + PART_IDENTIFIER + "Beam_6201a731_d703_43f8_ab37_6a0581dfe022" + FREECAD_FILE_EXTENSION
+        test_file_name = self._WORKING_DIRECTORY + PART_IDENTIFIER + BEAM_UNIQ_NAME + FREECAD_FILE_EXTENSION
         self.assertTrue(os.path.isfile(test_file_name), "File exists on drive")
         App.open(test_file_name)
 
@@ -106,7 +106,7 @@ class TestJsonImporter(AWorkingDirectoryTest):
         json_importer.create_or_update_part(json_object)
 
         # Check the file got created
-        test_file_name = self._WORKING_DIRECTORY + PART_IDENTIFIER + "Beam_6201a731_d703_43f8_ab37_6a0581dfe022" + FREECAD_FILE_EXTENSION
+        test_file_name = self._WORKING_DIRECTORY + PART_IDENTIFIER + BEAM_UNIQ_NAME + FREECAD_FILE_EXTENSION
         self.assertTrue(os.path.isfile(test_file_name), "File exists on drive")
         App.open(test_file_name)
 
@@ -120,7 +120,7 @@ class TestJsonImporter(AWorkingDirectoryTest):
         json_importer.create_or_update_part(json_object)
 
         # Check the file got created
-        test_file_name = self._WORKING_DIRECTORY + PART_IDENTIFIER + "Beam_6201a731_d703_43f8_ab37_6a0581dfe022" + FREECAD_FILE_EXTENSION
+        test_file_name = self._WORKING_DIRECTORY + PART_IDENTIFIER + BEAM_UNIQ_NAME + FREECAD_FILE_EXTENSION
         App.open(test_file_name)
 
         self.assertEquals(len(App.ActiveDocument.RootObjects), TEST_ALLOWED_AMOUNT_OF_PART_OBJECTS, "Correct amount of objects in file")
@@ -138,7 +138,7 @@ class TestJsonImporter(AWorkingDirectoryTest):
         json_importer.create_or_update_part(json_object)
 
         # Check the file got created
-        test_file_name = self._WORKING_DIRECTORY + PART_IDENTIFIER + "Beam_6201a731_d703_43f8_ab37_6a0581dfe022" + FREECAD_FILE_EXTENSION
+        test_file_name = self._WORKING_DIRECTORY + PART_IDENTIFIER + BEAM_UNIQ_NAME + FREECAD_FILE_EXTENSION
         self.assertTrue(os.path.isfile(test_file_name), "File exists on drive")
         App.open(test_file_name)
 
@@ -153,7 +153,7 @@ class TestJsonImporter(AWorkingDirectoryTest):
         json_importer.create_or_update_part(json_object)
 
         # Check the file got created
-        test_file_name = self._WORKING_DIRECTORY + PART_IDENTIFIER + "Beam_6201a731_d703_43f8_ab37_6a0581dfe022" + FREECAD_FILE_EXTENSION
+        test_file_name = self._WORKING_DIRECTORY + PART_IDENTIFIER + BEAM_UNIQ_NAME + FREECAD_FILE_EXTENSION
         self.assertTrue(os.path.isfile(test_file_name), "File exists on drive")
         App.open(test_file_name)
 
@@ -175,12 +175,12 @@ class TestJsonImporter(AWorkingDirectoryTest):
         json_importer.create_or_update_part(json_object)
 
         # Check the file got created
-        test_file_name = self._WORKING_DIRECTORY + PART_IDENTIFIER + "Beam_6201a731_d703_43f8_ab37_6a0581dfe022" + FREECAD_FILE_EXTENSION
+        test_file_name = self._WORKING_DIRECTORY + PART_IDENTIFIER + BEAM_UNIQ_NAME + FREECAD_FILE_EXTENSION
         App.open(test_file_name)
 
         # Check that there is the correct object inside
         self.assertIsNotNone(App.ActiveDocument.getObject("Box"), "Got correct object")
-        App.closeDocument(PART_IDENTIFIER + "Beam_6201a731_d703_43f8_ab37_6a0581dfe022")
+        App.closeDocument(PART_IDENTIFIER + BEAM_UNIQ_NAME)
 
         # Now start cyling the objects
         json_object["shape"] = "CYLINDER"
@@ -190,7 +190,7 @@ class TestJsonImporter(AWorkingDirectoryTest):
         App.open(test_file_name)
         self.assertIsNone(App.ActiveDocument.getObject("Box"), "Removed previous object")
         self.assertIsNotNone(App.ActiveDocument.getObject("Cylinder"), "Got correct object")
-        App.closeDocument(PART_IDENTIFIER + "Beam_6201a731_d703_43f8_ab37_6a0581dfe022")
+        App.closeDocument(PART_IDENTIFIER + BEAM_UNIQ_NAME)
 
         # Next object
         json_object["shape"] = "SPHERE"
@@ -200,7 +200,7 @@ class TestJsonImporter(AWorkingDirectoryTest):
         App.open(test_file_name)
         self.assertIsNone(App.ActiveDocument.getObject("Cylinder"), "Removed previous object")
         self.assertIsNotNone(App.ActiveDocument.getObject("Sphere"), "Got correct object")
-        App.closeDocument(PART_IDENTIFIER + "Beam_6201a731_d703_43f8_ab37_6a0581dfe022")
+        App.closeDocument(PART_IDENTIFIER + BEAM_UNIQ_NAME)
 
         # Next object
         json_object["shape"] = "GEOMETRY"
@@ -210,7 +210,7 @@ class TestJsonImporter(AWorkingDirectoryTest):
         App.open(test_file_name)
         self.assertIsNone(App.ActiveDocument.getObject("Sphere"), "Removed previous object")
         self.assertIsNotNone(App.ActiveDocument.getObject("Geometry"), "Got correct object")
-        App.closeDocument(PART_IDENTIFIER + "Beam_6201a731_d703_43f8_ab37_6a0581dfe022")
+        App.closeDocument(PART_IDENTIFIER + BEAM_UNIQ_NAME)
 
         # Next object
         json_object["shape"] = "CONE"
@@ -220,7 +220,7 @@ class TestJsonImporter(AWorkingDirectoryTest):
         App.open(test_file_name)
         self.assertIsNone(App.ActiveDocument.getObject("Geometry"), "Removed previous object")
         self.assertIsNotNone(App.ActiveDocument.getObject("Cone"), "Got correct object")
-        App.closeDocument(PART_IDENTIFIER + "Beam_6201a731_d703_43f8_ab37_6a0581dfe022")
+        App.closeDocument(PART_IDENTIFIER + BEAM_UNIQ_NAME)
 
     def test_full_import(self):
         """
@@ -248,7 +248,7 @@ class TestJsonImporter(AWorkingDirectoryTest):
         self.assertEquals(len(active_document.app_active_document.RootObjects), 10, "Found correct amount of root objects 5 plus 5 sheets")
 
         active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document(
-            PRODUCT_IDENTIFIER + "BeamStructure_2afb23c9_f458_4bdb_a4e7_fc863364644f")
+            PRODUCT_IDENTIFIER + BEAMSTRUCTURE_UNIQ_NAME)
         self.assertEquals(len(active_document.app_active_document.RootObjects), 6, "Found correct amount of root objects 3 objects plus 3 sheets")
 
     def test_full_import_shape_none(self):
@@ -256,7 +256,7 @@ class TestJsonImporter(AWorkingDirectoryTest):
         json_object = json.loads(TEST_JSON_FULL_NONE_SHAPE)
         part_file_names, json_product, active_document = json_importer.full_import(json_object)
 
-        self.assertEqual(part_file_names, ['part_None_cc14e2c7_9d7e_4cf2_8d6d_9b8cf5e96d56'], "Found dummy part")
+        self.assertEqual(part_file_names, [PART_IDENTIFIER + NONE_UNIQ_NAME], "Found dummy part")
 
         self.assertEqual(len(json_product.children), 1, "Correct amount of children")
         self.assertEqual(len(active_document.app_active_document.RootObjects), 2, "Found correct amount of 1 sheet and 1 dummy")
@@ -266,13 +266,13 @@ class TestJsonImporter(AWorkingDirectoryTest):
         json_object = json.loads(TEST_JSON_FULL_NONE_SHAPE_ASSEMBLY)
         part_file_names, json_product, active_document = json_importer.full_import(json_object)
 
-        self.assertEqual(part_file_names, ['part_None_cc14e2c7_9d7e_4cf2_8d6d_9b8cf5e96d56'], "Found dummy part")
+        self.assertEqual(part_file_names, [PART_IDENTIFIER + NONE_UNIQ_NAME], "Found dummy part")
 
         self.assertEqual(len(json_product.children), 1, "Correct amount of children")
         self.assertEqual(len(active_document.app_active_document.RootObjects), 2, "Found correct amount of 1 sheet and 1 dummy")
 
         active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document(
-                                         PRODUCT_IDENTIFIER + "NoneAssembly_2afb23c9_f458_4bdb_a4e7_fc863364644f")
+                                         PRODUCT_IDENTIFIER + "NoneAssembly_2afb23c9___f458___4bdb___a4e7___fc863364644f")
         self.assertEqual(len(active_document.app_active_document.RootObjects), 4, "Found correct amount of 1 assembly and 2 sheet and 1 dummy")
 
     def test_full_import_shape_geometry(self):
@@ -290,12 +290,12 @@ class TestJsonImporter(AWorkingDirectoryTest):
 
         self.assertEqual(len(json_product.children), 1, "Correct amount of children")
         self.assertEqual(len(active_document.app_active_document.RootObjects), 2, "Found correct amount of 1 object and 1 sheet")
-        name = "Geometry_cc14e2c7_9d7e_4cf2_8d6d_9b8cf5e96d56"
+        name = "Geometry_cc14e2c7___9d7e___4cf2___8d6d___9b8cf5e96d56"
         self.assertEqual(active_document.app_active_document.RootObjects[0].Label, name, "Found the right object")
         self.assertEqual(active_document.app_active_document.RootObjects[1].Label, FREECAD_PART_SHEET_NAME + "_" + name, "Found the right object")
 
         active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document(
-            PART_IDENTIFIER + "Geometry_38eae3a5_8338_4a51_b1df_5583058f9e77")
+            PART_IDENTIFIER + "Geometry_38eae3a5___8338___4a51___b1df___5583058f9e77")
         self.assertEqual(len(active_document.app_active_document.RootObjects), 5, "Found correct amount of 4 object and 1 sheet")
 
         freecad_sheet = active_document.app_active_document.Objects[4]
@@ -422,7 +422,7 @@ class TestJsonImporter(AWorkingDirectoryTest):
 
         # save values of first import
         part_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document(
-            PART_IDENTIFIER + "BeamStructure_2afb23c9_f458_4bdb_a4e7_fc863364644f")
+            PART_IDENTIFIER + BEAMSTRUCTURE_UNIQ_NAME)
         part = part_document.app_active_document.RootObjects[0]
         old_len = part.Height.Value
 
@@ -443,7 +443,7 @@ class TestJsonImporter(AWorkingDirectoryTest):
         self.assertEquals(len(active_document2.app_active_document.RootObjects), 10, "Found correct amount of root objects 4 plus 4 sheets")
 
         part_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document(
-            PART_IDENTIFIER + "BeamStructure_2afb23c9_f458_4bdb_a4e7_fc863364644f")
+            PART_IDENTIFIER + BEAMSTRUCTURE_UNIQ_NAME)
 
         # Check that the test object is there
         self.assertEqual(len(part_document.app_active_document.RootObjects), 3, "Found 3 files (2 from the original part and one test object")
