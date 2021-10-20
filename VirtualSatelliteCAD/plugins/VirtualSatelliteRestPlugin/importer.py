@@ -92,7 +92,7 @@ class VirSatRestImporter():
                 if(foundVisCa["shapeBean"]["value"] != jd.JSON_ELEMENT_SHAPE_NONE):
                     # Resolve inheritance -> find the correct part
                     partVis, partSei = self.resolveInheritance(foundVisCa, sei, visualisations, seis)
-                    print(partVis)
+                    Log(partVis)
                     part = self.visCa2Part(partVis, partSei)
                     parts.append(part)
                     product_dict[jd.JSON_ELEMENT_PART_NAME] = part[jd.JSON_ELEMENT_NAME]
@@ -142,7 +142,6 @@ class VirSatRestImporter():
             # Download the STL file from the server
             response = self.api_instance.get_resource(visCa["geometryFileBean"]["uuid"], self.repo_name, sync=False, _preload_content=False)
             local_path = os.path.join(self.project_directory, containingSei.uuid.replace('-', '_') + '.' + geometryFilePath.split('/')[-1])
-            print(local_path)
             f = open(local_path, 'wb')
             f.write(response.data)
             f.close()

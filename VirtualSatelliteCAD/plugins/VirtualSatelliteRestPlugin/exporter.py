@@ -29,7 +29,7 @@ import traceback
 import json
 import FreeCAD
 Err = FreeCAD.Console.PrintError
-# TODO: log messages
+# TODO: log messages, extract constants
 Log = FreeCAD.Console.PrintLog
 
 
@@ -53,7 +53,10 @@ class VirSatRestExporter():
 
                 if foundVisCa is not None:
                     # Update values from data dict
-                    self.part2VisCa(part, foundVisCa)
+                    superVisCa = None
+                    if sei.super_seis:
+                        superVisCa = self.getVisCaForSei(seis[sei.super_seis[0].uuid], visualisations)
+                    self.part2VisCa(part, foundVisCa, superVisCa)
                     # Put vis bean again
                     api_instance.put_ca(foundVisCa, repo_name, sync=False, _preload_content=False)
                 else:
@@ -78,7 +81,10 @@ class VirSatRestExporter():
 
         if foundVisCa is not None:
             # Update values from data dict
-            self.product2VisCa(product, foundVisCa)
+            superVisCa = None
+            if sei.super_seis:
+                superVisCa = self.getVisCaForSei(seis[sei.super_seis[0].uuid], visualisations)
+            self.product2VisCa(product, foundVisCa, superVisCa)
             raw_sei["name"] = product[jd.JSON_ELEMENT_NAME]
 
             # Put vis bean and sei again
@@ -92,24 +98,41 @@ class VirSatRestExporter():
         for child_product in product[jd.JSON_ELEMNT_CHILDREN]:
             self.exportProductsRecursive(child_product, seis, visualisations, api_instance, repo_name)
 
-    def part2VisCa(self, part, visCa):
+    def part2VisCa(self, part, visCa, superCa):
         # For now assume correct units
         # For now ignore name changes
         # For now geometry files are not exported
-        visCa["shapeBean"]["value"] = part[jd.JSON_ELEMENT_SHAPE]
-        visCa["colorBean"]["value"] = part[jd.JSON_ELEMENT_COLOR]
-        visCa["sizeXBean"]["value"] = part[jd.JSON_ELEMENT_LENGTH_X]
-        visCa["sizeYBean"]["value"] = part[jd.JSON_ELEMENT_LENGTH_Y]
-        visCa["sizeZBean"]["value"] = part[jd.JSON_ELEMENT_LENGTH_Z]
-        visCa["radiusBean"]["value"] = part[jd.JSON_ELEMENT_RADIUS]
+        self.updateValueAndOverride("shapeBean", part[jd.JSON_ELEMENT_SHAPE], visCa, superCa)
+        self.updateValueAndOverride("colorBean", part[jd.JSON_ELEMENT_COLOR], visCa, superCa)
+        self.updateValueAndOverride("sizeXBean", part[jd.JSON_ELEMENT_LENGTH_X], visCa, superCa)
+        self.updateValueAndOverride("sizeYBean", part[jd.JSON_ELEMENT_LENGTH_Y], visCa, superCa)
+        self.updateValueAndOverride("sizeZBean",  part[jd.JSON_ELEMENT_LENGTH_Z], visCa, superCa)
+        self.updateValueAndOverride("radiusBean", part[jd.JSON_ELEMENT_RADIUS], visCa, superCa)
 
-    def product2VisCa(self, product, visCa):
-        visCa["positionXBean"]["value"] = product[jd.JSON_ELEMENT_POS_X]
-        visCa["positionYBean"]["value"] = product[jd.JSON_ELEMENT_POS_Y]
-        visCa["positionZBean"]["value"] = product[jd.JSON_ELEMENT_POS_Z]
-        visCa["rotationXBean"]["value"] = product[jd.JSON_ELEMENT_ROT_X]
-        visCa["rotationYBean"]["value"] = product[jd.JSON_ELEMENT_ROT_Y]
-        visCa["rotationZBean"]["value"] = product[jd.JSON_ELEMENT_ROT_Z]
+    def product2VisCa(self, product, visCa, superCa):
+        self.updateValueAndOverride("positionXBean", product[jd.JSON_ELEMENT_POS_X], visCa, superCa)
+        self.updateValueAndOverride("positionYBean", product[jd.JSON_ELEMENT_POS_Y], visCa, superCa)
+        self.updateValueAndOverride("positionZBean", product[jd.JSON_ELEMENT_POS_Z], visCa, superCa)
+        self.updateValueAndOverride("rotationXBean", product[jd.JSON_ELEMENT_ROT_X], visCa, superCa)
+        self.updateValueAndOverride("rotationYBean", product[jd.JSON_ELEMENT_ROT_Y], visCa, superCa)
+        self.updateValueAndOverride("rotationZBean", product[jd.JSON_ELEMENT_ROT_Z], visCa, superCa)
+
+    def updateValueAndOverride(self, beanName, newValue, visCa, superCa):
+        # Set override if necessary
+        Log(beanName)
+        Log(newValue)
+        if(superCa is not None):
+            Log("Not none")
+            Log(superCa["name"])
+            Log(superCa[beanName]["value"])
+        if(superCa is not None and newValue != superCa[beanName]["value"]):
+            visCa[beanName]["override"] = True
+            Log("Do override")
+        # else:
+        #    visCa[beanName]["override"] = False
+
+        # Set new value
+        visCa[beanName]["value"] = newValue
 
     def getVisCaForSei(self, sei, visualisations):
         # Get visualization bean
