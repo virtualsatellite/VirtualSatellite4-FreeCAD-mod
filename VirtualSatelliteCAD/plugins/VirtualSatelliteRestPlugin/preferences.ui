@@ -115,6 +115,87 @@
     </widget>
    </item>
    <item>
+    <widget class="QGroupBox" name="groupBox_3">
+     <property name="title">
+      <string>Host</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_VirSat">
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="Gui::PrefRadioButton" name="radioButton">
+            <property name="text">
+             <string>HTTP</string>
+            </property>
+            <property name="prefEntry" stdset="0">
+             <cstring>Http</cstring>
+            </property>
+            <property name="prefPath" stdset="0">
+             <cstring>Mod/VirtualSatelliteREST</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="Gui::PrefRadioButton" name="radioButton_2">
+            <property name="text">
+             <string>HTTPS</string>
+            </property>
+            <property name="prefEntry" stdset="0">
+             <cstring>Https</cstring>
+            </property>
+            <property name="prefPath" stdset="0">
+             <cstring>Mod/VirtualSatelliteREST</cstring>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_5">
+          <property name="text">
+           <string>Adress</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout" stretch="10,0,0">
+          <item>
+           <widget class="Gui::PrefLineEdit" name="lineEdit_5">
+            <property name="prefEntry" stdset="0">
+             <cstring>Hostadress</cstring>
+            </property>
+            <property name="prefPath" stdset="0">
+             <cstring>Mod/VirtualSatelliteREST</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_6">
+            <property name="text">
+             <string>:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="Gui::PrefLineEdit" name="lineEdit_6">
+            <property name="prefEntry" stdset="0">
+             <cstring>Port</cstring>
+            </property>
+            <property name="prefPath" stdset="0">
+             <cstring>Mod/VirtualSatelliteREST</cstring>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
       <string>Starting SEI at import</string>
@@ -138,7 +219,7 @@
         <item>
          <widget class="Gui::PrefRadioButton" name="alwaysUsePrefFolderRadioButton">
           <property name="text">
-           <string>Always use this starting SEI:</string>
+           <string>Always use this starting SEI (by UUID):</string>
           </property>
           <property name="prefEntry" stdset="0">
            <cstring>UseStaticStartingSEI</cstring>

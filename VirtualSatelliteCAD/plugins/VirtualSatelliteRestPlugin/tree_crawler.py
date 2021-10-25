@@ -60,3 +60,27 @@ class TreeCrawler():
             recurseChildren(root_sei, isRoot=True)
 
         return (root_seis, seis, cas, visualisations)
+
+    def crawlRawSeis(self, api_instance, repo_name):
+        # Result dicts mapping uuids to elements
+        root_seis, seis = {}, {}
+
+        def recurseChildren(sei, isRoot=False):
+            if(isRoot):
+                root_seis[sei['uuid']] = sei
+            seis[sei['uuid']] = sei
+
+            # Recursion
+            for child_refernce in sei['children']:
+                response = api_instance.get_sei(child_refernce['uuid'], repo_name, sync=False, _preload_content=False)
+                child = json.loads(response.data)
+                recurseChildren(child)
+
+        # Get root Seis and sync
+        for root_sei in api_instance.get_root_seis(repo_name):
+            # TODO: no type field if fetched over this endpoint, investigate
+            # Workaround: fetch again
+            response = api_instance.get_sei(root_sei.uuid, repo_name, sync=False, _preload_content=False)
+            recurseChildren(json.loads(response.data), isRoot=True)
+
+        return (root_seis, seis)

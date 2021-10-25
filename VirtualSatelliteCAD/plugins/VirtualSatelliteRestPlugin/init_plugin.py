@@ -46,19 +46,25 @@ class VirSatPlugin(Plugin):
         Msg = FreeCAD.Console.PrintMessage
         Err = FreeCAD.Console.PrintError
 
-        Msg('Starting import via Virtual Satellite REST API')
+        Msg('Starting import via Virtual Satellite REST API\n')
 
-        api_instance, repo_name = self.getPreferences()
+        api_instance, repo_name, setup_successful = self.getPreferences()
+        if not setup_successful:
+            Err('Setup was not successful, aborting export\n')
+            return
+
         # Get a starting SEI from the preferences
         start_sei_uuid = None
         if(self.preferences.GetBool('AskForStartingSEI')):
             # Get all available SEIs
             from plugins.VirtualSatelliteRestPlugin.tree_crawler import TreeCrawler
-            root_seis, seis, _, _ = TreeCrawler().crawlTree(api_instance, repo_name)
+            root_seis, seis = TreeCrawler().crawlRawSeis(api_instance, repo_name)
 
             # Get display names
             class SelectSeiDialog(QDialog):
                 def __init__(self, root_seis, seis):
+                    PS_CONCEPT = 'de.dlr.sc.virsat.model.extension.ps'
+
                     super(SelectSeiDialog, self).__init__()
                     self.selectedSei = None
 
@@ -72,14 +78,20 @@ class VirSatPlugin(Plugin):
 
                     # TODO: check selection? some will result in errors???
                     def fillTreeRecursive(item, sei):
-                        for child_ref in sei.children:
-                            child_sei = seis[child_ref.uuid]
-                            childItem = QTreeWidgetItem(item, [child_sei.name, child_sei.uuid])
-                            fillTreeRecursive(childItem, child_sei)
+                        for child_ref in sei['children']:
+                            child_sei = seis[child_ref['uuid']]
+                            _type = child_sei['type']
+                            # Only applicable for selected elements types:
+                            if(_type == PS_CONCEPT + '.ElementConfiguration' or _type == PS_CONCEPT + '.ElementOccurence'):
+                                    childItem = QTreeWidgetItem(item, [child_sei['name'], child_sei['uuid']])
+                                    fillTreeRecursive(childItem, child_sei)
 
                     for uuid, root_sei in root_seis.items():
-                        item = QTreeWidgetItem(self.tree, [root_sei.name, uuid])
-                        fillTreeRecursive(item, root_sei)
+                        _type = root_sei['type']
+                        # Only applicable for selected trees:
+                        if(_type == PS_CONCEPT + '.ConfigurationTree' or _type == PS_CONCEPT + '.AssemblyTree'):
+                            item = QTreeWidgetItem(self.tree, [root_sei['name'], uuid])
+                            fillTreeRecursive(item, root_sei)
 
                     self.vlayout = QVBoxLayout()
 
@@ -106,7 +118,7 @@ class VirSatPlugin(Plugin):
             start_sei_uuid = self.preferences.GetString('StartingSEI')
 
         if start_sei_uuid is None:
-            Err('No starting SEI defined')
+            Err('No starting SEI defined\n')
             return None
         else:
             return VirSatRestImporter(project_directory, api_instance, repo_name).importToDict(start_sei_uuid)
@@ -115,10 +127,14 @@ class VirSatPlugin(Plugin):
         from plugins.VirtualSatelliteRestPlugin.exporter import VirSatRestExporter
         import FreeCAD
         Msg = FreeCAD.Console.PrintMessage
+        Err = FreeCAD.Console.PrintError
 
-        Msg('Starting export via Virtual Satellite REST API')
+        Msg('Starting export via Virtual Satellite REST API\n')
 
-        api_instance, repo_name = self.getPreferences()
+        api_instance, repo_name, setup_successful = self.getPreferences()
+        if not setup_successful:
+            Err('Setup was not successful, aborting export\n')
+            return
 
         VirSatRestExporter().exportFromDict(data_dict, api_instance, repo_name)
         return
@@ -131,9 +147,29 @@ class VirSatPlugin(Plugin):
         repo_name = self.preferences.GetString('RepositoryName')
         api_version_idx = self.preferences.GetInt('ApiVersion')
 
-        api_instance = ApiSwitch().get_api(api_version_idx, username, password)
+        adress = self.preferences.GetString('Hostadress')
+        port = self.preferences.GetString('Port')
+        if(self.preferences.GetBool('Http')):
+            protocol = "http"
+        else:
+            protocol = "https"
+        host = protocol + "://" + adress + ":" + port
 
-        return (api_instance, repo_name)
+        api_instance = ApiSwitch().get_api(api_version_idx, host, username, password)
+
+        can_connect = self.canConnectToServer((adress, port))
+        setup_successful = api_instance is not None and can_connect
+
+        return (api_instance, repo_name, setup_successful)
+
+    def canConnectToServer(self, host):
+        import socket
+        try:
+            socket.create_connection(host)
+            return True
+        except OSError:
+            pass
+        return False
 
 
 register_plugin(VirSatPlugin("Virtual Satellite REST Plugin", "VirtualSatelliteRestPlugin", True))

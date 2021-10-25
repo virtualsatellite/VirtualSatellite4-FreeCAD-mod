@@ -24,24 +24,29 @@
 # SPDX-License-Identifier: LGPL-3.0-or-later
 #
 import plugins.VirtualSatelliteRestPlugin.generated_api.v0_0_1.swagger_client as v0_0_1_client
+import FreeCAD
+Msg = FreeCAD.Console.PrintMessage
 
 API_VERSIONS = ["0.0.1"]
 
 
 class ApiSwitch():
 
-    def get_api(self, version_idx, username, password):
+    def get_api(self, version_idx, host, username, password):
         # Should be the same order as in the preferences
         version = API_VERSIONS[version_idx]
 
         if(version == "0.0.1"):
             # Configure HTTP basic authorization: basic
             configuration = v0_0_1_client.Configuration()
-            print(configuration.host)
+            api_host = host + "/rest/model/v" + version
+            configuration.host = api_host
             configuration.username = username
             configuration.password = password
 
-            # create an instance of the API class
+            Msg('Creating API of version:"{}" for "{}"\n'.format(version, api_host))
+            # Create an instance of the API class
             return v0_0_1_client.DefaultApi(v0_0_1_client.ApiClient(configuration))
         else:
+            Msg('API version:"{}" not supported\n'.format(version, host))
             return None
