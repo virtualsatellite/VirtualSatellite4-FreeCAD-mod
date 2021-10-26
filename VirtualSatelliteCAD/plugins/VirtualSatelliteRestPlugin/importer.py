@@ -91,24 +91,30 @@ class VirSatRestImporter():
                 # None shapes don't have a part
                 if(foundVisCa["shapeBean"]["value"] != jd.JSON_ELEMENT_SHAPE_NONE):
                     # Resolve inheritance -> find the correct part
-                    partVis, partSei = self.resolveInheritance(foundVisCa, sei, visualisations, seis)
-                    Log(partVis)
+                    partVis, partSei = self.resolveVisInheritance(foundVisCa, sei, visualisations, seis)
                     part = self.visCa2Part(partVis, partSei)
                     parts.append(part)
                     product_dict[jd.JSON_ELEMENT_PART_NAME] = part[jd.JSON_ELEMENT_NAME]
                     product_dict[jd.JSON_ELEMENT_PART_UUID] = part[jd.JSON_ELEMENT_UUID]
 
             if(sei.parent is not None):
-                # The parent should already have been processed
-                parentProduct = seis2products[sei.parent]
-                parentProduct[jd.JSON_ELEMNT_CHILDREN].append(product_dict)
+                if(sei.parent in seis2products):
+                    # The parent should already have been processed
+                    parentProduct = seis2products[sei.parent]
+                    parentProduct[jd.JSON_ELEMNT_CHILDREN].append(product_dict)
+                else:
+                    # If a non root sei was selected as starting sei, a parent may not be known (not in the subtree)
+                    # Or there is no product because it has no visualization, so try to resolve the parents
+                    resolvedParentProduct = self.searchParentWithProduct(sei, seis, seis2products)
+                    if(resolvedParentProduct is not None):
+                        resolvedParentProduct[jd.JSON_ELEMNT_CHILDREN].append(product_dict)
 
         # Recursion
         for child_refernce in sei.children:
             self.importRecursive(seis[child_refernce.uuid], root_seis, seis, visualisations, seis2products, parts)
 
         # Return for the initial call
-        if parts:
+        if parts and sei.uuid in seis2products:
             return seis2products[sei.uuid]
         else:
             return None
@@ -149,8 +155,7 @@ class VirSatRestImporter():
 
         return part_dict
 
-    # TODO: cpmplex test
-    def resolveInheritance(self, visCa, containingSei, visualisations, seis):
+    def resolveVisInheritance(self, visCa, containingSei, visualisations, seis):
         partVis, partSei = visCa, containingSei
 
         # Starting from the lowest sei (current) check if found vis has any overrides
@@ -173,6 +178,19 @@ class VirSatRestImporter():
                 break
 
         return (partVis, partSei)
+
+    def searchParentWithProduct(self, sei, seis, seis2products):
+        nextSei = sei
+
+        while(nextSei.parent is not None):
+            parent_uuid = nextSei.parent
+
+            if(parent_uuid in seis2products):
+                return seis2products[parent_uuid]
+
+            nextSei = seis[parent_uuid]
+
+        return
 
     def overridesAnyPartValue(self, visCa):
         (
