@@ -81,8 +81,8 @@ class VirSatPlugin(Plugin):
                             _type = child_sei['type']
                             # Only applicable for selected elements types:
                             if(_type == PS_CONCEPT + '.ElementConfiguration' or _type == PS_CONCEPT + '.ElementOccurence'):
-                                    childItem = QTreeWidgetItem(item, [child_sei['name'], child_sei['uuid']])
-                                    fillTreeRecursive(childItem, child_sei)
+                                childItem = QTreeWidgetItem(item, [child_sei['name'], child_sei['uuid']])
+                                fillTreeRecursive(childItem, child_sei)
 
                     for uuid, root_sei in root_seis.items():
                         _type = root_sei['type']

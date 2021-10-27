@@ -81,7 +81,7 @@ class VirSatRestExporter():
 
         sei = seis[uuid]
         if sei is None:
-            Err('No sei found for product:\n'.format(product_id))
+            Err('No sei found for product: {}\n'.format(product_id))
             return None
         raw_sei = json.loads(api_instance.get_sei(uuid, repo_name, sync=False, _preload_content=False).data)
 

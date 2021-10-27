@@ -48,5 +48,5 @@ class ApiSwitch():
             # Create an instance of the API class
             return v0_0_1_client.DefaultApi(v0_0_1_client.ApiClient(configuration))
         else:
-            Msg('API version:"{}" not supported\n'.format(version, host))
+            Msg('API version:"{}" not supported\n'.format(version))
             return None
