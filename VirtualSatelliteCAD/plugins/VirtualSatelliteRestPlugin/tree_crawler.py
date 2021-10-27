@@ -78,8 +78,8 @@ class TreeCrawler():
 
         # Get root Seis and sync
         for root_sei in api_instance.get_root_seis(repo_name):
-            # TODO: no type field if fetched over this endpoint, investigate
-            # Workaround: fetch again
+            # Currently no type field if fetched over the root sei endpoint
+            # Workaround: fetch the concrete sei again
             response = api_instance.get_sei(root_sei.uuid, repo_name, sync=False, _preload_content=False)
             recurseChildren(json.loads(response.data), isRoot=True)
 

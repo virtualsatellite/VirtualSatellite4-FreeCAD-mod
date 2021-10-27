@@ -28,9 +28,10 @@ from plugins.VirtualSatelliteRestPlugin.tree_crawler import TreeCrawler
 import traceback
 import json
 import FreeCAD
+import plugins.VirtualSatelliteRestPlugin.virsat_constants as vc
 Err = FreeCAD.Console.PrintError
-# TODO: log messages, extract constants
 Log = FreeCAD.Console.PrintLog
+Wrn = FreeCAD.Console.PrintWarning
 
 
 class VirSatRestExporter():
@@ -44,9 +45,12 @@ class VirSatRestExporter():
 
             for part in parts:
                 uuid = part[jd.JSON_ELEMENT_UUID]
+                name = part[jd.JSON_ELEMENT_NAME]
+                part_id = name + '(' + uuid + ')'
+
                 sei = seis[uuid]
                 if sei is None:
-                    Err('No sei found for part:' + part[jd.JSON_ELEMENT_NAME] + '(' + part[jd.JSON_ELEMENT_UUID] + ')')
+                    Err('No sei found for part:{}\n'.format(part_id))
                     return None
 
                 foundVisCa = self.getVisCaForSei(sei, visualisations)
@@ -60,8 +64,8 @@ class VirSatRestExporter():
                     # Put vis bean again
                     api_instance.put_ca(foundVisCa, repo_name, sync=False, _preload_content=False)
                 else:
-                    # TODO: create?
-                    pass
+                    # In the future we could create a new one here
+                    Wrn('{} not updated\n'.format(part_id))
 
             self.exportProductsRecursive(root_product, seis, visualisations, api_instance, repo_name)
             api_instance.force_synchronize(repo_name)
@@ -71,9 +75,13 @@ class VirSatRestExporter():
 
     def exportProductsRecursive(self, product, seis, visualisations, api_instance, repo_name):
         uuid = product[jd.JSON_ELEMENT_UUID]
+        name = product[jd.JSON_ELEMENT_NAME]
+        product_id = name + '(' + uuid + ')'
+        Log('Exporting product {}\n'.format(product_id))
+
         sei = seis[uuid]
         if sei is None:
-            Err('No sei found for product:' + product[jd.JSON_ELEMENT_NAME] + '(' + product[jd.JSON_ELEMENT_UUID] + ')')
+            Err('No sei found for product:\n'.format(product_id))
             return None
         raw_sei = json.loads(api_instance.get_sei(uuid, repo_name, sync=False, _preload_content=False).data)
 
@@ -85,14 +93,14 @@ class VirSatRestExporter():
             if sei.super_seis:
                 superVisCa = self.getVisCaForSei(seis[sei.super_seis[0].uuid], visualisations)
             self.product2VisCa(product, foundVisCa, superVisCa)
-            raw_sei["name"] = product[jd.JSON_ELEMENT_NAME]
+            raw_sei[vc.NAME] = product[jd.JSON_ELEMENT_NAME]
 
             # Put vis bean and sei again
             api_instance.put_ca(foundVisCa, repo_name, sync=False, _preload_content=False)
             api_instance.put_sei(raw_sei, repo_name, sync=False, _preload_content=False)
         else:
-            # TODO: create?
-            pass
+            # In the future we could create a new one here
+            Wrn('No visualization for {} updated\n'.format(product_id))
 
         # Recursion
         for child_product in product[jd.JSON_ELEMNT_CHILDREN]:
@@ -102,37 +110,31 @@ class VirSatRestExporter():
         # For now assume correct units
         # For now ignore name changes
         # For now geometry files are not exported
-        self.updateValueAndOverride("shapeBean", part[jd.JSON_ELEMENT_SHAPE], visCa, superCa)
-        self.updateValueAndOverride("colorBean", part[jd.JSON_ELEMENT_COLOR], visCa, superCa)
-        self.updateValueAndOverride("sizeXBean", part[jd.JSON_ELEMENT_LENGTH_X], visCa, superCa)
-        self.updateValueAndOverride("sizeYBean", part[jd.JSON_ELEMENT_LENGTH_Y], visCa, superCa)
-        self.updateValueAndOverride("sizeZBean",  part[jd.JSON_ELEMENT_LENGTH_Z], visCa, superCa)
-        self.updateValueAndOverride("radiusBean", part[jd.JSON_ELEMENT_RADIUS], visCa, superCa)
+        self.updateValueAndOverride(vc.SHAPE, part[jd.JSON_ELEMENT_SHAPE], visCa, superCa)
+        self.updateValueAndOverride(vc.COLOR, part[jd.JSON_ELEMENT_COLOR], visCa, superCa)
+        self.updateValueAndOverride(vc.SIZE_X, part[jd.JSON_ELEMENT_LENGTH_X], visCa, superCa)
+        self.updateValueAndOverride(vc.SIZE_Y, part[jd.JSON_ELEMENT_LENGTH_Y], visCa, superCa)
+        self.updateValueAndOverride(vc.SIZE_Z,  part[jd.JSON_ELEMENT_LENGTH_Z], visCa, superCa)
+        self.updateValueAndOverride(vc.RADIUS, part[jd.JSON_ELEMENT_RADIUS], visCa, superCa)
 
     def product2VisCa(self, product, visCa, superCa):
-        self.updateValueAndOverride("positionXBean", product[jd.JSON_ELEMENT_POS_X], visCa, superCa)
-        self.updateValueAndOverride("positionYBean", product[jd.JSON_ELEMENT_POS_Y], visCa, superCa)
-        self.updateValueAndOverride("positionZBean", product[jd.JSON_ELEMENT_POS_Z], visCa, superCa)
-        self.updateValueAndOverride("rotationXBean", product[jd.JSON_ELEMENT_ROT_X], visCa, superCa)
-        self.updateValueAndOverride("rotationYBean", product[jd.JSON_ELEMENT_ROT_Y], visCa, superCa)
-        self.updateValueAndOverride("rotationZBean", product[jd.JSON_ELEMENT_ROT_Z], visCa, superCa)
+        self.updateValueAndOverride(vc.POSITION_X, product[jd.JSON_ELEMENT_POS_X], visCa, superCa)
+        self.updateValueAndOverride(vc.POSITION_Y, product[jd.JSON_ELEMENT_POS_Y], visCa, superCa)
+        self.updateValueAndOverride(vc.POSITION_Z, product[jd.JSON_ELEMENT_POS_Z], visCa, superCa)
+        self.updateValueAndOverride(vc.ROTATION_X, product[jd.JSON_ELEMENT_ROT_X], visCa, superCa)
+        self.updateValueAndOverride(vc.ROTATION_Y, product[jd.JSON_ELEMENT_ROT_Y], visCa, superCa)
+        self.updateValueAndOverride(vc.ROTATION_Z, product[jd.JSON_ELEMENT_ROT_Z], visCa, superCa)
 
     def updateValueAndOverride(self, beanName, newValue, visCa, superCa):
         # Set override if necessary
-        Log(beanName)
-        Log(newValue)
         if(superCa is not None):
-            Log("Not none")
-            Log(superCa["name"])
-            Log(superCa[beanName]["value"])
-        if(superCa is not None and newValue != superCa[beanName]["value"]):
-            visCa[beanName]["override"] = True
-            Log("Do override")
-        # else:
-        #    visCa[beanName]["override"] = False
+            if(newValue != superCa[beanName][vc.VALUE]):
+                visCa[beanName][vc.OVERRIDE] = True
+            else:
+                visCa[beanName][vc.OVERRIDE] = False
 
         # Set new value
-        visCa[beanName]["value"] = newValue
+        visCa[beanName][vc.VALUE] = newValue
 
     def getVisCaForSei(self, sei, visualisations):
         # Get visualization bean

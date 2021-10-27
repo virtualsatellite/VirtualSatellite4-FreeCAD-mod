@@ -28,9 +28,10 @@ import json_io.json_definitions as jd
 from plugins.VirtualSatelliteRestPlugin.tree_crawler import TreeCrawler
 import traceback
 import FreeCAD
+import plugins.VirtualSatelliteRestPlugin.virsat_constants as vc
 Err = FreeCAD.Console.PrintError
-# TODO: log messages
 Log = FreeCAD.Console.PrintLog
+Wrn = FreeCAD.Console.PrintWarning
 
 
 class VirSatRestImporter():
@@ -62,6 +63,8 @@ class VirSatRestImporter():
         return
 
     def importRecursive(self, sei, root_seis, seis, visualisations, seis2products, parts):
+        sei_id = sei.name + '(' + sei.uuid + ')'
+        Log('Importing sei {}\n'.format(sei_id))
 
         # Search visualisation
         foundVisCa = self.getVisCaForSei(sei, visualisations)
@@ -81,15 +84,15 @@ class VirSatRestImporter():
             if(foundVisCa is not None):
                 # Add pos and rot
                 # For now assume default units
-                product_dict[jd.JSON_ELEMENT_POS_X] = foundVisCa["positionXBean"]["value"]
-                product_dict[jd.JSON_ELEMENT_POS_Y] = foundVisCa["positionYBean"]["value"]
-                product_dict[jd.JSON_ELEMENT_POS_Z] = foundVisCa["positionZBean"]["value"]
-                product_dict[jd.JSON_ELEMENT_ROT_X] = foundVisCa["rotationXBean"]["value"]
-                product_dict[jd.JSON_ELEMENT_ROT_Y] = foundVisCa["rotationYBean"]["value"]
-                product_dict[jd.JSON_ELEMENT_ROT_Z] = foundVisCa["rotationZBean"]["value"]
+                product_dict[jd.JSON_ELEMENT_POS_X] = foundVisCa[vc.POSITION_X][vc.VALUE]
+                product_dict[jd.JSON_ELEMENT_POS_Y] = foundVisCa[vc.POSITION_Y][vc.VALUE]
+                product_dict[jd.JSON_ELEMENT_POS_Z] = foundVisCa[vc.POSITION_Z][vc.VALUE]
+                product_dict[jd.JSON_ELEMENT_ROT_X] = foundVisCa[vc.ROTATION_X][vc.VALUE]
+                product_dict[jd.JSON_ELEMENT_ROT_Y] = foundVisCa[vc.ROTATION_Y][vc.VALUE]
+                product_dict[jd.JSON_ELEMENT_ROT_Z] = foundVisCa[vc.ROTATION_Z][vc.VALUE]
 
                 # None shapes don't have a part
-                if(foundVisCa["shapeBean"]["value"] != jd.JSON_ELEMENT_SHAPE_NONE):
+                if(foundVisCa[vc.SHAPE][vc.VALUE] != jd.JSON_ELEMENT_SHAPE_NONE):
                     # Resolve inheritance -> find the correct part
                     partVis, partSei = self.resolveVisInheritance(foundVisCa, sei, visualisations, seis)
                     part = self.visCa2Part(partVis, partSei)
@@ -108,6 +111,8 @@ class VirSatRestImporter():
                     resolvedParentProduct = self.searchParentWithProduct(sei, seis, seis2products)
                     if(resolvedParentProduct is not None):
                         resolvedParentProduct[jd.JSON_ELEMNT_CHILDREN].append(product_dict)
+                    else:
+                        Wrn('No parent product found for {}\n'.format(sei_id))
 
         # Recursion
         for child_refernce in sei.children:
@@ -130,23 +135,23 @@ class VirSatRestImporter():
     def visCa2Part(self, visCa, containingSei):
         import os
         # For now assume correct units
-        shape = visCa["shapeBean"]["value"]
+        shape = visCa[vc.SHAPE][vc.VALUE]
 
         part_dict = {
             jd.JSON_ELEMENT_NAME: containingSei.name,
             jd.JSON_ELEMENT_UUID: containingSei.uuid,
             jd.JSON_ELEMENT_SHAPE: shape,
-            jd.JSON_ELEMENT_COLOR: visCa["colorBean"]["value"],
-            jd.JSON_ELEMENT_LENGTH_X: visCa["sizeXBean"]["value"],
-            jd.JSON_ELEMENT_LENGTH_Y: visCa["sizeYBean"]["value"],
-            jd.JSON_ELEMENT_LENGTH_Z: visCa["sizeZBean"]["value"],
-            jd.JSON_ELEMENT_RADIUS: visCa["radiusBean"]["value"],
+            jd.JSON_ELEMENT_COLOR: visCa[vc.COLOR][vc.VALUE],
+            jd.JSON_ELEMENT_LENGTH_X: visCa[vc.SIZE_X][vc.VALUE],
+            jd.JSON_ELEMENT_LENGTH_Y: visCa[vc.SIZE_Y][vc.VALUE],
+            jd.JSON_ELEMENT_LENGTH_Z: visCa[vc.SIZE_Z][vc.VALUE],
+            jd.JSON_ELEMENT_RADIUS: visCa[vc.RADIUS][vc.VALUE],
         }
 
-        geometryFilePath = visCa["geometryFileBean"]["value"]
+        geometryFilePath = visCa[vc.GEOMETRY][vc.VALUE]
         if(shape == jd.JSON_ELEMENT_SHAPE_GEOMETRY):
             # Download the STL file from the server
-            response = self.api_instance.get_resource(visCa["geometryFileBean"]["uuid"], self.repo_name, sync=False, _preload_content=False)
+            response = self.api_instance.get_resource(visCa[vc.GEOMETRY][vc.UUID], self.repo_name, sync=False, _preload_content=False)
             local_path = os.path.join(self.project_directory, containingSei.uuid.replace('-', '_') + '.' + geometryFilePath.split('/')[-1])
             f = open(local_path, 'wb')
             f.write(response.data)
@@ -194,11 +199,11 @@ class VirSatRestImporter():
 
     def overridesAnyPartValue(self, visCa):
         (
-            visCa["shapeBean"]["override"] or
-            visCa["colorBean"]["override"] or
-            visCa["sizeXBean"]["override"] or
-            visCa["sizeYBean"]["override"] or
-            visCa["sizeZBean"]["override"] or
-            visCa["radiusBean"]["override"] or
-            visCa["geometryFileBean"]["override"]
+            visCa[vc.SHAPE][vc.OVERRIDE] or
+            visCa[vc.COLOR][vc.OVERRIDE] or
+            visCa[vc.SIZE_X][vc.OVERRIDE] or
+            visCa[vc.SIZE_Y][vc.OVERRIDE] or
+            visCa[vc.SIZE_Z][vc.OVERRIDE] or
+            visCa[vc.RADIUS][vc.OVERRIDE] or
+            visCa[vc.GEOMETRY][vc.OVERRIDE]
         )

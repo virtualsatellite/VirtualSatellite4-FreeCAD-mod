@@ -32,7 +32,6 @@ class VirSatPlugin(Plugin):
     '''
     Plugin that connects to a Virtual Satellite Server
     '''
-    # TODO: test
     def __init__(self, name, directory, hasPreferencesUi):
         super().__init__(name, directory, hasPreferencesUi)
 
@@ -50,7 +49,7 @@ class VirSatPlugin(Plugin):
 
         api_instance, repo_name, setup_successful = self.getPreferences()
         if not setup_successful:
-            Err('Setup was not successful, aborting export\n')
+            Err('Setup was not successful, aborting import\n')
             return
 
         # Get a starting SEI from the preferences
@@ -76,7 +75,6 @@ class VirSatPlugin(Plugin):
 
                     self.tree.setHeaderLabels(["Name", "Uuid"])
 
-                    # TODO: check selection? some will result in errors???
                     def fillTreeRecursive(item, sei):
                         for child_ref in sei['children']:
                             child_sei = seis[child_ref['uuid']]
@@ -159,6 +157,11 @@ class VirSatPlugin(Plugin):
 
         can_connect = self.canConnectToServer((adress, port))
         setup_successful = api_instance is not None and can_connect
+
+        import FreeCAD
+        Err = FreeCAD.Console.PrintError
+        if not can_connect:
+            Err("Could not establish a server connection")
 
         return (api_instance, repo_name, setup_successful)
 
