@@ -27,14 +27,17 @@ import plugins.VirtualSatelliteRestPlugin.generated_api.v0_0_1.swagger_client as
 import FreeCAD
 Msg = FreeCAD.Console.PrintMessage
 
-API_VERSIONS = ["0.0.1"]
+API_VERSIONS = {
+    0: "0.0.1"
+}
 
 
 class ApiSwitch():
 
     def get_api(self, version_idx, host, username, password):
-        # Should be the same order as in the preferences
-        version = API_VERSIONS[version_idx]
+        # Identifier is the index from the preferences
+        # Because combo boxes only save their selected index
+        version = API_VERSIONS.get(version_idx, "Unknown Index")
 
         if(version == "0.0.1"):
             # Configure HTTP basic authorization: basic
@@ -47,6 +50,6 @@ class ApiSwitch():
             Msg('Creating API of version:"{}" for "{}"\n'.format(version, api_host))
             # Create an instance of the API class
             return v0_0_1_client.DefaultApi(v0_0_1_client.ApiClient(configuration))
-        else:
-            Msg('API version:"{}" not supported\n'.format(version))
-            return None
+
+        Msg('API version:"{}" not supported\n'.format(version))
+        return None

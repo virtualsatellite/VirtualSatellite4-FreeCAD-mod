@@ -57,7 +57,7 @@ class VirSatPlugin(Plugin):
         if(self.preferences.GetBool('AskForStartingSEI')):
             # Get all available SEIs
             from plugins.VirtualSatelliteRestPlugin.tree_crawler import TreeCrawler
-            root_seis, seis = TreeCrawler().crawlRawSeis(api_instance, repo_name)
+            root_seis, seis = TreeCrawler().crawl_raw_seis(api_instance, repo_name)
 
             # Get display names
             class SelectSeiDialog(QDialog):

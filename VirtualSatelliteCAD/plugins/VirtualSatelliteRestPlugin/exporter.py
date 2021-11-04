@@ -41,7 +41,7 @@ class VirSatRestExporter():
 
         try:
             # Read tree
-            _, seis, _, visualisations = TreeCrawler().crawlTree(api_instance, repo_name)
+            _, seis, _, visualisations = TreeCrawler().crawl_tree(api_instance, repo_name)
 
             for part in parts:
                 uuid = part[jd.JSON_ELEMENT_UUID]

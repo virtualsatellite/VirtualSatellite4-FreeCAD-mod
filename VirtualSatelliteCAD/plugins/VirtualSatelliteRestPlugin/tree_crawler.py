@@ -31,7 +31,7 @@ class TreeCrawler():
     This class crawls the Model tree via the API and returns an in memory representation to avoid duplicate calls
     '''
 
-    def crawlTree(self, api_instance, repo_name):
+    def crawl_tree(self, api_instance, repo_name):
         # Result dicts mapping uuids to elements
         root_seis, seis, cas, visualisations = {}, {}, {}, {}
 
@@ -61,7 +61,7 @@ class TreeCrawler():
 
         return (root_seis, seis, cas, visualisations)
 
-    def crawlRawSeis(self, api_instance, repo_name):
+    def crawl_raw_seis(self, api_instance, repo_name):
         # Result dicts mapping uuids to elements
         root_seis, seis = {}, {}
 

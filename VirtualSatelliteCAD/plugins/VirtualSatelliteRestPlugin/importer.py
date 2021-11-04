@@ -41,7 +41,7 @@ class VirSatRestImporter():
     def importToDict(self, start_sei_uuid):
         try:
             # Read tree
-            root_seis, seis, _, visualisations = TreeCrawler().crawlTree(self.api_instance, self.repo_name)
+            root_seis, seis, _, visualisations = TreeCrawler().crawl_tree(self.api_instance, self.repo_name)
             seis2products = {}
             parts = []
 
