@@ -44,3 +44,7 @@ VALUE = "value"
 UUID = "uuid"
 OVERRIDE = "override"
 NAME = "name"
+TYPE = "type"
+CHILDREN = "children"
+
+TYPE_VIS = 'de.dlr.sc.virsat.model.extension.visualisation.Visualisation'

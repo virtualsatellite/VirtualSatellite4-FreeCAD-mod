@@ -24,6 +24,8 @@
 # SPDX-License-Identifier: LGPL-3.0-or-later
 #
 import json
+import plugins.VirtualSatelliteRestPlugin.virsat_constants as vc
+from plugins.VirtualSatelliteRestPlugin.virsat_constants import TYPE_VIS
 
 
 class TreeCrawler():
@@ -44,10 +46,10 @@ class TreeCrawler():
                 # Don't load the content in a model object because the swagger model doesn't know the available cas
                 response = api_instance.get_ca(ca_reference.uuid, repo_name, sync=False, _preload_content=False)
                 data = json.loads(response.data)
-                ca_uuid = data['uuid']
+                ca_uuid = data[vc.UUID]
 
                 cas[ca_uuid] = data
-                if(data['type'] == 'de.dlr.sc.virsat.model.extension.visualisation.Visualisation'):
+                if(data[vc.TYPE] == TYPE_VIS):
                     visualisations[ca_uuid] = data
 
             # Recursion
@@ -67,12 +69,12 @@ class TreeCrawler():
 
         def recurseChildren(sei, isRoot=False):
             if(isRoot):
-                root_seis[sei['uuid']] = sei
-            seis[sei['uuid']] = sei
+                root_seis[sei[vc.UUID]] = sei
+            seis[sei[vc.UUID]] = sei
 
             # Recursion
-            for child_refernce in sei['children']:
-                response = api_instance.get_sei(child_refernce['uuid'], repo_name, sync=False, _preload_content=False)
+            for child_refernce in sei[vc.CHILDREN]:
+                response = api_instance.get_sei(child_refernce[vc.UUID], repo_name, sync=False, _preload_content=False)
                 child = json.loads(response.data)
                 recurseChildren(child)
 
