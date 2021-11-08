@@ -126,13 +126,19 @@
 		<delete dir="${a2plus.linux.unzipped}"/>
 	</target>
 
+	<target name="LinuxInstallDependencies" depends="WindowsUnzipA2plus">
+		<exec executable="${freeCad.linux.path}/bin/python.exe">
+			<arg line="-m pip install urllib3"/>
+		</exec>
+	</target>
+
 	<target name="WindowsCleanup" depends="WindowsUnzipA2plus">
 		<delete file="${freeCad.windows.7z.file}"/>
 		<delete file="${a2plus.windows.zip}"/>
 	</target>
-	<target name="LinuxCleanup" depends="LinuxUnzipA2plus">
-			<delete file="${freeCad.linux.appimage}"/>
-			<delete file="${a2plus.linux.zip}"/>
-		</target>
+	<target name="LinuxCleanup" depends="LinuxInstallDependencies">
+		<delete file="${freeCad.linux.appimage}"/>
+		<delete file="${a2plus.linux.zip}"/>
+	</target>
 
 </project>
