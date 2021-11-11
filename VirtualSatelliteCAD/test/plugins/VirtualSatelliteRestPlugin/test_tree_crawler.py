@@ -26,7 +26,8 @@
 import unittest
 from plugins.VirtualSatelliteRestPlugin.tree_crawler import TreeCrawler
 from test.plugins.VirtualSatelliteRestPlugin.api_mocks import get_mock_api,\
-    ROOT_SEI_EMPTY, COMPLEX_ROOT_SEIS,\
+    ROOT_SEI_EMPTY, SEI_EMPTY_RESPONSE,\
+    ROOT_SEI_CHILD_RESPONSE, ROOT_SEI_EMPTY_RESPONSE, COMPLEX_ROOT_SEIS,\
     SEI_VIS, ROOT_SEI_COMPLEX, CA_VIS_RESPONSE, CA_VIS, ROOT_SEI_CAS,\
     CA_NO_VIS, CA_NO_VIS_RESPONSE, ROOT_SEI_CA, ROOT_SEI_CHILD, SEI_EMPTY
 
@@ -74,3 +75,15 @@ class TestTreeCrawler(unittest.TestCase):
         self.assertListEqual([*seis.keys()], [ROOT_SEI_COMPLEX.uuid, SEI_EMPTY.uuid, SEI_VIS.uuid, ROOT_SEI_EMPTY.uuid])
         self.assertListEqual([*cas.keys()], [CA_VIS.uuid, CA_NO_VIS.uuid])
         self.assertListEqual([*visualisations.keys()], [CA_VIS.uuid])
+
+    def test_crawl_raw_seis(self):
+        crawler = TreeCrawler()
+        mock_api = get_mock_api()
+
+        # Test crawl tree with  multiple root seis and child sei
+        mock_api.get_root_seis.return_value = [ROOT_SEI_EMPTY, ROOT_SEI_CHILD]
+        # First will fetch the root seis separately again, then children recursive
+        mock_api.get_sei.side_effect = [ROOT_SEI_EMPTY_RESPONSE, ROOT_SEI_CHILD_RESPONSE, SEI_EMPTY_RESPONSE]
+        root_seis, seis = crawler.crawl_raw_seis(mock_api, '')
+        self.assertListEqual([*root_seis.keys()], [ROOT_SEI_EMPTY.uuid, ROOT_SEI_CHILD.uuid])
+        self.assertListEqual([*seis.keys()], [ROOT_SEI_EMPTY.uuid, ROOT_SEI_CHILD.uuid, SEI_EMPTY.uuid])

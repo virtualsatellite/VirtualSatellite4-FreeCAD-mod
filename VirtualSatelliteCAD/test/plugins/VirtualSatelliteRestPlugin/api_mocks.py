@@ -65,10 +65,24 @@ CA_VIS_RESPONSE = create_response({
     })
 
 SEI_EMPTY = create_sei('seiEmpty')
+SEI_EMPTY_RESPONSE = create_response({
+        vc.UUID: 'seiEmpty',
+        vc.CHILDREN: []
+    })
 SEI_VIS = create_sei('seiVis', [], [CA_VIS])
 
 ROOT_SEI_EMPTY = create_sei('rootSeiEmpty')
+ROOT_SEI_EMPTY_RESPONSE = create_response({
+        vc.UUID: 'rootSeiEmpty',
+        vc.CHILDREN: []
+    })
 ROOT_SEI_CHILD = create_sei('rootSeiChild', [SEI_EMPTY])
+ROOT_SEI_CHILD_RESPONSE = create_response({
+        vc.UUID: 'rootSeiChild',
+        vc.CHILDREN: [{
+            vc.UUID: 'seiEmpty'
+        }]
+    })
 ROOT_SEI_CA = create_sei('rootSeiCa', [], [CA_NO_VIS])
 ROOT_SEI_CAS = create_sei('rootSeiCas', [], [CA_VIS, CA_NO_VIS])
 ROOT_SEI_COMPLEX = create_sei('rootSeiComplex', [SEI_EMPTY, SEI_VIS], [CA_NO_VIS])
