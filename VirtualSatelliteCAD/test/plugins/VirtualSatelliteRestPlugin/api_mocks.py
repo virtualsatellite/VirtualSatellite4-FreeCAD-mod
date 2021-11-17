@@ -30,10 +30,12 @@ from plugins.VirtualSatelliteRestPlugin.generated_api.v0_0_1.swagger_client.mode
 import plugins.VirtualSatelliteRestPlugin.virsat_constants as vc
 from json import dumps
 from types import SimpleNamespace
+import json_io.json_definitions as jd
 
 
 def get_mock_api():
-    mock_api = Mock(spec=['get_root_seis', 'get_sei', 'get_ca', 'get_resource'])
+    mock_api = Mock(spec=['get_root_seis', 'get_sei', 'get_ca', 'get_resource',
+                          'put_sei', 'put_ca', 'force_synchronize'])
     return mock_api
 
 
@@ -49,21 +51,32 @@ def create_ca(uuid):
     return ABeanCategoryAssignment(uuid, name=uuid)
 
 
+def uuid_as_name(data_dict):
+    data_dict[vc.NAME] = data_dict[vc.UUID]
+    return data_dict
+
+
 def create_response(data_dict):
     # Mock the response object
     return SimpleNamespace(data=dumps(data_dict))
 
 
-# TODO: description
+# Now following are test resources, either:
+# - In code objects
+# - Their raw JSON data (_DICT)
+# - Their raw data wrapped in response objects as the API would return them (_RESPONSE)
+
+# Geometry data
 GEOMETRY_BEAN_RESPONSE = SimpleNamespace(data=bytes('raw_data', 'utf-8'))
 
+# Category assignments
 CA_NO_VIS = create_ca('caNoVis')
 CA_NO_VIS_RESPONSE = create_response({
         vc.UUID: 'caNoVis',
         vc.TYPE: 'noVisType'
     })
 CA_VIS = create_ca('caVis')
-CA_VIS_RESPONSE = create_response({
+CA_VIS_DICT = uuid_as_name({
         vc.UUID: 'caVis',
         vc.TYPE: vc.TYPE_VIS,
         vc.SHAPE:  {
@@ -91,7 +104,7 @@ CA_VIS_RESPONSE = create_response({
             vc.OVERRIDE: False
         },
         vc.POSITION_X: {
-            vc.VALUE:  1.0
+            vc.VALUE: 1.0
         },
         vc.POSITION_Y: {
             vc.VALUE: 2.0
@@ -114,14 +127,22 @@ CA_VIS_RESPONSE = create_response({
             vc.OVERRIDE: False
         }
     })
+CA_VIS_RESPONSE = create_response(CA_VIS_DICT)
 
+# Seis
 SEI_EMPTY = create_sei('seiEmpty')
 SEI_EMPTY_RESPONSE = create_response({
         vc.UUID: 'seiEmpty',
         vc.CHILDREN: []
     })
 SEI_VIS = create_sei('seiVis', [], [CA_VIS], 'rootSeiComplex')
+SEI_VIS_DICT = uuid_as_name({
+        vc.UUID: 'seiVis',
+        vc.CHILDREN: []
+    })
+SEI_VIS_RESPONSE = create_response(SEI_VIS_DICT)
 
+# Root seis
 ROOT_SEI_EMPTY = create_sei('rootSeiEmpty')
 ROOT_SEI_EMPTY_RESPONSE = create_response({
         vc.UUID: 'rootSeiEmpty',
@@ -137,42 +158,49 @@ ROOT_SEI_CHILD_RESPONSE = create_response({
 ROOT_SEI_CA = create_sei('rootSeiCa', [], [CA_NO_VIS])
 ROOT_SEI_CAS = create_sei('rootSeiCas', [], [CA_VIS, CA_NO_VIS])
 ROOT_SEI_COMPLEX = create_sei('rootSeiComplex', [SEI_EMPTY, SEI_VIS], [CA_NO_VIS])
+ROOT_SEI_COMPLEX_RESPONSE = create_response({
+        vc.UUID: 'rootSeiComplex',
+        vc.CHILDREN: [{
+            vc.UUID: 'seiEmpty'
+        }, {
+            vc.UUID: 'seiVis'
+        }]
+    })
 
 COMPLEX_ROOT_SEIS = [ROOT_SEI_COMPLEX, ROOT_SEI_EMPTY]
 
-STL_FILE_PATH = "/tmp/FreeCADtest/VirSatPluginImporter/seiVis.file.stl"
-# TODO: use constants
+# Internal representation of the API data mocked above
 COMPLEX_ROOT_DICT = {
-   "Products": {
-      "name": "rootSeiComplex",
-      "uuid": "rootSeiComplex",
-      "children": [
+   jd.JSON_PRODUCTS: {
+      jd.JSON_ELEMENT_NAME: "rootSeiComplex",
+      jd.JSON_ELEMENT_UUID: "rootSeiComplex",
+      jd.JSON_ELEMNT_CHILDREN: [
          {
-            "name": "seiVis",
-            "uuid": "seiVis",
-            "children": [],
-            "posX":1.0,
-            "posY":2.0,
-            "posZ":3.0,
-            "rotX":0.25,
-            "rotY":0.5,
-            "rotZ":0.75,
-            "partName":"seiVis",
-            "partUuid":"seiVis"
+            jd.JSON_ELEMENT_NAME: "seiVis",
+            jd.JSON_ELEMENT_UUID: "seiVis",
+            jd.JSON_ELEMNT_CHILDREN: [],
+            jd.JSON_ELEMENT_POS_X:1.0,
+            jd.JSON_ELEMENT_POS_Y:2.0,
+            jd.JSON_ELEMENT_POS_Z:3.0,
+            jd.JSON_ELEMENT_ROT_X:0.25,
+            jd.JSON_ELEMENT_ROT_Y:0.5,
+            jd.JSON_ELEMENT_ROT_Z:0.75,
+            jd.JSON_ELEMENT_PART_NAME:"seiVis",
+            jd.JSON_ELEMENT_PART_UUID:"seiVis"
          }
       ]
    },
-   "Parts": [
+   jd.JSON_PARTS: [
       {
-         "name": "seiVis",
-         "uuid": "seiVis",
-         "shape": "GEOMETRY",
-         "color": 255,
-         "lengthX": 0.1,
-         "lengthY": 0.2,
-         "lengthZ": 0.3,
-         "radius": 0,
-         "stlPath": "/tmp/FreeCADtest/VirSatPluginImporter/seiVis.file.stl"
+         jd.JSON_ELEMENT_NAME: "seiVis",
+         jd.JSON_ELEMENT_UUID: "seiVis",
+         jd.JSON_ELEMENT_SHAPE: "GEOMETRY",
+         jd.JSON_ELEMENT_COLOR: 255,
+         jd.JSON_ELEMENT_LENGTH_X: 0.1,
+         jd.JSON_ELEMENT_LENGTH_Y: 0.2,
+         jd.JSON_ELEMENT_LENGTH_Z: 0.3,
+         jd.JSON_ELEMENT_RADIUS: 0,
+         jd.JSON_ELEMENT_STL_PATH: "/tmp/FreeCADtest/VirSatPluginImporter/seiVis.file.stl"
       }
    ]
 }
