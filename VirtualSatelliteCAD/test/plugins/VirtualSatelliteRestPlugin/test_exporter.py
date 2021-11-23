@@ -68,7 +68,7 @@ class TestExorter(TestCase):
         dict_changes[vc.SIZE_X][vc.VALUE] = 0.0
         dict_changes[vc.POSITION_X][vc.VALUE] = 0.0
 
-        calls = [
+        expected_calls = [
             # Crawl the tree
             call.get_root_seis(''),
             call.get_ca('caNoVis', '', _preload_content=False, sync=False),
@@ -89,4 +89,4 @@ class TestExorter(TestCase):
             call.put_sei(SEI_VIS_DICT, '', _preload_content=False, sync=False),
             call.force_synchronize('')
         ]
-        mock_api.assert_has_calls(calls)
+        mock_api.assert_has_calls(expected_calls)
