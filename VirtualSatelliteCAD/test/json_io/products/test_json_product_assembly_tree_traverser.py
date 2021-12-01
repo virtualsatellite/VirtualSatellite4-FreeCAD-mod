@@ -29,6 +29,9 @@ from freecad.active_document import ActiveDocument
 import glob
 import os
 
+BASEPLATEBOTTOM1_URI = PRODUCT_IDENTIFIER + BASEPLATEBOTTOM1_UNIQ_NAME
+BASEPLATEBOTTOM2_URI = PRODUCT_IDENTIFIER + BASEPLATEBOTTOM2_UNIQ_NAME
+
 
 class TestJsonProductAssemblyTreeTraverser(AWorkingDirectoryTest):
 
@@ -82,11 +85,11 @@ class TestJsonProductAssemblyTreeTraverser(AWorkingDirectoryTest):
 
         # this should have similar results to test_create_part_product_assembly_and_subassembly_with_root_part_manual in TestJsonProductAssembly
         active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document(
-            PRODUCT_IDENTIFIER + BASEPLATEBOTTOM2_UNIQ_NAME)
+            BASEPLATEBOTTOM2_URI)
         self.assertEquals(len(active_document.app_active_document.RootObjects), 4, "Found correct amount of root objects 2 objects plus 2 sheets")
 
         active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document(
-            PRODUCT_IDENTIFIER + BASEPLATEBOTTOM1_UNIQ_NAME)
+            BASEPLATEBOTTOM1_URI)
         self.assertEquals(len(active_document.app_active_document.RootObjects), 6, "Found correct amount of root objects 3 objects plus 3 sheets")
 
     def test_traverse_and_parse_json_tree_subassembly_no_part(self):
@@ -106,11 +109,11 @@ class TestJsonProductAssemblyTreeTraverser(AWorkingDirectoryTest):
 
         # in this test case the product assembly "BasePlateBottom2" only has a child and not a part reference
         active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document(
-            PRODUCT_IDENTIFIER + BASEPLATEBOTTOM2_UNIQ_NAME)
+            BASEPLATEBOTTOM2_URI)
         self.assertEquals(len(active_document.app_active_document.RootObjects), 2, "Found correct amount of root objects 1 objects plus 1 sheets")
 
         active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document(
-            PRODUCT_IDENTIFIER + BASEPLATEBOTTOM1_UNIQ_NAME)
+            BASEPLATEBOTTOM1_URI)
         self.assertEquals(len(active_document.app_active_document.RootObjects), 6, "Found correct amount of root objects 3 objects plus 3 sheets")
 
     def test_traverse_and_parse_json_tree_subassembly_same_part(self):
@@ -135,7 +138,7 @@ class TestJsonProductAssemblyTreeTraverser(AWorkingDirectoryTest):
 
         # the root assembly should only have a part and the product assembly "BasePlate"
         active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document(
-            PRODUCT_IDENTIFIER + BASEPLATEBOTTOM1_UNIQ_NAME)
+            BASEPLATEBOTTOM1_URI)
         self.assertEquals(len(active_document.app_active_document.RootObjects), 4, "Found correct amount of root objects 2 objects plus 2 sheets")
 
     def test_traverse_and_parse_json_tree_rootassembly_without_children(self):
