@@ -90,8 +90,8 @@ class JsonProductAssembly(AJsonProduct):
     def parse_to_json(self, isRoot=False):
         if(isRoot):
             json_dict = {
-                JSON_ELEMENT_NAME: self.name.replace("_", "-"),
-                JSON_ELEMENT_UUID: self.uuid.replace("_", "-")
+                JSON_ELEMENT_NAME: self.name,
+                JSON_ELEMENT_UUID: self.uuid
             }
         else:
             json_dict = super().parse_to_json()
