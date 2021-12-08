@@ -55,16 +55,21 @@ class VirtualSatelliteWorkbench(Workbench):  # NOQA @UndefinedVariable
         # work as expected. This is due to some FreeCAD internals
         from commands.command_import import CommandImport
         from commands.command_export import CommandExport
+        from commands.command_about import CommandAbout
         from commands.command_definitions import COMMAND_ID_EXPORT_2_VIRTUAL_SATELLITE
         from commands.command_definitions import COMMAND_ID_IMPORT_2_FREECAD
+        from commands.command_definitions import COMMAND_ID_ABOUT
 
-        self.appendToolbar('VirtualSatelliteMod', [COMMAND_ID_IMPORT_2_FREECAD])
-        self.appendMenu('VirtualSatelliteMod', [COMMAND_ID_IMPORT_2_FREECAD])
-        self.appendToolbar('VirtualSatelliteMod', [COMMAND_ID_EXPORT_2_VIRTUAL_SATELLITE])
-        self.appendMenu('VirtualSatelliteMod', [COMMAND_ID_EXPORT_2_VIRTUAL_SATELLITE])
+        toolbarCommands = [COMMAND_ID_IMPORT_2_FREECAD, COMMAND_ID_EXPORT_2_VIRTUAL_SATELLITE]
+        menuCommands = [COMMAND_ID_IMPORT_2_FREECAD, COMMAND_ID_EXPORT_2_VIRTUAL_SATELLITE, COMMAND_ID_ABOUT]
+
+        displayName = 'VirtualSatelliteMod'
+        self.appendToolbar(displayName, toolbarCommands)
+        self.appendMenu(displayName, menuCommands)
 
         Gui.addCommand(COMMAND_ID_EXPORT_2_VIRTUAL_SATELLITE, CommandExport(self))  # NOQA @UndefinedVariable
         Gui.addCommand(COMMAND_ID_IMPORT_2_FREECAD, CommandImport(self))  # NOQA @UndefinedVariable
+        Gui.addCommand(COMMAND_ID_ABOUT, CommandAbout())  # NOQA @UndefinedVariable
 
     def GetClassName(self):
         # Required method by FreeCAD framework
