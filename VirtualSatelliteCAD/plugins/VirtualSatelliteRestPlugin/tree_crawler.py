@@ -26,6 +26,9 @@
 import json
 import plugins.VirtualSatelliteRestPlugin.virsat_constants as vc
 from plugins.VirtualSatelliteRestPlugin.virsat_constants import TYPE_VIS
+from plugins.VirtualSatelliteRestPlugin.api_kinds import CAS, DEFAULT, SEIS
+import FreeCAD
+Log = FreeCAD.Console.PrintLog
 
 
 class TreeCrawler():
@@ -33,7 +36,8 @@ class TreeCrawler():
     This class crawls the Model tree via the API and returns an in memory representation to avoid duplicate calls
     '''
 
-    def crawl_tree(self, api_instance, repo_name):
+    def crawl_tree(self, api_instances, repo_name):
+        Log('Calling crawl tree in Virtual Satellite tree crawler\n')
         # Result dicts mapping uuids to elements
         root_seis, seis, cas, visualisations = {}, {}, {}, {}
 
@@ -44,7 +48,7 @@ class TreeCrawler():
 
             for ca_reference in sei.category_assignments:
                 # Don't load the content in a model object because the swagger model doesn't know the available cas
-                response = api_instance.get_ca(ca_reference.uuid, repo_name, sync=False, _preload_content=False)
+                response = api_instances[CAS].get_ca(ca_reference.uuid, repo_name, sync=False, _preload_content=False)
                 data = json.loads(response.data)
                 ca_uuid = data[vc.UUID]
 
@@ -54,16 +58,17 @@ class TreeCrawler():
 
             # Recursion
             for child_refernce in sei.children:
-                child = api_instance.get_sei(child_refernce.uuid, repo_name, sync=False)
+                child = api_instances[SEIS].get_sei(child_refernce.uuid, repo_name, sync=False)
                 recurseChildren(child)
 
         # Get root Seis and sync
-        for root_sei in api_instance.get_root_seis(repo_name):
+        for root_sei in api_instances[DEFAULT].get_root_seis(repo_name):
             recurseChildren(root_sei, isRoot=True)
 
         return (root_seis, seis, cas, visualisations)
 
-    def crawl_raw_seis(self, api_instance, repo_name):
+    def crawl_raw_seis(self, api_instances, repo_name):
+        Log('Calling crawl tree raw in Virtual Satellite tree crawler\n')
         # Result dicts mapping uuids to elements
         root_seis, seis = {}, {}
 
@@ -74,15 +79,15 @@ class TreeCrawler():
 
             # Recursion
             for child_refernce in sei[vc.CHILDREN]:
-                response = api_instance.get_sei(child_refernce[vc.UUID], repo_name, sync=False, _preload_content=False)
+                response = api_instances[SEIS].get_sei(child_refernce[vc.UUID], repo_name, sync=False, _preload_content=False)
                 child = json.loads(response.data)
                 recurseChildren(child)
 
         # Get root Seis and sync
-        for root_sei in api_instance.get_root_seis(repo_name):
+        for root_sei in api_instances[DEFAULT].get_root_seis(repo_name):
             # Currently no type field if fetched over the root sei endpoint
             # Workaround: fetch the concrete sei again
-            response = api_instance.get_sei(root_sei.uuid, repo_name, sync=False, _preload_content=False)
+            response = api_instances[SEIS].get_sei(root_sei.uuid, repo_name, sync=False, _preload_content=False)
             recurseChildren(json.loads(response.data), isRoot=True)
 
         return (root_seis, seis)

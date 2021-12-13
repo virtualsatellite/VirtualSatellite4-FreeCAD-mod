@@ -26,6 +26,7 @@
 import unittest
 from plugins.VirtualSatelliteRestPlugin.api_switch import ApiSwitch
 from plugins.VirtualSatelliteRestPlugin.generated_api.v0_0_1.swagger_client.api.default_api import DefaultApi
+from plugins.VirtualSatelliteRestPlugin.api_kinds import DEFAULT
 
 
 class TestApiSwitch(unittest.TestCase):
@@ -34,12 +35,13 @@ class TestApiSwitch(unittest.TestCase):
         switch = ApiSwitch()
         host, username, password = 'host', 'username', 'password'
 
-        self.assertEqual(switch.get_api(None, '', '', ''), None, "No API returned")
-        self.assertEqual(switch.get_api(-1, '', '', ''), None, "No API returned")
+        self.assertEqual(switch.get_apis(None, '', '', ''), None, "No API returned")
+        self.assertEqual(switch.get_apis(-1, '', '', ''), None, "No API returned")
 
-        api = switch.get_api(0, host, username, password)
-        self.assertTrue(isinstance(api, DefaultApi), "Correct API returned")
-        conf = api.api_client.configuration
+        apis = switch.get_apis(0, host, username, password)
+        default_api = apis[DEFAULT]
+        self.assertTrue(isinstance(default_api, DefaultApi), "Correct API returned")
+        conf = default_api.api_client.configuration
         # Assert correct configuration
         self.assertTrue(host in conf.host)
         self.assertEqual(conf.username, username)

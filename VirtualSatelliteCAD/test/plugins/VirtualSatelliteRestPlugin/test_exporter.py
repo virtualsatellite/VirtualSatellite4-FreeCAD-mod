@@ -34,6 +34,7 @@ from test.plugins.VirtualSatelliteRestPlugin.api_mocks import get_mock_api, \
     COMPLEX_ROOT_SEIS, SEI_VIS, SEI_EMPTY, CA_VIS_RESPONSE, CA_NO_VIS_RESPONSE, \
     COMPLEX_ROOT_DICT, \
     ROOT_SEI_COMPLEX_RESPONSE, SEI_VIS_RESPONSE, SEI_VIS_DICT, CA_VIS_DICT
+from plugins.VirtualSatelliteRestPlugin.api_kinds import SEIS, DEFAULT, CAS
 
 
 class TestExorter(TestCase):
@@ -44,12 +45,12 @@ class TestExorter(TestCase):
         exporter = VirSatRestExporter()
 
         # Set up mock data
-        mock_api.get_root_seis.return_value = COMPLEX_ROOT_SEIS
-        mock_api.get_sei.side_effect = [
+        mock_api[DEFAULT].get_root_seis.return_value = COMPLEX_ROOT_SEIS
+        mock_api[SEIS].get_sei.side_effect = [
             SEI_EMPTY, SEI_VIS,  # Initial tree crawl
             ROOT_SEI_COMPLEX_RESPONSE, SEI_VIS_RESPONSE  # Recurse products
         ]
-        mock_api.get_ca.side_effect = [
+        mock_api[CAS].get_ca.side_effect = [
             CA_VIS_RESPONSE, CA_NO_VIS_RESPONSE,  # Initial tree crawl
         ]
         # mock_api.get_resource.return_value = GEOMETRY_BEAN_RESPONSE
@@ -62,18 +63,38 @@ class TestExorter(TestCase):
         exporter.exportFromDict(root_dict, mock_api, "")
 
         # assert correct api calls:
-        mock_api.put_sei.assert_called_with(SEI_VIS_DICT, '', _preload_content=False, sync=False)
+        mock_api[SEIS].put_sei.assert_called_with(SEI_VIS_DICT, '', _preload_content=False, sync=False)
 
         dict_changes = deepcopy(CA_VIS_DICT)
         dict_changes[vc.SIZE_X][vc.VALUE] = 0.0
         dict_changes[vc.POSITION_X][vc.VALUE] = 0.0
 
-        expected_calls = [
+        default_calls = [
             # Crawl the tree
             call.get_root_seis(''),
-            call.get_ca('caNoVis', '', _preload_content=False, sync=False),
+
+            # Update product data
+            call.force_synchronize(''),
+        ]
+        mock_api[DEFAULT].assert_has_calls(default_calls)
+
+        seis_calls = [
+            # Crawl the tree
             call.get_sei('seiEmpty', '', sync=False),
             call.get_sei('seiVis', '', sync=False),
+
+            # Recurse products
+            call.get_sei('rootSeiComplex', '', _preload_content=False, sync=False),
+            call.get_sei('seiVis', '', _preload_content=False, sync=False),
+
+            # Update product data
+            call.put_sei(SEI_VIS_DICT, '', _preload_content=False, sync=False),
+        ]
+        mock_api[SEIS].assert_has_calls(seis_calls)
+
+        cas_calls = [
+            # Crawl the tree
+            call.get_ca('caNoVis', '', _preload_content=False, sync=False),
 
             # Update part data of ca
             call.get_ca('caVis', '', _preload_content=False, sync=False),
@@ -81,12 +102,7 @@ class TestExorter(TestCase):
             # exporter and it will be observed after all operations
             call.put_ca(dict_changes, '', _preload_content=False, sync=False),
 
-            # Recurse products
-            call.get_sei('rootSeiComplex', '', _preload_content=False, sync=False),
-            call.get_sei('seiVis', '', _preload_content=False, sync=False),
             # Update product data
             call.put_ca(dict_changes, '', _preload_content=False, sync=False),
-            call.put_sei(SEI_VIS_DICT, '', _preload_content=False, sync=False),
-            call.force_synchronize('')
         ]
-        mock_api.assert_has_calls(expected_calls)
+        mock_api[CAS].assert_has_calls(cas_calls)

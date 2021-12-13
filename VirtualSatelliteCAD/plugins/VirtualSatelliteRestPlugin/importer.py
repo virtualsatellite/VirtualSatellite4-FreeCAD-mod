@@ -29,19 +29,22 @@ from plugins.VirtualSatelliteRestPlugin.tree_crawler import TreeCrawler
 import traceback
 import FreeCAD
 import plugins.VirtualSatelliteRestPlugin.virsat_constants as vc
+import freecad.name_converter as nc
+from plugins.VirtualSatelliteRestPlugin.api_kinds import PROPERTIES
 Err = FreeCAD.Console.PrintError
 Log = FreeCAD.Console.PrintLog
 Wrn = FreeCAD.Console.PrintWarning
 
 
 class VirSatRestImporter():
-    def __init__(self, project_directory, api_instance, repo_name):
-        self.project_directory, self.api_instance, self.repo_name = project_directory, api_instance, repo_name
+    def __init__(self, project_directory, api_instances, repo_name):
+        self.project_directory, self.api_instances, self.repo_name = project_directory, api_instances, repo_name
 
     def importToDict(self, start_sei_uuid):
+        Log('Calling import in Virtual Satellite REST importer\n')
         try:
             # Read tree
-            root_seis, seis, _, visualisations = TreeCrawler().crawl_tree(self.api_instance, self.repo_name)
+            root_seis, seis, _, visualisations = TreeCrawler().crawl_tree(self.api_instances, self.repo_name)
             seis2products = {}
             parts = []
 
@@ -151,8 +154,8 @@ class VirSatRestImporter():
         geometryFilePath = visCa[vc.GEOMETRY][vc.VALUE]
         if(shape == jd.JSON_ELEMENT_SHAPE_GEOMETRY):
             # Download the STL file from the server
-            response = self.api_instance.get_resource(visCa[vc.GEOMETRY][vc.UUID], self.repo_name, sync=False, _preload_content=False)
-            local_path = os.path.join(self.project_directory, containingSei.uuid.replace('-', '_') + '.' + geometryFilePath.split('/')[-1])
+            response = self.api_instances[PROPERTIES].get_resource(visCa[vc.GEOMETRY][vc.UUID], self.repo_name, sync=False, _preload_content=False)
+            local_path = os.path.join(self.project_directory, nc.toFreeCad(containingSei.uuid) + '.' + geometryFilePath.split('/')[-1])
             f = open(local_path, 'wb')
             f.write(response.data)
             f.close()

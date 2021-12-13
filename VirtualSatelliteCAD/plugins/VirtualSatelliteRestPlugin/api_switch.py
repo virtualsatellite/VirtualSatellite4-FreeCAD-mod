@@ -24,6 +24,7 @@
 # SPDX-License-Identifier: LGPL-3.0-or-later
 #
 import plugins.VirtualSatelliteRestPlugin.generated_api.v0_0_1.swagger_client as v0_0_1_client
+from plugins.VirtualSatelliteRestPlugin.api_kinds import CAS, DEFAULT, DISCIPLINES, PROPERTIES, QUDV, SEIS
 import FreeCAD
 Msg = FreeCAD.Console.PrintMessage
 
@@ -34,7 +35,7 @@ API_VERSIONS = {
 
 class ApiSwitch():
 
-    def get_api(self, version_idx, host, username, password):
+    def get_apis(self, version_idx, host, username, password):
         # Identifier is the index from the preferences
         # Because combo boxes only save their selected index
         version = API_VERSIONS.get(version_idx, "Unknown Index")
@@ -49,7 +50,14 @@ class ApiSwitch():
 
             Msg('Creating API of version:"{}" for "{}"\n'.format(version, api_host))
             # Create an instance of the API class
-            return v0_0_1_client.DefaultApi(v0_0_1_client.ApiClient(configuration))
+            return {
+                DEFAULT: v0_0_1_client.DefaultApi(v0_0_1_client.ApiClient(configuration)),
+                CAS: v0_0_1_client.CAsApi(v0_0_1_client.ApiClient(configuration)),
+                DISCIPLINES: v0_0_1_client.DisciplinesApi(v0_0_1_client.ApiClient(configuration)),
+                PROPERTIES: v0_0_1_client.PropertiesApi(v0_0_1_client.ApiClient(configuration)),
+                QUDV: v0_0_1_client.QUDVApi(v0_0_1_client.ApiClient(configuration)),
+                SEIS: v0_0_1_client.SEIsApi(v0_0_1_client.ApiClient(configuration)),
+            }
 
         Msg('API version:"{}" not supported\n'.format(version))
         return None

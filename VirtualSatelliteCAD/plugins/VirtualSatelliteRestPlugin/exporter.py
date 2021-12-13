@@ -25,6 +25,7 @@
 #
 import json_io.json_definitions as jd
 from plugins.VirtualSatelliteRestPlugin.tree_crawler import TreeCrawler
+from plugins.VirtualSatelliteRestPlugin.api_kinds import CAS, DEFAULT, SEIS
 import traceback
 import json
 import FreeCAD
@@ -35,13 +36,14 @@ Wrn = FreeCAD.Console.PrintWarning
 
 
 class VirSatRestExporter():
-    def exportFromDict(self, data_dict, api_instance, repo_name):
+    def exportFromDict(self, data_dict, api_instances, repo_name):
+        Log('Calling export in Virtual Satellite REST importer\n')
         root_product = data_dict[jd.JSON_PRODUCTS]
         parts = data_dict[jd.JSON_PARTS]
 
         try:
             # Read tree
-            _, seis, _, visualisations = TreeCrawler().crawl_tree(api_instance, repo_name)
+            _, seis, _, visualisations = TreeCrawler().crawl_tree(api_instances, repo_name)
 
             for part in parts:
                 uuid = part[jd.JSON_ELEMENT_UUID]
@@ -62,18 +64,18 @@ class VirSatRestExporter():
                         superVisCa = self.getVisCaForSei(seis[sei.super_seis[0].uuid], visualisations)
                     self.part2VisCa(part, foundVisCa, superVisCa)
                     # Put vis bean again
-                    api_instance.put_ca(foundVisCa, repo_name, sync=False, _preload_content=False)
+                    api_instances[CAS].put_ca(foundVisCa, repo_name, sync=False, _preload_content=False)
                 else:
                     # In the future we could create a new one here
                     Wrn('{} not updated\n'.format(part_id))
 
-            self.exportProductsRecursive(root_product, seis, visualisations, api_instance, repo_name)
-            api_instance.force_synchronize(repo_name)
+            self.exportProductsRecursive(root_product, seis, visualisations, api_instances, repo_name)
+            api_instances[DEFAULT].force_synchronize(repo_name)
 
         except Exception:
             Err(traceback.format_exc())
 
-    def exportProductsRecursive(self, product, seis, visualisations, api_instance, repo_name):
+    def exportProductsRecursive(self, product, seis, visualisations, api_instances, repo_name):
         uuid = product[jd.JSON_ELEMENT_UUID]
         name = product[jd.JSON_ELEMENT_NAME]
         product_id = name + '(' + uuid + ')'
@@ -83,7 +85,7 @@ class VirSatRestExporter():
         if sei is None:
             Err('No sei found for product: {}\n'.format(product_id))
             return None
-        raw_sei = json.loads(api_instance.get_sei(uuid, repo_name, sync=False, _preload_content=False).data)
+        raw_sei = json.loads(api_instances[SEIS].get_sei(uuid, repo_name, sync=False, _preload_content=False).data)
 
         foundVisCa = self.getVisCaForSei(sei, visualisations)
 
@@ -96,15 +98,15 @@ class VirSatRestExporter():
             raw_sei[vc.NAME] = product[jd.JSON_ELEMENT_NAME]
 
             # Put vis bean and sei again
-            api_instance.put_ca(foundVisCa, repo_name, sync=False, _preload_content=False)
-            api_instance.put_sei(raw_sei, repo_name, sync=False, _preload_content=False)
+            api_instances[CAS].put_ca(foundVisCa, repo_name, sync=False, _preload_content=False)
+            api_instances[SEIS].put_sei(raw_sei, repo_name, sync=False, _preload_content=False)
         else:
             # In the future we could create a new one here
             Wrn('No visualization for {} updated\n'.format(product_id))
 
         # Recursion
         for child_product in product[jd.JSON_ELEMNT_CHILDREN]:
-            self.exportProductsRecursive(child_product, seis, visualisations, api_instance, repo_name)
+            self.exportProductsRecursive(child_product, seis, visualisations, api_instances, repo_name)
 
     def part2VisCa(self, part, visCa, superCa):
         # For now assume correct units

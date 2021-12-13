@@ -31,11 +31,16 @@ import plugins.VirtualSatelliteRestPlugin.virsat_constants as vc
 from json import dumps
 from types import SimpleNamespace
 import json_io.json_definitions as jd
+from plugins.VirtualSatelliteRestPlugin.api_kinds import SEIS, CAS, PROPERTIES, DEFAULT
 
 
 def get_mock_api():
-    mock_api = Mock(spec=['get_root_seis', 'get_sei', 'get_ca', 'get_resource',
-                          'put_sei', 'put_ca', 'force_synchronize'])
+    mock_api = {
+        SEIS: Mock(spec=['get_sei', 'put_sei']),
+        CAS: Mock(spec=['get_ca', 'put_ca']),
+        PROPERTIES: Mock(spec=['get_resource']),
+        DEFAULT: Mock(spec=['get_root_seis', 'force_synchronize'])
+    }
     return mock_api
 
 

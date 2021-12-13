@@ -29,6 +29,7 @@ from test.plugins.VirtualSatelliteRestPlugin.api_mocks import get_mock_api,\
     ROOT_SEI_COMPLEX, GEOMETRY_BEAN_RESPONSE, COMPLEX_ROOT_DICT
 from test.test_setup import AWorkingDirectoryTest
 import os
+from plugins.VirtualSatelliteRestPlugin.api_kinds import SEIS, DEFAULT, CAS, PROPERTIES
 
 
 class TestImporter(AWorkingDirectoryTest):
@@ -44,10 +45,10 @@ class TestImporter(AWorkingDirectoryTest):
         importer = VirSatRestImporter(self.getDirectoryFullPath(), mock_api, "")
 
         # Set up mock data
-        mock_api.get_root_seis.return_value = COMPLEX_ROOT_SEIS
-        mock_api.get_sei.side_effect = [SEI_EMPTY, SEI_VIS]
-        mock_api.get_ca.side_effect = [CA_VIS_RESPONSE, CA_NO_VIS_RESPONSE]
-        mock_api.get_resource.return_value = GEOMETRY_BEAN_RESPONSE
+        mock_api[DEFAULT].get_root_seis.return_value = COMPLEX_ROOT_SEIS
+        mock_api[SEIS].get_sei.side_effect = [SEI_EMPTY, SEI_VIS]
+        mock_api[CAS].get_ca.side_effect = [CA_VIS_RESPONSE, CA_NO_VIS_RESPONSE]
+        mock_api[PROPERTIES].get_resource.return_value = GEOMETRY_BEAN_RESPONSE
 
         returned_dict = importer.importToDict(ROOT_SEI_COMPLEX.uuid)
         self.assertJsonObjectsEqual(COMPLEX_ROOT_DICT, returned_dict, "Returned JSON as expected")

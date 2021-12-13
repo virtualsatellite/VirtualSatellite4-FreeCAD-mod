@@ -47,7 +47,7 @@ class VirSatPlugin(Plugin):
 
         Msg('Starting import via Virtual Satellite REST API\n')
 
-        api_instance, repo_name, setup_successful = self.getPreferences()
+        api_instances, repo_name, setup_successful = self.getPreferences()
         if not setup_successful:
             Err('Setup was not successful, aborting import\n')
             return
@@ -57,7 +57,7 @@ class VirSatPlugin(Plugin):
         if(self.preferences.GetBool('AskForStartingSEI')):
             # Get all available SEIs
             from plugins.VirtualSatelliteRestPlugin.tree_crawler import TreeCrawler
-            root_seis, seis = TreeCrawler().crawl_raw_seis(api_instance, repo_name)
+            root_seis, seis = TreeCrawler().crawl_raw_seis(api_instances, repo_name)
 
             # Get display names
             class SelectSeiDialog(QDialog):
@@ -119,7 +119,7 @@ class VirSatPlugin(Plugin):
             Err('No starting SEI defined\n')
             return None
         else:
-            return VirSatRestImporter(project_directory, api_instance, repo_name).importToDict(start_sei_uuid)
+            return VirSatRestImporter(project_directory, api_instances, repo_name).importToDict(start_sei_uuid)
 
     def exportFromDict(self, data_dict, project_directory):
         from plugins.VirtualSatelliteRestPlugin.exporter import VirSatRestExporter
@@ -129,12 +129,12 @@ class VirSatPlugin(Plugin):
 
         Msg('Starting export via Virtual Satellite REST API\n')
 
-        api_instance, repo_name, setup_successful = self.getPreferences()
+        api_instances, repo_name, setup_successful = self.getPreferences()
         if not setup_successful:
             Err('Setup was not successful, aborting export\n')
             return
 
-        VirSatRestExporter().exportFromDict(data_dict, api_instance, repo_name)
+        VirSatRestExporter().exportFromDict(data_dict, api_instances, repo_name)
         return
 
     def getPreferences(self):
@@ -153,17 +153,17 @@ class VirSatPlugin(Plugin):
             protocol = "https"
         host = protocol + "://" + adress + ":" + port
 
-        api_instance = ApiSwitch().get_api(api_version_idx, host, username, password)
+        api_instances = ApiSwitch().get_apis(api_version_idx, host, username, password)
 
         can_connect = self.canConnectToServer((adress, port))
-        setup_successful = api_instance is not None and can_connect
+        setup_successful = api_instances is not None and can_connect
 
         import FreeCAD
         Err = FreeCAD.Console.PrintError
         if not can_connect:
-            Err("Could not establish a server connection")
+            Err("Could not establish a server connection\n")
 
-        return (api_instance, repo_name, setup_successful)
+        return (api_instances, repo_name, setup_successful)
 
     def canConnectToServer(self, host):
         import socket
