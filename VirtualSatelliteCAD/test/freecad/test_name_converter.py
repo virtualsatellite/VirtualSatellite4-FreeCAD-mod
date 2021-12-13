@@ -23,7 +23,21 @@
 #
 # SPDX-License-Identifier: LGPL-3.0-or-later
 #
+import unittest
+import freecad.name_converter as nc
 
-COMMAND_ID_EXPORT_2_VIRTUAL_SATELLITE = 'VirtualSatellite_Export'
-COMMAND_ID_IMPORT_2_FREECAD = 'VirtualSatellite_Import'
-COMMAND_ID_ABOUT = 'VirtualSatellite_About'
+
+class TestNameConverter(unittest.TestCase):
+
+    TEST_NAME = "Many_Special-Characters Test.file"
+    TEST_FREECAD_NAME = "Many__Special___Characters____Test_____file"
+
+    def test_toFreeCad(self):
+        self.assertEqual(self.TEST_FREECAD_NAME, nc.toFreeCad(self.TEST_NAME))
+
+    def test_fromFreeCad(self):
+        self.assertEqual(self.TEST_NAME, nc.fromFreeCad(self.TEST_FREECAD_NAME))
+
+    def test_Roundtrip(self):
+        self.assertEqual(self.TEST_NAME, nc.fromFreeCad(nc.toFreeCad(self.TEST_NAME)))
+        self.assertEqual(self.TEST_FREECAD_NAME, nc.toFreeCad(nc.fromFreeCad(self.TEST_FREECAD_NAME)))

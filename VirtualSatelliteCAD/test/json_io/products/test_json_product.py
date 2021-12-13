@@ -30,7 +30,8 @@ from test.test_setup import AWorkingDirectoryTest
 import FreeCAD
 import FreeCADGui
 from json_io.products.json_product import AJsonProduct
-from test.json_io.test_json_data import TEST_JSON_PRODUCT_WITHOUT_CHILDREN, TEST_JSON_PRODUCT_WITHOUT_CHILDREN_WITHOUT_PART
+from test.json_io.test_json_data import TEST_JSON_PRODUCT_WITHOUT_CHILDREN, TEST_JSON_PRODUCT_WITHOUT_CHILDREN_WITHOUT_PART, \
+    BASEPLATE_UNIQ_NAME, BASEPLATEBOTTOM_UNIQ_NAME
 from json_io.json_definitions import PART_IDENTIFIER, \
     JSON_ELEMENT_ROT_X, JSON_ELEMENT_ROT_Y, JSON_ELEMENT_ROT_Z
 from freecad.active_document import ActiveDocument
@@ -56,10 +57,10 @@ class TestJsonProduct(AWorkingDirectoryTest):
         json_product = AJsonProduct().parse_from_json(json_object)
 
         self.assertEqual(json_product.name, "BasePlateBottom", "Property is correctly set")
-        self.assertEqual(json_product.uuid, "e8794f3d_86ec_44c5_9618_8b7170c45484", "Property is correctly set")
+        self.assertEqual(json_product.uuid, "e8794f3d-86ec-44c5-9618-8b7170c45484", "Property is correctly set")
 
         self.assertEqual(json_product.part_name, "BasePlate", "Property is correctly set")
-        self.assertEqual(json_product.part_uuid, "3d3708fd_5c6c_4af9_b710_d68778466084", "Property is correctly set")
+        self.assertEqual(json_product.part_uuid, "3d3708fd-5c6c-4af9-b710-d68778466084", "Property is correctly set")
 
         self.assertEqual(json_product.pos_x, 20, "Property is correctly set")
         self.assertEqual(json_product.pos_y, 30, "Property is correctly set")
@@ -87,8 +88,8 @@ class TestJsonProduct(AWorkingDirectoryTest):
         json_object = json.loads(json_data)
         json_product = AJsonProduct().parse_from_json(json_object)
 
-        self.assertEquals(json_product.get_unique_name(), "BasePlateBottom_e8794f3d_86ec_44c5_9618_8b7170c45484", "Correct unique name")
-        self.assertEquals(json_product.get_part_unique_name(), PART_IDENTIFIER + "BasePlate_3d3708fd_5c6c_4af9_b710_d68778466084", "Correct unique name")
+        self.assertEquals(json_product.get_unique_name(), BASEPLATEBOTTOM_UNIQ_NAME, "Correct unique name")
+        self.assertEquals(json_product.get_part_unique_name(), PART_IDENTIFIER + BASEPLATE_UNIQ_NAME)
 
     def test_is_part_reference(self):
         json_data = TEST_JSON_PRODUCT_WITHOUT_CHILDREN_WITHOUT_PART

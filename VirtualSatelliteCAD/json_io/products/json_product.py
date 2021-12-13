@@ -34,6 +34,8 @@ from json_io.json_spread_sheet import JsonSpreadSheet, FREECAD_PART_SHEET_NAME
 from json_io.parts.json_part_factory import JsonPartFactory
 from A2plus.a2p_importpart import importPartFromFile
 from freecad.active_document import VECTOR_X, VECTOR_Y, VECTOR_Z, VECTOR_ZERO, ActiveDocument
+import freecad.name_converter as nc
+import re
 import FreeCAD
 
 Log = FreeCAD.Console.PrintLog
@@ -68,14 +70,14 @@ class AJsonProduct():
 
     def _parse_name_and_uuid_from_json(self, json_object):
         self.name = str(json_object[JSON_ELEMENT_NAME])
-        self.uuid = str(json_object[JSON_ELEMENT_UUID]).replace("-", "_")
+        self.uuid = str(json_object[JSON_ELEMENT_UUID])
 
         json_has_part_uuid = JSON_ELEMENT_PART_UUID in json_object
         json_has_part_name = JSON_ELEMENT_PART_NAME in json_object
 
         if json_has_part_name and json_has_part_uuid:
-            self.part_uuid = str(json_object[JSON_ELEMENT_PART_UUID]).replace("-", "_")
-            self.part_name = str(json_object[JSON_ELEMENT_PART_NAME]).replace("-", "_")
+            self.part_uuid = str(json_object[JSON_ELEMENT_PART_UUID])
+            self.part_name = str(json_object[JSON_ELEMENT_PART_NAME])
 
     def _parse_position_and_rotation_from_json(self, json_object):
         # the coordinate system between virtual satellite and FreeCAD seem
@@ -102,8 +104,8 @@ class AJsonProduct():
 
     def parse_to_json(self):
         json_dict = {
-            JSON_ELEMENT_NAME: self.name.replace("_", "-"),
-            JSON_ELEMENT_UUID: self.uuid.replace("_", "-"),
+            JSON_ELEMENT_NAME: self.name,
+            JSON_ELEMENT_UUID: self.uuid,
 
             JSON_ELEMENT_POS_X: self.pos_x / M_TO_MM,
             JSON_ELEMENT_POS_Y: self.pos_y / M_TO_MM,
@@ -115,8 +117,8 @@ class AJsonProduct():
         }
 
         if self.is_part_reference():
-            json_dict[JSON_ELEMENT_PART_UUID] = self.part_uuid.replace("_", "-")
-            json_dict[JSON_ELEMENT_PART_NAME] = self.part_name.replace("_", "-")
+            json_dict[JSON_ELEMENT_PART_UUID] = self.part_uuid
+            json_dict[JSON_ELEMENT_PART_NAME] = self.part_name
 
         # will be overwritten from ProductAssembly
         json_dict[JSON_ELEMNT_CHILDREN] = []
@@ -227,8 +229,10 @@ class AJsonProduct():
         else:
             # document_name is identifier_name_uuid
             document_name = active_document.app_active_document.Name
-            self.name = document_name.split("_")[1]
-            self.uuid = "_".join(document_name.split("_")[2:])
+            # split at regex with positive and negative lookahead to find delimiter of single "_"
+            split_name = re.split("(?<!_)_(?!_)", document_name)
+            self.name = nc.fromFreeCad(split_name[1])
+            self.uuid = nc.fromFreeCad(split_name[2])
 
         if(freecad_object is not None):
             pos = freecad_object.Placement.Base

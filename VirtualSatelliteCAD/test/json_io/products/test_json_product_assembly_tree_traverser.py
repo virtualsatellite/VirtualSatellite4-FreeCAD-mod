@@ -20,13 +20,17 @@
 #
 from test.test_setup import AWorkingDirectoryTest
 from test.json_io.test_json_data import TEST_JSON_PRODUCT_WITH_CHILDREN_WITH_CHILD, TEST_JSON_PRODUCT_WITHOUT_CHILDREN, \
-    TEST_JSON_PRODUCT_WITH_CHILDREN_WITH_CHILD_SUBASSEMBLY_IS_NO_PART, TEST_JSON_PRODUCT_SUBASSEMBLY_WITH_SAME_PART
+    TEST_JSON_PRODUCT_WITH_CHILDREN_WITH_CHILD_SUBASSEMBLY_IS_NO_PART, TEST_JSON_PRODUCT_SUBASSEMBLY_WITH_SAME_PART, \
+    BASEPLATE_UNIQ_NAME, BASEPLATEBOTTOM1_UNIQ_NAME, BASEPLATEBOTTOM2_UNIQ_NAME
 import json
 from json_io.products.json_product_assembly_tree_traverser import JsonProductAssemblyTreeTraverser
 from json_io.json_definitions import JSON_ELEMENT_NAME, PRODUCT_IDENTIFIER
 from freecad.active_document import ActiveDocument
 import glob
 import os
+
+BASEPLATEBOTTOM1_URI = PRODUCT_IDENTIFIER + BASEPLATEBOTTOM1_UNIQ_NAME
+BASEPLATEBOTTOM2_URI = PRODUCT_IDENTIFIER + BASEPLATEBOTTOM2_UNIQ_NAME
 
 
 class TestJsonProductAssemblyTreeTraverser(AWorkingDirectoryTest):
@@ -81,11 +85,11 @@ class TestJsonProductAssemblyTreeTraverser(AWorkingDirectoryTest):
 
         # this should have similar results to test_create_part_product_assembly_and_subassembly_with_root_part_manual in TestJsonProductAssembly
         active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document(
-            PRODUCT_IDENTIFIER + "BasePlateBottom2_e8794f3d_86ec_44c5_9618_8b7170c45484")
+            BASEPLATEBOTTOM2_URI)
         self.assertEquals(len(active_document.app_active_document.RootObjects), 4, "Found correct amount of root objects 2 objects plus 2 sheets")
 
         active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document(
-            PRODUCT_IDENTIFIER + "BasePlateBottom1_e8794f3d_86ec_44c5_9618_8b7170c45484")
+            BASEPLATEBOTTOM1_URI)
         self.assertEquals(len(active_document.app_active_document.RootObjects), 6, "Found correct amount of root objects 3 objects plus 3 sheets")
 
     def test_traverse_and_parse_json_tree_subassembly_no_part(self):
@@ -105,11 +109,11 @@ class TestJsonProductAssemblyTreeTraverser(AWorkingDirectoryTest):
 
         # in this test case the product assembly "BasePlateBottom2" only has a child and not a part reference
         active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document(
-            PRODUCT_IDENTIFIER + "BasePlateBottom2_e8794f3d_86ec_44c5_9618_8b7170c45484")
+            BASEPLATEBOTTOM2_URI)
         self.assertEquals(len(active_document.app_active_document.RootObjects), 2, "Found correct amount of root objects 1 objects plus 1 sheets")
 
         active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document(
-            PRODUCT_IDENTIFIER + "BasePlateBottom1_e8794f3d_86ec_44c5_9618_8b7170c45484")
+            BASEPLATEBOTTOM1_URI)
         self.assertEquals(len(active_document.app_active_document.RootObjects), 6, "Found correct amount of root objects 3 objects plus 3 sheets")
 
     def test_traverse_and_parse_json_tree_subassembly_same_part(self):
@@ -129,12 +133,12 @@ class TestJsonProductAssemblyTreeTraverser(AWorkingDirectoryTest):
 
         # in this test case the product assembly "BasePlate" refers a part "BasePlate" with the same name and uuid
         active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document(
-            PRODUCT_IDENTIFIER + "BasePlate_3d3708fd_5c6c_4af9_b710_d68778466084")
+            PRODUCT_IDENTIFIER + BASEPLATE_UNIQ_NAME)
         self.assertEquals(len(active_document.app_active_document.RootObjects), 4, "Found correct amount of root objects 2 objects plus 2 sheets")
 
         # the root assembly should only have a part and the product assembly "BasePlate"
         active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document(
-            PRODUCT_IDENTIFIER + "BasePlateBottom1_e8794f3d_86ec_44c5_9618_8b7170c45484")
+            BASEPLATEBOTTOM1_URI)
         self.assertEquals(len(active_document.app_active_document.RootObjects), 4, "Found correct amount of root objects 2 objects plus 2 sheets")
 
     def test_traverse_and_parse_json_tree_rootassembly_without_children(self):

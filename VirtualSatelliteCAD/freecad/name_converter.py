@@ -24,6 +24,28 @@
 # SPDX-License-Identifier: LGPL-3.0-or-later
 #
 
-COMMAND_ID_EXPORT_2_VIRTUAL_SATELLITE = 'VirtualSatellite_Export'
-COMMAND_ID_IMPORT_2_FREECAD = 'VirtualSatellite_Import'
-COMMAND_ID_ABOUT = 'VirtualSatellite_About'
+
+"""
+As FreeCAD only supports alphanumerical and _ (underscore) in it's names,
+this class provides utility to convert names containing special characters into the FreeCAD form and back.
+It works as long as no name contains concatenated underscores
+"""
+
+
+def toFreeCad(name):
+    # As _ is reserved as a delimiter it will also be replaced
+    name = name.replace("_", "__")
+    name = name.replace("-", "___")
+    name = name.replace(" ", "____")
+    name = name.replace(".", "_____")
+
+    return name
+
+
+def fromFreeCad(name):
+    name = name.replace("_____", ".")
+    name = name.replace("____", " ")
+    name = name.replace("___", "-")
+    name = name.replace("__", "_")
+
+    return name

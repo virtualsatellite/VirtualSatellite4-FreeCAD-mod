@@ -33,6 +33,7 @@ from PySide2.QtWidgets import QFileDialog
 ICON_WORKBENCH = 'VirtualSatelliteWorkbench2.svg'
 ICON_IMPORT = 'VirtualSatelliteImport.svg'
 ICON_EXPORT = 'VirtualSatelliteExport.svg'
+ICON_ABOUT = 'VirtualSatelliteExport.svg'
 
 PATH_RESOURCE = "Resources"
 PATH_ICONS = "Icons"
