@@ -29,7 +29,9 @@ from module.environment import Environment, ICON_IMPORT
 from json_io.json_importer import JsonImporter
 import os
 
-Log = FreeCAD.Console.PrintMessage
+Msg = FreeCAD.Console.PrintMessage
+Err = FreeCAD.Console.PrintError
+Log = FreeCAD.Console.PrintLog
 
 
 class CommandImport:
@@ -38,7 +40,7 @@ class CommandImport:
         self.workbench = workbench
 
     def Activated(self):
-        Log("Calling the importer\n")
+        Msg("Calling the importer\n")
 
         file_directory_path = Environment.get_file_directory_path()
         if file_directory_path is None:
@@ -48,11 +50,15 @@ class CommandImport:
         json_object = self.workbench.getActivePlugin().importToDict(file_directory_path)
 
         if(json_object is None):
-            Log("Plugin import returned None\n")
+            Err("Plugin import returned None\n")
             return
+        else:
+            Log("Plugin returned following JSON:\n")
+            Log("{}\n".format(json_object))
 
         json_importer = JsonImporter(file_directory_path + os.sep)
         json_importer.full_import(json_object)
+        Msg("Finished import\n")
 
     def IsActive(self):
         return True

@@ -29,7 +29,8 @@ from module.environment import Environment, ICON_EXPORT
 from json_io.json_exporter import JsonExporter
 from freecad.active_document import ActiveDocument
 
-Log = FreeCAD.Console.PrintMessage
+Msg = FreeCAD.Console.PrintMessage
+Err = FreeCAD.Console.PrintError
 
 
 class CommandExport:
@@ -38,7 +39,7 @@ class CommandExport:
         self.workbench = workbench
 
     def Activated(self):
-        Log("Calling the exporter\n")
+        Msg("Calling the exporter\n")
 
         file_directory_path = Environment.get_file_directory_path()
         if file_directory_path is None:
@@ -57,9 +58,10 @@ class CommandExport:
 
             # after export open the file again for the UI
             active_document = ActiveDocument(file_directory_path).open_set_and_get_document(document_name)
+            Msg("Finished export\n")
 
         else:
-            Log("Error: First open a document to export it\n")
+            Err("Error: First open a document to export it\n")
 
     def IsActive(self):
         return True
