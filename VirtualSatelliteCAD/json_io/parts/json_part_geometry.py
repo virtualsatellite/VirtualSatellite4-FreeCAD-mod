@@ -27,7 +27,7 @@
 
 from json_io.parts.json_part import AJsonPart
 from json_io.json_definitions import JSON_ELEMENT_STL_PATH
-import Mesh  # NOQA @UnresolvedImport
+import Mesh, MeshPart # NOQA @UnresolvedImport
 import Part  # NOQA @UnusedImport
 import os
 
@@ -56,7 +56,13 @@ class JsonPartGeometry(AJsonPart):
         # use already read in sheet
         self.stl_path = self.sheet.read_sheet_attribute_from_freecad(freecad_sheet, "stl_path")
 
+        self._export_to_stl(freecad_object)
+
+    # this part has no FreeCAD properties
     def _set_freecad_properties(self, active_document):
+        pass
+
+    def _get_freecad_properties(self, geometry):
         pass
 
     def _get_geometry_name(self):
@@ -94,5 +100,11 @@ class JsonPartGeometry(AJsonPart):
             active_document.gui_active_document.getObject(object_geometry_name + "_form").Visibility = False
             active_document.gui_active_document.getObject(object_geometry_name + "_cleaned").Visibility = False
 
-    def _get_freecad_properties(self, geometry):
-        pass
+    def _export_to_stl(self, freecad_object):
+
+        shape = freecad_object.Shape
+
+        meshed_object = freecad_object.Document.addObject("Mesh::Feature", "Mesh")
+        meshed_object.Mesh = MeshPart.meshFromShape(Shape=shape, MaxLength=520)
+
+        meshed_object.Mesh.write(self.stl_path)

@@ -33,10 +33,12 @@ from json_io.products.json_product_assembly import JsonProductAssembly
 from freecad.active_document import ActiveDocument
 from test.json_io.test_json_data import TEST_JSON_PRODUCT_WITH_CHILDREN,\
     TEST_JSON_PRODUCT_WITHOUT_CHILDREN, TEST_JSON_PRODUCT_WITH_CHILDREN_WITH_CHILD,\
-    TEST_JSON_PRODUCT_ROOT
+    TEST_JSON_PRODUCT_ROOT, BASEPLATEBOTTOM1_UNIQ_NAME, BASEPLATEBOTTOM2_UNIQ_NAME, \
+    BASEPLATETOP_UNIQ_NAME, BASEPLATE_UNIQ_NAME
 from json_io.json_definitions import JSON_ELEMNT_CHILDREN, PRODUCT_IDENTIFIER, \
     JSON_ELEMENT_POS_X, JSON_ELEMENT_POS_Y, JSON_ELEMENT_POS_Z, \
-    JSON_ELEMENT_ROT_X, JSON_ELEMENT_ROT_Y, JSON_ELEMENT_ROT_Z
+    JSON_ELEMENT_ROT_X, JSON_ELEMENT_ROT_Y, JSON_ELEMENT_ROT_Z, \
+    PART_IDENTIFIER
 from json_io.json_spread_sheet import FREECAD_PART_SHEET_NAME
 from json_io.products.json_product_assembly_tree_traverser import JsonProductAssemblyTreeTraverser
 
@@ -61,10 +63,10 @@ class TestJsonProductAssembly(AWorkingDirectoryTest):
         json_product = JsonProductAssembly().parse_from_json(json_object)
 
         self.assertEqual(json_product.name, "BasePlateBottom1", "Property is correctly set")
-        self.assertEqual(json_product.uuid, "e8794f3d_86ec_44c5_9618_8b7170c45484", "Property is correctly set")
+        self.assertEqual(json_product.uuid, "e8794f3d-86ec-44c5-9618-8b7170c45484", "Property is correctly set")
 
         self.assertEqual(json_product.part_name, "BasePlate", "Property is correctly set")
-        self.assertEqual(json_product.part_uuid, "3d3708fd_5c6c_4af9_b710_d68778466084", "Property is correctly set")
+        self.assertEqual(json_product.part_uuid, "3d3708fd-5c6c-4af9-b710-d68778466084", "Property is correctly set")
 
         # Properties have to be 0 since an assembly itself has no position and orientation
         self.assertEqual(json_product.pos_x, 0, "Property is correctly set")
@@ -183,11 +185,11 @@ class TestJsonProductAssembly(AWorkingDirectoryTest):
         subassembly = json_object[JSON_ELEMNT_CHILDREN][0]
 
         active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document(
-            PRODUCT_IDENTIFIER + "BasePlateBottom2_e8794f3d_86ec_44c5_9618_8b7170c45484")
+            PRODUCT_IDENTIFIER + BASEPLATEBOTTOM2_UNIQ_NAME)
 
         json_product = JsonProductAssembly().parse_from_json(subassembly)
         json_product.write_to_freecad(active_document)
-        active_document.save_as(PRODUCT_IDENTIFIER + "BasePlateBottom2_e8794f3d_86ec_44c5_9618_8b7170c45484")
+        active_document.save_as(PRODUCT_IDENTIFIER + BASEPLATEBOTTOM2_UNIQ_NAME)
 
         self.assertEquals(len(active_document.app_active_document.RootObjects), 4, "Found correct amount of root objects 2 objects plus 2 sheets")
 
@@ -200,7 +202,7 @@ class TestJsonProductAssembly(AWorkingDirectoryTest):
         self.assertEquals(len(active_document.app_active_document.RootObjects), 6, "Found correct amount of root objects 3 objects plus 3 sheets")
 
     def test_get_products_of_active_document(self):
-        active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("ProductAssemblyRootPart")
+        active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("ProductAssemblyActiveDocuments")
         json_object = json.loads(self.json_data)
         json_product = JsonProductAssembly().parse_from_json(json_object)
 
@@ -210,12 +212,12 @@ class TestJsonProductAssembly(AWorkingDirectoryTest):
 
         self.assertEqual(len(products), 3, "Found correct number of 3 products")
 
-        self.assertEqual(products[0][0].Label, "BasePlateBottom1_e8794f3d_86ec_44c5_9618_8b7170c45484", "Found correct product")
-        self.assertEqual(products[0][1].Label, FREECAD_PART_SHEET_NAME + "_" + "BasePlateBottom1_e8794f3d_86ec_44c5_9618_8b7170c45484", "Found correct sheet")
-        self.assertEqual(products[1][0].Label, "BasePlateBottom2_e8794f3d_86ec_44c5_9618_8b7170c45484", "Found correct product")
-        self.assertEqual(products[1][1].Label, FREECAD_PART_SHEET_NAME + "_" + "BasePlateBottom2_e8794f3d_86ec_44c5_9618_8b7170c45484", "Found correct sheet")
-        self.assertEqual(products[2][0].Label, "BasePlateTop_a199e3bd_3bc1_426d_8321_e9bd829339b3", "Found correct product")
-        self.assertEqual(products[2][1].Label, FREECAD_PART_SHEET_NAME + "_" + "BasePlateTop_a199e3bd_3bc1_426d_8321_e9bd829339b3", "Found correct sheet")
+        self.assertEqual(products[0][0].Label, BASEPLATEBOTTOM1_UNIQ_NAME, "Found correct product")
+        self.assertEqual(products[0][1].Label, FREECAD_PART_SHEET_NAME + "_" + BASEPLATEBOTTOM1_UNIQ_NAME, "Found correct sheet")
+        self.assertEqual(products[1][0].Label, BASEPLATEBOTTOM2_UNIQ_NAME, "Found correct product")
+        self.assertEqual(products[1][1].Label, FREECAD_PART_SHEET_NAME + "_" + BASEPLATEBOTTOM2_UNIQ_NAME, "Found correct sheet")
+        self.assertEqual(products[2][0].Label, BASEPLATETOP_UNIQ_NAME, "Found correct product")
+        self.assertEqual(products[2][1].Label, FREECAD_PART_SHEET_NAME + "_" + BASEPLATETOP_UNIQ_NAME, "Found correct sheet")
 
     def test_read_from_freecad(self):
         self.create_Test_Part()
@@ -232,9 +234,9 @@ class TestJsonProductAssembly(AWorkingDirectoryTest):
         root_assembly.read_from_freecad(active_document, self._WORKING_DIRECTORY, part_list)
 
         self.assertEqual(len(part_list), 1, "Found correct number of 1 part")
-        self.assertEqual(part_list[0][0], "part_BasePlate_3d3708fd_5c6c_4af9_b710_d68778466084", "Found correct part")
+        self.assertEqual(part_list[0][0], PART_IDENTIFIER + BASEPLATE_UNIQ_NAME, "Found correct part")
 
         json_products_dict = root_assembly.parse_to_json(isRoot=True)
 
-        self.assertJsonObjectsAlmostEqual(json_products_dict, json_object, msg="Found equal dictionaries (except y rotation floats)",
-                                          static_keys=[JSON_ELEMENT_ROT_Y])
+        self.assertJsonObjectsAlmostEqual(json_products_dict, json_object, msg="Found equal dictionaries (except rotation floats)",
+                                          static_keys=[JSON_ELEMENT_ROT_X, JSON_ELEMENT_ROT_Y, JSON_ELEMENT_ROT_Z])

@@ -1,0 +1,284 @@
+# --------------------------------------------
+# This is a basic workflow to help you get started with Actions
+# --------------------------------------------
+name: Build
+
+on:
+  # --------------------------------------------
+  # Controls when the automatic build job will be run.
+  # By default uses the default branch. Runs at 03:00 UTC.
+  # --------------------------------------------
+  schedule:
+    - cron: '0 3 * * *'
+      
+  # --------------------------------------------
+  # Run this workflow every time a new commit pushed to the repository
+  # --------------------------------------------
+  push:
+  
+  # --------------------------------------------
+  # Run this workflow every time a pull request is created or commited to it
+  # --------------------------------------------
+  pull_request:
+    branches:
+      - '**'
+
+env:
+  # -------------------------------------------------------------
+  # Setting up locale to have correct keyboard mapping
+  # -------------------------------------------------------------
+  LANG: "en_US.UTF-8"
+  VERSION: "0.1.0"
+# --------------------------------------------
+# Defines the list of jobs
+# --------------------------------------------
+jobs:
+  # --------------------------------------------
+  # Verify Job
+  #---------------------------------------------
+  verify:
+    name: Verify
+    runs-on: ubuntu-18.04
+    
+    steps:
+      # --------------------------------------------
+      # Checks out a copy of the repository
+      # --------------------------------------------
+      - name: Setup - Checkout code
+        uses: actions/checkout@v2
+        
+      # --------------------------------------------
+      # Run a quick sanity check if all commits are
+      # handed in by known users
+      #---------------------------------------------
+      - name: Verify - Authors Sanity Check
+        uses: virtualsatellite/ci-actions/ci-verify-authors-action@master
+          
+  # -----------------------------------------------------
+  # Build and Test - FreeCAD Module flake8
+  # -----------------------------------------------------
+  flake:
+    name: Build and Test - FreeCAD Module flake8
+    runs-on: ubuntu-18.04
+    needs: [verify]
+
+    steps:
+      # --------------------------------------------
+      # Checks out a copy of the repository
+      # --------------------------------------------
+      - name: Setup - Checkout code
+        uses: actions/checkout@v2
+      
+      # --------------------------------------------
+      # Setup python
+      # --------------------------------------------
+      - name: Setup - Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.6
+          architecture: x64
+      
+      # --------------------------------------------
+      # Install dependencies
+      # --------------------------------------------
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8
+      
+      # --------------------------------------------
+      # Run flake8
+      # --------------------------------------------
+      - name: Run - flake8
+        run: flake8 ./VirtualSatelliteCAD --count --show-source --statistics --benchmark
+
+  # -----------------------------------------------------
+  # Build and Test - FreeCAD Module Tests
+  # -----------------------------------------------------
+  moduleTests:
+    name: Build and Test - FreeCAD Module Tests
+    runs-on: ubuntu-18.04
+    needs: [verify]
+
+    steps:
+      # --------------------------------------------
+      # Checks out a copy of the repository
+      # --------------------------------------------
+      - name: Setup - Checkout code
+        uses: actions/checkout@v2
+      
+      # --------------------------------------------
+      # Setup python
+      # --------------------------------------------
+      - name: Setup - Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.6
+          architecture: x64
+      
+      # --------------------------------------------
+      # Setup Java and xvfb
+      # --------------------------------------------      
+      - name: Setup - Prepare OS
+        uses: virtualsatellite/ci-actions/ci-setup-action@v2
+        with:
+           xvfb: -x
+           
+      # --------------------------------------------
+      # Setup Environment via Ant
+      # -------------------------------------------- 
+      - name: Build with Ant
+        run: ant SetupEnvironment
+        
+      # --------------------------------------------
+      # Run module tests
+      # --------------------------------------------
+      - name: Run - Module tests
+        run: xvfb-run ./squashfs-root/AppRun -M $GITHUB_WORKSPACE/VirtualSatelliteCAD -t TestVirtualSatelliteApp -l
+
+      # --------------------------------------------
+      # Upload FreeCAD log
+      # --------------------------------------------
+      - name: Failure - Upload FreeCAD log
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: Module test log
+          path: 
+            ~/.FreeCAD/FreeCAD.log
+
+  # -----------------------------------------------------
+  # Build and Test - FreeCAD All Tests
+  # -----------------------------------------------------
+  freeCadTests:
+    name: Build and Test - FreeCAD All Tests
+    runs-on: ubuntu-18.04
+    needs: [verify]
+
+    steps:
+      # --------------------------------------------
+      # Checks out a copy of the repository
+      # --------------------------------------------
+      - name: Setup - Checkout code
+        uses: actions/checkout@v2
+      
+      # --------------------------------------------
+      # Setup python
+      # --------------------------------------------
+      - name: Setup Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.6
+          architecture: x64
+      
+      # --------------------------------------------
+      # Setup Java and xvfb
+      # --------------------------------------------      
+      - name: Setup - Prepare OS
+        uses: virtualsatellite/ci-actions/ci-setup-action@v2
+        with:
+           xvfb: -x
+           
+      # --------------------------------------------
+      # Setup Environment via Ant
+      # -------------------------------------------- 
+      - name: Build with Ant
+        run: ant SetupEnvironment
+        
+      # --------------------------------------------
+      # Run FreeCAD tests
+      # --------------------------------------------
+      - name: Run - FreeCAD tests
+        run: xvfb-run ./squashfs-root/AppRun -M $GITHUB_WORKSPACE -t 0 -l
+
+      # --------------------------------------------
+      # Upload FreeCAD log
+      # --------------------------------------------
+      - name: Failure - Upload FreeCAD log
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: FreeCAD test log
+          path: 
+            ~/.FreeCAD/FreeCAD.log
+
+  # -----------------------------------------------------
+  # Build, Assemble and Deploy Job
+  # -----------------------------------------------------
+  deploy:
+    name: Build, Assemble and Deploy
+    runs-on: ubuntu-18.04
+    needs: [flake, moduleTests, freeCadTests]
+    
+    steps:
+      # --------------------------------------------
+      # Checks out a copy of your repository
+      # --------------------------------------------
+      - name: Setup - Checkout code
+        uses: actions/checkout@v2
+
+      # --------------------------------------------
+      # Perform various setup operations
+      # --------------------------------------------
+      - name: Setup - Prepare OS
+        uses: virtualsatellite/ci-actions/ci-setup-action@master
+
+      # --------------------------------------------
+      # Build and Deploy Decision
+      # --------------------------------------------
+      - name: Build - Build and Deploy Decision
+        id: build_decision
+        uses: virtualsatellite/ci-actions/ci-build-decision-action@master
+
+      # --------------------------------------------
+      # Development branch
+      # --------------------------------------------
+      - name: Build - Assemble
+        run: |
+          pushd .
+          cd $GITHUB_WORKSPACE
+          mkdir ./deploy
+          mkdir ./deploy/unsecured
+          zip -r ./deploy/unsecured/VirtualSatellite4_FreeCAD_mod_Development_$VERSION.zip ./VirtualSatelliteCAD -x "*/.*"
+          tar --xform s:'^./':: --exclude="*/.*" -czvf ./deploy/unsecured/VirtualSatellite4_FreeCAD_mod_Development_$VERSION.tar.gz ./VirtualSatelliteCAD
+          popd
+        if: ${{ steps.build_decision.outputs.deploy_type == 'deploy' && steps.build_decision.outputs.build_type == 'development' }}
+      
+      # --------------------------------------------
+      # Integration branch
+      # --------------------------------------------
+      - name: Build - Assemble
+        run: |
+          pushd .
+          cd $GITHUB_WORKSPACE
+          mkdir ./deploy
+          mkdir ./deploy/unsecured
+          zip -r ./deploy/unsecured/VirtualSatellite4_FreeCAD_mod_Integration_$VERSION.zip ./VirtualSatelliteCAD -x "*/.*"
+          tar --xform s:'^./':: --exclude="*/.*" -czvf ./deploy/unsecured/VirtualSatellite4_FreeCAD_mod_Integration_$VERSION.tar.gz ./VirtualSatelliteCAD
+          popd
+        if: ${{ steps.build_decision.outputs.deploy_type == 'deploy' && steps.build_decision.outputs.build_type == 'integration' }}
+        
+      # --------------------------------------------
+      # Release branch
+      # --------------------------------------------
+      - name: Build - Assemble
+        run: |
+          pushd .
+          cd $GITHUB_WORKSPACE
+          mkdir ./deploy
+          mkdir ./deploy/secured
+          zip -r ./deploy/secured/VirtualSatellite4_FreeCAD_mod_Release_$VERSION.zip ./VirtualSatelliteCAD -x "*/.*"
+          tar --xform s:'^./':: --exclude="*/.*" -czvf ./deploy/secured/VirtualSatellite4_FreeCAD_mod_Release_$VERSION.tar.gz ./VirtualSatelliteCAD
+          popd
+        if: ${{ steps.build_decision.outputs.deploy_type == 'release'}}
+     
+      # ---------------------------------------------
+      # Deploying to github releases
+      # --------------------------------------------
+      - name: Build - Deploy GH
+        uses: virtualsatellite/ci-actions/ci-deploy-gh-product-action@master
+        with:
+          build_profile: ${{ steps.build_decision.outputs.build_type }}
+          gh_token: ${{ secrets.GITHUB_TOKEN }}
+        if: ${{ steps.build_decision.outputs.deploy_type == 'deploy' }}
+      

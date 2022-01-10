@@ -24,6 +24,7 @@
 # SPDX-License-Identifier: LGPL-3.0-or-later
 #
 import math
+import freecad.name_converter as nc
 
 
 M_TO_MM = 1000
@@ -72,7 +73,7 @@ PRODUCT_IDENTIFIER = "assembly_"
 
 
 def _get_combined_name_uuid(name, uuid):
-    return str(name + "_" + uuid.replace("-", "_"))
+    return str(nc.toFreeCad(name) + "_" + nc.toFreeCad(uuid))
 
 
 def _get_element_name_uuid(json_object):

@@ -29,10 +29,12 @@ from json_io.parts.json_part_box import JsonPartBox
 from json_io.parts.json_part_cylinder import JsonPartCylinder
 from json_io.parts.json_part_cone import JsonPartCone
 from json_io.parts.json_part_sphere import JsonPartSphere
-from json_io.json_definitions import JSON_ELEMENT_SHAPE,\
-    JSON_ELEMENT_SHAPE_NONE
+from json_io.json_definitions import JSON_ELEMENT_SHAPE
 import FreeCAD
 from json_io.parts.json_part_geometry import JsonPartGeometry
+from json_io.parts.json_part_none import JsonPartNone
+from json_io.json_spread_sheet import JsonSpreadSheet
+from json_io.parts.json_part import AJsonPart
 
 Log = FreeCAD.Console.PrintLog
 Msg = FreeCAD.Console.PrintMessage
@@ -50,30 +52,24 @@ class JsonPartFactory(object):
         Log("Creating part object...\n")
         shape = str(json_object[JSON_ELEMENT_SHAPE])
 
-        if shape != JSON_ELEMENT_SHAPE_NONE:
-            # Dispatch to creation method depending on shape type
-            create_method_name = "_create_json_part_" + shape.lower()
-            create_method_dispatch = getattr(cls, create_method_name, lambda: Err("Invalid call to : " + create_method_name + "\n"))
-            json_part_x = create_method_dispatch()
-            json_part_x.parse_from_json(json_object)
+        # Dispatch to creation method depending on shape type
+        create_method_name = "_create_json_part_" + shape.lower()
+        create_method_dispatch = getattr(cls, create_method_name, lambda: Err("Invalid call to : " + create_method_name + "\n"))
+        json_part_x = create_method_dispatch()
+        json_part_x.parse_from_json(json_object)
 
-            Log("Done creating part object.\n")
-            return json_part_x
-        else:
-            Log("No part object created.\n")
-            return None
+        Log("Done creating part object.\n")
+        return json_part_x
 
     @classmethod
-    def create_from_freecad(cls, freecad_object):
+    def create_from_freecad(cls, freecad_object, freecad_sheet):
         Log("Reading part object...\n")
 
-        shape = freecad_object.TypeId.split(":")[-1]
-        if shape == "Feature":
-            # assume geometry
-            shape = "Geometry"
+        # get the shape from the sheet and not the object
+        part = AJsonPart()
+        sheet = JsonSpreadSheet(part)
+        shape = sheet.read_sheet_attribute_from_freecad(freecad_sheet, "shape")
 
-        # TODO: JSON_ELEMENT_SHAPE_NONE: can't be exported because no representation in FreeCAD exists
-        # but it should have a sheet and that information should be exported
         create_method_name = "_create_json_part_" + shape.lower()
         create_method_dispatch = getattr(cls, create_method_name, lambda: Err("Invalid call to : " + create_method_name + "\n"))
         part_x = create_method_dispatch()
@@ -102,5 +98,10 @@ class JsonPartFactory(object):
 
     @classmethod
     def _create_json_part_geometry(cls):
-        Log("Creating sphere part.\n")
+        Log("Creating geometry part.\n")
         return JsonPartGeometry()
+
+    @classmethod
+    def _create_json_part_none(cls):
+        Log("Creating none part.\n")
+        return JsonPartNone()
