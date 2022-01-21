@@ -36,7 +36,7 @@ class VirtualSatelliteWorkbench(Workbench):  # NOQA @UndefinedVariable
     '''
 
     global FREECAD_MOD_VERSION
-    FREECAD_MOD_VERSION = '0.1.0 Beta'
+    FREECAD_MOD_VERSION = '0.2.0 Beta'
 
     def __init__(self, plugins):
         self.plugins = plugins
