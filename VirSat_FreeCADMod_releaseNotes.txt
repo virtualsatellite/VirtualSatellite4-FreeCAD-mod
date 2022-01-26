@@ -1,5 +1,23 @@
 VirSat FreeCAD Mod Release Notes
--------------------------
+--------------------------------
+
+Release 0.2.0 (31th January 2022)
+----------------------------------
+
+New Features:
+   Added Virtual Satellite REST Server Plugin #45 #52 Feature
+   Added plugin mechanism #43 Feature
+   Improved file name handling #48 Feature
+   Migrated build infrastructure to github actions #41 Build
+   Added About Dialog #37 Feature
+   Added directory selection dialog #46 Feature
+
+Usability Updates:
+   Improved FCstd file storage #19 Usability
+
+Fixed Bugs:
+   Improved license display in github #24 Bug
+
 Release 0.1.0 (10th February 2020)
 ----------------------------------
 
