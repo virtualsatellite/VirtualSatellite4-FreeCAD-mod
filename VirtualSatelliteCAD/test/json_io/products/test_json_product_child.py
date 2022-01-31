@@ -33,7 +33,7 @@ from json_io.products.json_product_child import JsonProductChild
 from freecad.active_document import ActiveDocument
 from json_io.json_definitions import get_product_name_uuid, PART_IDENTIFIER, PRODUCT_IDENTIFIER
 from test.json_io.test_json_data import TEST_JSON_PRODUCT_WITHOUT_CHILDREN,\
-    TEST_JSON_PRODUCT_WITH_ONE_CHILD
+    TEST_JSON_PRODUCT_WITH_ONE_CHILD, BASEPLATE_UNIQ_NAME, BASEPLATEBOTTOM_UNIQ_NAME
 
 
 App = FreeCAD
@@ -58,10 +58,10 @@ class TestJsonProductChild(AWorkingDirectoryTest):
         json_product = JsonProductChild().parse_from_json(json_object)
 
         self.assertEqual(json_product.name, "BasePlateBottom", "Property is correctly set")
-        self.assertEqual(json_product.uuid, "e8794f3d_86ec_44c5_9618_8b7170c45484", "Property is correctly set")
+        self.assertEqual(json_product.uuid, "e8794f3d-86ec-44c5-9618-8b7170c45484", "Property is correctly set")
 
         self.assertEqual(json_product.part_name, "BasePlate", "Property is correctly set")
-        self.assertEqual(json_product.part_uuid, "3d3708fd_5c6c_4af9_b710_d68778466084", "Property is correctly set")
+        self.assertEqual(json_product.part_uuid, "3d3708fd-5c6c-4af9-b710-d68778466084", "Property is correctly set")
 
         # in case the assembly is parsed as a child, like in this test, it has to have positions and orientations
         self.assertEqual(json_product.pos_x, 20, "Property is correctly set")
@@ -74,7 +74,7 @@ class TestJsonProductChild(AWorkingDirectoryTest):
 
         self.assertFalse(json_product.has_children, "Current product has no children")
         self.assertEquals(json_product.get_part_unique_name(),
-                          PART_IDENTIFIER + "BasePlate_3d3708fd_5c6c_4af9_b710_d68778466084", "No children thus references the part")
+                          PART_IDENTIFIER + BASEPLATE_UNIQ_NAME, "No children thus references the part")
 
     def test_parse_with_children(self):
         json_object = json.loads(self.json_data_with_child)
@@ -82,7 +82,7 @@ class TestJsonProductChild(AWorkingDirectoryTest):
 
         self.assertTrue(json_product.has_children, "Current product has children")
         self.assertEquals(json_product.get_part_unique_name(),
-                          PRODUCT_IDENTIFIER + "BasePlateBottom_e8794f3d_86ec_44c5_9618_8b7170c45484", "No children thus references the part")
+                          PRODUCT_IDENTIFIER + BASEPLATEBOTTOM_UNIQ_NAME, "No children thus references the part")
 
     def test_create_part_product_child(self):
         self.create_Test_Part()

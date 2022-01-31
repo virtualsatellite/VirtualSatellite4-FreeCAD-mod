@@ -26,3 +26,4 @@
 
 COMMAND_ID_EXPORT_2_VIRTUAL_SATELLITE = 'VirtualSatellite_Export'
 COMMAND_ID_IMPORT_2_FREECAD = 'VirtualSatellite_Import'
+COMMAND_ID_ABOUT = 'VirtualSatellite_About'

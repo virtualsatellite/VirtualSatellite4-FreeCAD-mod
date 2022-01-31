@@ -30,6 +30,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 SPDX-License-Identifier: LGPL-3.0-or-later
 
+## DLR logo and images 
+
+(c) Copyright by DLR (German Aerospace Center) Institute for Software Technology 2020. The DLR logo, CEF logo and DLR images are under copyright of DLR (German Aerospace Center), <https://www.dlr.de/>. The DLR logo, CEF Logo and images cannot be altered or used without DLR&apos;s permission. DLR logo and images are provided for the use under the following conditions <https://www.dlr.de/EN/Service/Imprint/imprint_node.html>. 
+
 ## Third-party Content
 
 Currently no further third-party content used.

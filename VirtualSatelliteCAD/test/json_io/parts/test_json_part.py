@@ -55,7 +55,7 @@ class TestJsonPart(AWorkingDirectoryTest):
         json_part = AJsonPart().parse_from_json(json_object)
 
         self.assertEqual(json_part.name, "Beam", "Property is correctly set")
-        self.assertEqual(json_part.uuid, "6201a731_d703_43f8_ab37_6a0581dfe022", "Property is correctly set")
+        self.assertEqual(json_part.uuid, "6201a731-d703-43f8-ab37-6a0581dfe022", "Property is correctly set")
         self.assertEqual(json_part.shape, "BOX", "Property is correctly set")
 
         self.assertEqual(json_part.length, 40, "Property is correctly set")
@@ -107,4 +107,4 @@ class TestJsonPart(AWorkingDirectoryTest):
         json_part = AJsonPart()
         json_part.parse_from_json(json_object)
 
-        self.assertEquals(json_part.get_unique_name(), PART_IDENTIFIER + "Beam_6201a731_d703_43f8_ab37_6a0581dfe022", "Correct unique name")
+        self.assertEquals(json_part.get_unique_name(), PART_IDENTIFIER + "Beam_6201a731___d703___43f8___ab37___6a0581dfe022", "Correct unique name")

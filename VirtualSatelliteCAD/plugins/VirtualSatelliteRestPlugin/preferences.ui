@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>894</width>
+    <height>621</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>VirtualSatelliteRESTPlugin</string>
+  </property>
+  <layout class="QVBoxLayout">
+   <property name="spacing">
+    <number>6</number>
+   </property>
+   <property name="leftMargin">
+    <number>9</number>
+   </property>
+   <property name="topMargin">
+    <number>9</number>
+   </property>
+   <property name="rightMargin">
+    <number>9</number>
+   </property>
+   <property name="bottomMargin">
+    <number>9</number>
+   </property>
+   <item>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>General</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_VirSat">
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Repository name</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="Gui::PrefLineEdit" name="lineEdit_2">
+        <property name="prefEntry" stdset="0">
+         <cstring>RepositoryName</cstring>
+        </property>
+        <property name="prefPath" stdset="0">
+         <cstring>Mod/VirtualSatelliteREST</cstring>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Username</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="Gui::PrefLineEdit" name="lineEdit_3">
+        <property name="prefEntry" stdset="0">
+         <cstring>Username</cstring>
+        </property>
+        <property name="prefPath" stdset="0">
+         <cstring>Mod/VirtualSatelliteREST</cstring>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Password</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="Gui::PrefLineEdit" name="lineEdit_4">
+        <property name="echoMode">
+         <enum>QLineEdit::Password</enum>
+        </property>
+        <property name="prefEntry" stdset="0">
+         <cstring>Password</cstring>
+        </property>
+        <property name="prefPath" stdset="0">
+         <cstring>Mod/VirtualSatelliteREST</cstring>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Api Version</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="Gui::PrefComboBox" name="comboBox">
+        <property name="prefEntry" stdset="0">
+         <cstring>ApiVersion</cstring>
+        </property>
+        <property name="prefPath" stdset="0">
+         <cstring>Mod/VirtualSatelliteREST</cstring>
+        </property>
+        <item>
+         <property name="text">
+          <string>0.0.1</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox_3">
+     <property name="title">
+      <string>Host</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_VirSat">
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="Gui::PrefRadioButton" name="radioButton">
+            <property name="text">
+             <string>HTTP</string>
+            </property>
+            <property name="prefEntry" stdset="0">
+             <cstring>Http</cstring>
+            </property>
+            <property name="prefPath" stdset="0">
+             <cstring>Mod/VirtualSatelliteREST</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="Gui::PrefRadioButton" name="radioButton_2">
+            <property name="text">
+             <string>HTTPS</string>
+            </property>
+            <property name="prefEntry" stdset="0">
+             <cstring>Https</cstring>
+            </property>
+            <property name="prefPath" stdset="0">
+             <cstring>Mod/VirtualSatelliteREST</cstring>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_5">
+          <property name="text">
+           <string>Adress</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout" stretch="10,0,0">
+          <item>
+           <widget class="Gui::PrefLineEdit" name="lineEdit_5">
+            <property name="prefEntry" stdset="0">
+             <cstring>Hostadress</cstring>
+            </property>
+            <property name="prefPath" stdset="0">
+             <cstring>Mod/VirtualSatelliteREST</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_6">
+            <property name="text">
+             <string>:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="Gui::PrefLineEdit" name="lineEdit_6">
+            <property name="prefEntry" stdset="0">
+             <cstring>Port</cstring>
+            </property>
+            <property name="prefPath" stdset="0">
+             <cstring>Mod/VirtualSatelliteREST</cstring>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
+      <string>Starting SEI at import</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_VirSat">
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="Gui::PrefRadioButton" name="askForDirectoryRadioButton">
+          <property name="text">
+           <string>Always ask for a starting SEI</string>
+          </property>
+          <property name="prefEntry" stdset="0">
+           <cstring>AskForStartingSEI</cstring>
+          </property>
+          <property name="prefPath" stdset="0">
+           <cstring>Mod/VirtualSatelliteREST</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Gui::PrefRadioButton" name="alwaysUsePrefFolderRadioButton">
+          <property name="text">
+           <string>Always use this starting SEI (by UUID):</string>
+          </property>
+          <property name="prefEntry" stdset="0">
+           <cstring>UseStaticStartingSEI</cstring>
+          </property>
+          <property name="prefPath" stdset="0">
+           <cstring>Mod/VirtualSatelliteREST</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Gui::PrefLineEdit" name="lineEdit">
+          <property name="prefEntry" stdset="0">
+           <cstring>StartingSEI</cstring>
+          </property>
+          <property name="prefPath" stdset="0">
+           <cstring>Mod/VirtualSatelliteREST</cstring>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>Gui::PrefRadioButton</class>
+   <extends>QRadioButton</extends>
+   <header>Gui/PrefWidgets.h</header>
+  </customwidget>
+  <customwidget>
+   <class>Gui::PrefComboBox</class>
+   <extends>QComboBox</extends>
+   <header>Gui/PrefWidgets.h</header>
+  </customwidget>
+  <customwidget>
+   <class>Gui::PrefLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>Gui/PrefWidgets.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

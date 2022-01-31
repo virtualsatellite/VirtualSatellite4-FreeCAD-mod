@@ -39,3 +39,8 @@ from test.json_io.products.test_json_product_assembly import TestJsonProductAsse
 from test.json_io.products.test_json_product_child import TestJsonProductChild # NOQA
 from test.json_io.products.test_json_product_assembly_tree_traverser import TestJsonProductAssemblyTreeTraverser # NOQA
 from test.freecad.test_actice_document import TestActiveDocument # NOQA
+from test.plugins.VirtualSatelliteRestPlugin.test_api_switch import TestApiSwitch # NOQA
+from test.plugins.VirtualSatelliteRestPlugin.test_tree_crawler import TestTreeCrawler # NOQA
+from test.plugins.VirtualSatelliteRestPlugin.test_importer import TestImporter # NOQA
+from test.plugins.VirtualSatelliteRestPlugin.test_exporter import TestExorter # NOQA
+from test.freecad.test_name_converter import TestNameConverter # NOQA

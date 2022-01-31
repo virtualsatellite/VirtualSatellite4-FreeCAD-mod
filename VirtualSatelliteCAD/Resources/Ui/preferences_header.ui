@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>894</width>
+    <height>621</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>General Preferences</string>
+  </property>
+  <layout class="QVBoxLayout">
+   <property name="spacing">
+    <number>6</number>
+   </property>
+   <property name="leftMargin">
+    <number>9</number>
+   </property>
+   <property name="topMargin">
+    <number>9</number>
+   </property>
+   <property name="rightMargin">
+    <number>9</number>
+   </property>
+   <property name="bottomMargin">
+    <number>9</number>
+   </property>
+   <item>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Storage of files (.FCstd)</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="Gui::PrefRadioButton" name="askForDirectoryRadioButton">
+          <property name="text">
+           <string>Always ask for a project folder</string>
+          </property>
+          <property name="prefEntry" stdset="0">
+           <cstring>AskForFileDirectory</cstring>
+          </property>
+          <property name="prefPath" stdset="0">
+           <cstring>Mod/VirtualSatelliteCAD</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Gui::PrefRadioButton" name="alwaysUsePrefFolderRadioButton">
+          <property name="text">
+           <string>Always store files in this project folder:</string>
+          </property>
+          <property name="prefEntry" stdset="0">
+           <cstring>UseStaticFileDirectory</cstring>
+          </property>
+          <property name="prefPath" stdset="0">
+           <cstring>Mod/VirtualSatelliteCAD</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Gui::PrefFileChooser" name="fileDirectoryChooser">
+          <property name="prefEntry" stdset="0">
+           <cstring>FileDirectory</cstring>
+          </property>
+          <property name="prefPath" stdset="0">
+           <cstring>Mod/VirtualSatelliteCAD</cstring>
+          </property>
+          <property name="mode">
+           <enum>Gui::FileChooser::Directory</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
+      <string>Select active Plugin</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_4">
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0">
+        <property name="spacing">
+         <number>6</number>
+        </property>

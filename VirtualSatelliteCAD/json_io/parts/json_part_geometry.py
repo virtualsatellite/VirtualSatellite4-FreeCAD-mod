@@ -79,26 +79,31 @@ class JsonPartGeometry(AJsonPart):
         if document_object is None:
             # Import the mesh
             Mesh.insert(self.stl_path)
-            meshed_object = active_document.app_active_document.getObject(object_geometry_name)
+            # Sometimes the Mesh.insert function will escape the name, so get the created object by its label
+            meshed_object = active_document.app_active_document.getObjectsByLabel(object_geometry_name)[0]
             meshed_object.Label = object_geometry_name + "_mesh"
 
             # Make form out of the mesh
             shape_form = Part.Shape()
             shape_form.makeShapeFromMesh(meshed_object.Mesh.Topology, 0.100000)
-            active_document.app_active_document.addObject("Part::Feature", object_geometry_name + "_form").Shape = shape_form
+            form_object = active_document.app_active_document.addObject("Part::Feature", object_geometry_name + "_form")
+            form_object.Shape = shape_form
+            form_object.Label = object_geometry_name + "_form"
 
             # Now clean the shape
             shape_cleaned = shape_form.removeSplitter()
-            active_document.app_active_document.addObject("Part::Feature", object_geometry_name + "_cleaned").Shape = shape_cleaned
+            cleaned_object = active_document.app_active_document.addObject("Part::Feature", object_geometry_name + "_cleaned")
+            cleaned_object.Shape = shape_cleaned
+            cleaned_object.Label = object_geometry_name + "_cleaned"
 
             # Now create the solid
             shape_solid = Part.Solid(shape_cleaned)
             active_document.app_active_document.addObject("Part::Feature", "Geometry").Shape = shape_solid
 
             # Hide origin objects
-            active_document.gui_active_document.getObject(object_geometry_name).Visibility = False
-            active_document.gui_active_document.getObject(object_geometry_name + "_form").Visibility = False
-            active_document.gui_active_document.getObject(object_geometry_name + "_cleaned").Visibility = False
+            meshed_object.ViewObject.Visibility = False
+            form_object.ViewObject.Visibility = False
+            cleaned_object.ViewObject.Visibility = False
 
     def _export_to_stl(self, freecad_object):
 
