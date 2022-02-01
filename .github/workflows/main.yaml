@@ -252,7 +252,7 @@ jobs:
           zip -r ./deploy/secured/VirtualSatellite4_FreeCAD_mod_Release_$VERSION.zip ./VirtualSatelliteCAD -x "*/.*"
           tar --xform s:'^./':: --exclude="*/.*" -czvf ./deploy/secured/VirtualSatellite4_FreeCAD_mod_Release_$VERSION.tar.gz ./VirtualSatelliteCAD
           popd
-        if: ${{ steps.build_decision.outputs.deploy_type == 'release'}}
+        if: ${{ steps.build_decision.outputs.build_type == 'release'}}
      
       # ---------------------------------------------
       # Deploying to github releases
