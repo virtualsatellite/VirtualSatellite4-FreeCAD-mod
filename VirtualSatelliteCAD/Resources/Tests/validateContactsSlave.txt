@@ -1,0 +1,6 @@
+BaseplateXY_6997d1a8_8859_462d_b50f_1b4ce04208ff,0.0
+BaseplateYZ_2ff7921c_8971_4de7_93ee_115cdf80eff7,0.0
+BaseplateYZ_2ff7921c_8971_4de7_93ee_115cdf80eff7,0.0
+PowerBattery_978e1011_778c_48ae_a366_09a283bf0a91,10.0
+PayloadScience_d5384e56_711c_4361_b31c_1dde0d3b4784,0.0
+PayloadCommunications_9c0e82fc_6ba7_43c9_ba71_a6bdea9974cf,0.0

@@ -1,0 +1,293 @@
+# -*- coding: utf-8 -*-
+#
+# Virtual Satellite 4 - FreeCAD module
+#
+# Copyright (C) 2019 by
+#
+#    DLR (German Aerospace Center),
+#    Software for Space Systems and interactive Visualization
+#    Braunschweig, Germany
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+# SPDX-License-Identifier: LGPL-3.0-or-later
+#
+JSON_IGNORE_EDGE = """
+{
+   "Products":{
+      "children":[
+         {
+            "posX":0.0,
+            "posY":0.0,
+            "posZ":-5.0E-4,
+            "rotX":0.0,
+            "children":[],
+            "rotZ":0.0,
+            "rotY":0.0,
+            "name":"Baseplate",
+            "uuid":"2c06530c-4ee1-4388-bff8-2e55afaae114",
+            "partUuid":"2c06530c-4ee1-4388-bff8-2e55afaae114",
+            "partName":"Baseplate"
+         },
+         {
+            "posX":0.0,
+            "posY":0.0,
+            "posZ":0.05,
+            "rotX":0.0,
+            "children":[],
+            "rotZ":0.0,
+            "rotY":0.0,
+            "name":"PCDU",
+            "uuid":"e7ca332f-4740-4170-b9ce-1029ee436162",
+            "partUuid":"e7ca332f-4740-4170-b9ce-1029ee436162",
+            "partName":"PCDU"
+         }
+      ],
+      "name":"ConfigurationTree",
+      "uuid":"154aafcc-5fb5-41e4-ac67-50117614987d"
+   },
+   "Parts":[
+      {
+         "color":16777215,
+         "shape":"BOX",
+         "name":"PCDU",
+         "lengthY":0.1,
+         "lengthX":0.1,
+         "radius":0.0,
+         "uuid":"e7ca332f-4740-4170-b9ce-1029ee436162",
+         "lengthZ":0.1
+      },
+      {
+         "color":16777215,
+         "shape":"BOX",
+         "name":"Baseplate",
+         "lengthY":0.3,
+         "lengthX":0.3,
+         "radius":0.0,
+         "uuid":"2c06530c-4ee1-4388-bff8-2e55afaae114",
+         "lengthZ":0.001
+      }
+   ]
+}
+"""
+
+JSON_NO_OVERLAP = """
+{
+   "Products":{
+      "children":[
+         {
+            "posX":1.0,
+            "posY":0.0,
+            "posZ":0.0,
+            "rotX":0.0,
+            "children":[],
+            "rotZ":0.0,
+            "rotY":0.0,
+            "name":"Subsystem1",
+            "uuid":"d6142b98-a2aa-4771-ba51-22346971893e",
+            "partUuid":"d6142b98-a2aa-4771-ba51-22346971893e",
+            "partName":"Subsystem1"
+         },
+         {
+            "posX":0.0,
+            "posY":0.0,
+            "posZ":0.0,
+            "rotX":0.0,
+            "children":[],
+            "rotZ":0.0,
+            "rotY":0.0,
+            "name":"Subsystem2",
+            "uuid":"27fc11b5-ce88-4b32-9d53-27987c411584",
+            "partUuid":"27fc11b5-ce88-4b32-9d53-27987c411584",
+            "partName":"Subsystem2"
+         }
+      ],
+      "name":"ConfigurationTree",
+      "uuid":"68ef11de-e1a0-43f1-b8bd-827bedc7af83"
+   },
+   "Parts":[
+      {
+         "color":16777215,
+         "shape":"BOX",
+         "name":"Subsystem1",
+         "lengthY":1.5,
+         "lengthX":1.0,
+         "radius":0.0,
+         "uuid":"d6142b98-a2aa-4771-ba51-22346971893e",
+         "lengthZ":1.5
+      },
+      {
+         "color":16777215,
+         "shape":"BOX",
+         "name":"Subsystem2",
+         "lengthY":1.0,
+         "lengthX":1.0,
+         "radius":0.0,
+         "uuid":"27fc11b5-ce88-4b32-9d53-27987c411584",
+         "lengthZ":1.0
+      }
+   ]
+}
+"""
+
+JSON_MAKE_CONTACT_FACES = """
+{
+   "Products":{
+      "children":[
+         {
+            "posX":0.249,
+            "posY":-0.005,
+            "posZ":0.249,
+            "rotX":0.0,
+            "children":[],
+            "rotZ":0.0,
+            "rotY":0.0,
+            "name":"BaseplateXZ",
+            "uuid":"af0a4136-dbc7-441f-9a64-cde9bb47b3b2",
+            "partUuid":"af0a4136-dbc7-441f-9a64-cde9bb47b3b2",
+            "partName":"BaseplateXZ"
+         },
+         {
+            "posX":0.249,
+            "posY":0.25,
+            "posZ":-0.005,
+            "rotX":0.0,
+            "children":[],
+            "rotZ":0.0,
+            "rotY":0.0,
+            "name":"BaseplateXY",
+            "uuid":"6997d1a8-8859-462d-b50f-1b4ce04208ff",
+            "partUuid":"6997d1a8-8859-462d-b50f-1b4ce04208ff",
+            "partName":"BaseplateXY"
+         },
+         {
+            "posX":-0.005,
+            "posY":0.25,
+            "posZ":0.25,
+            "rotX":0.0,
+            "children":[],
+            "rotZ":0.0,
+            "rotY":0.0,
+            "name":"BaseplateYZ",
+            "uuid":"2ff7921c-8971-4de7-93ee-115cdf80eff7",
+            "partUuid":"2ff7921c-8971-4de7-93ee-115cdf80eff7",
+            "partName":"BaseplateYZ"
+         },
+         {
+            "posX":0.3,
+            "posY":0.3,
+            "posZ":0.075,
+            "rotX":1.5707963267948966,
+            "children":[],
+            "rotZ":0.0,
+            "rotY":0.0,
+            "name":"PayloadScience",
+            "uuid":"d5384e56-711c-4361-b31c-1dde0d3b4784",
+            "partUuid":"d5384e56-711c-4361-b31c-1dde0d3b4784",
+            "partName":"PayloadScience"
+         },
+         {
+            "posX":0.1,
+            "posY":0.2,
+            "posZ":0.3,
+            "rotX":0.0,
+            "children":[],
+            "rotZ":0.0,
+            "rotY":0.0,
+            "name":"PayloadCommunications",
+            "uuid":"9c0e82fc-6ba7-43c9-ba71-a6bdea9974cf",
+            "partUuid":"9c0e82fc-6ba7-43c9-ba71-a6bdea9974cf",
+            "partName":"PayloadCommunications"
+         },
+         {
+            "posX":0.4,
+            "posY":0.049,
+            "posZ":0.2,
+            "rotX":1.5707963267948966,
+            "children":[],
+            "rotZ":0.0,
+            "rotY":1.5707963267948966,
+            "name":"PowerBattery",
+            "uuid":"978e1011-778c-48ae-a366-09a283bf0a91",
+            "partUuid":"978e1011-778c-48ae-a366-09a283bf0a91",
+            "partName":"PowerBattery"
+         }
+      ],
+      "name":"CT_ValidationSatellite",
+      "uuid":"e7a4f2ec-2858-4d84-b132-f6ea68967b2c"
+   },
+   "Parts":[
+      {
+         "color":16777215,
+         "shape":"CYLINDER",
+         "name":"PowerBattery",
+         "lengthY":0.15,
+         "lengthX":0.0,
+         "radius":0.05,
+         "uuid":"978e1011-778c-48ae-a366-09a283bf0a91",
+         "lengthZ":0.0
+      },
+      {
+         "color":16777215,
+         "shape":"BOX",
+         "name":"BaseplateXY",
+         "lengthY":0.5,
+         "lengthX":0.5,
+         "radius":0.0,
+         "uuid":"6997d1a8-8859-462d-b50f-1b4ce04208ff",
+         "lengthZ":0.01
+      },
+      {
+         "color":16777215,
+         "shape":"BOX",
+         "name":"BaseplateYZ",
+         "lengthY":0.5,
+         "lengthX":0.01,
+         "radius":0.0,
+         "uuid":"2ff7921c-8971-4de7-93ee-115cdf80eff7",
+         "lengthZ":0.5
+      },
+      {
+         "color":16777215,
+         "shape":"CYLINDER",
+         "name":"PayloadScience",
+         "lengthY":0.15,
+         "lengthX":0.0,
+         "radius":0.08,
+         "uuid":"d5384e56-711c-4361-b31c-1dde0d3b4784",
+         "lengthZ":0.0
+      },
+      {
+         "color":16777215,
+         "shape":"BOX",
+         "name":"PayloadCommunications",
+         "lengthY":0.2,
+         "lengthX":0.2,
+         "radius":0.0,
+         "uuid":"9c0e82fc-6ba7-43c9-ba71-a6bdea9974cf",
+         "lengthZ":0.2
+      },
+      {
+         "color":16777215,
+         "shape":"BOX",
+         "name":"BaseplateXZ",
+         "lengthY":0.01,
+         "lengthX":0.5,
+         "radius":0.0,
+         "uuid":"af0a4136-dbc7-441f-9a64-cde9bb47b3b2",
+         "lengthZ":0.5
+      }
+   ]
+}
+"""

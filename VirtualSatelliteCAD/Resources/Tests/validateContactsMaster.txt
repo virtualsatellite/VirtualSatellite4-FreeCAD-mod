@@ -1,0 +1,6 @@
+BaseplateXZ_af0a4136_dbc7_441f_9a64_cde9bb47b3b2,0.0
+BaseplateXZ_af0a4136_dbc7_441f_9a64_cde9bb47b3b2,0.0
+BaseplateXY_6997d1a8_8859_462d_b50f_1b4ce04208ff,0.0
+BaseplateXZ_af0a4136_dbc7_441f_9a64_cde9bb47b3b2,10.0
+BaseplateXY_6997d1a8_8859_462d_b50f_1b4ce04208ff,0.0
+BaseplateYZ_2ff7921c_8971_4de7_93ee_115cdf80eff7,0.0
