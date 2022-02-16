@@ -29,8 +29,9 @@ from json_io.json_importer import JsonImporter
 from module.environment import Environment
 import json
 import shutil
-from scripts.thermal.test_json_data import JSON_IGNORE_EDGE, JSON_NO_OVERLAP,\
+from test.scripts.thermal.test_json_data import JSON_IGNORE_EDGE, JSON_NO_OVERLAP,\
     JSON_MAKE_CONTACT_FACES
+import os
 
 
 class TestPrepareModel(AWorkingDirectoryTest):
@@ -105,9 +106,9 @@ class TestPrepareModel(AWorkingDirectoryTest):
         _, _, active_document = json_importer.full_import(json_object)
 
         # Copy the test resources in the test working directory
-        master_test_resource_path = Environment.get_test_resource_path("validateContactsMaster.txt")
+        master_test_resource_path = Environment.get_test_resource_path(os.path.join("Thermal", "validateContactsMaster.txt"))
         shutil.copy(master_test_resource_path, self._WORKING_DIRECTORY)
-        slaves_test_resource_path = Environment.get_test_resource_path("validateContactsSlave.txt")
+        slaves_test_resource_path = Environment.get_test_resource_path(os.path.join("Thermal", "validateContactsSlave.txt"))
         shutil.copy(slaves_test_resource_path, self._WORKING_DIRECTORY)
 
         objectCountBefore = len(active_document.app_active_document.Objects)

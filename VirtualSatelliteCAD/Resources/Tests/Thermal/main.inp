@@ -1,0 +1,86 @@
+*INCLUDE, INPUT=BaseplateXZ_af0a4136_dbc7_441f_9a64_cde9bb47b3b2.inp
+*INCLUDE, INPUT=BaseplateXY_6997d1a8_8859_462d_b50f_1b4ce04208ff.inp
+*INCLUDE, INPUT=BaseplateYZ_2ff7921c_8971_4de7_93ee_115cdf80eff7.inp
+*INCLUDE, INPUT=PayloadScience_d5384e56_711c_4361_b31c_1dde0d3b4784.inp
+*INCLUDE, INPUT=PayloadCommunications_9c0e82fc_6ba7_43c9_ba71_a6bdea9974cf.inp
+*INCLUDE, INPUT=PowerBattery_978e1011_778c_48ae_a366_09a283bf0a91.inp
+
+*PHYSICAL CONSTANTS, ABSOLUTE ZERO = 0, STEFAN BOLTZMANN = 5.669E-8
+
+*INITIAL CONDITIONS,TYPE=TEMPERATURE
+Nall,293
+BaseplateXZ,300.0
+BaseplateXY,300.0
+BaseplateYZ,300.0
+PayloadScience,300.0
+PayloadCommunications,300.0
+PowerBattery,300.0
+
+*INCLUDE, INPUT=Materials.inp
+
+*INCLUDE, INPUT=add_contact.inp
+*INCLUDE, INPUT=contact_surfaces.inp
+*TIME POINTS,NAME=T1,GENERATE
+0,6000,1000
+
+*STEP
+
+*HEAT TRANSFER,DIRECT,
+1000,6000.0
+
+*DFLUX
+**INCLUDE, INPUT=BaseplateXZ_af0a4136_dbc7_441f_9a64_cde9bb47b3b2.dfl
+*INCLUDE, INPUT=BaseplateXZ_af0a4136_dbc7_441f_9a64_cde9bb47b3b2.bfl
+*INCLUDE, INPUT=BaseplateXZ_af0a4136_dbc7_441f_9a64_cde9bb47b3b2.hf
+*INCLUDE, INPUT=BaseplateXZ_af0a4136_dbc7_441f_9a64_cde9bb47b3b2.bc
+
+
+*DFLUX
+**INCLUDE, INPUT=BaseplateXY_6997d1a8_8859_462d_b50f_1b4ce04208ff.dfl
+*INCLUDE, INPUT=BaseplateXY_6997d1a8_8859_462d_b50f_1b4ce04208ff.bfl
+*INCLUDE, INPUT=BaseplateXY_6997d1a8_8859_462d_b50f_1b4ce04208ff.hf
+*INCLUDE, INPUT=BaseplateXY_6997d1a8_8859_462d_b50f_1b4ce04208ff.bc
+
+
+*DFLUX
+**INCLUDE, INPUT=BaseplateYZ_2ff7921c_8971_4de7_93ee_115cdf80eff7.dfl
+*INCLUDE, INPUT=BaseplateYZ_2ff7921c_8971_4de7_93ee_115cdf80eff7.bfl
+*INCLUDE, INPUT=BaseplateYZ_2ff7921c_8971_4de7_93ee_115cdf80eff7.hf
+*INCLUDE, INPUT=BaseplateYZ_2ff7921c_8971_4de7_93ee_115cdf80eff7.bc
+
+
+*DFLUX
+**INCLUDE, INPUT=PayloadScience_d5384e56_711c_4361_b31c_1dde0d3b4784.dfl
+*INCLUDE, INPUT=PayloadScience_d5384e56_711c_4361_b31c_1dde0d3b4784.bfl
+*INCLUDE, INPUT=PayloadScience_d5384e56_711c_4361_b31c_1dde0d3b4784.hf
+*INCLUDE, INPUT=PayloadScience_d5384e56_711c_4361_b31c_1dde0d3b4784.bc
+
+
+*DFLUX
+**INCLUDE, INPUT=PayloadCommunications_9c0e82fc_6ba7_43c9_ba71_a6bdea9974cf.dfl
+*INCLUDE, INPUT=PayloadCommunications_9c0e82fc_6ba7_43c9_ba71_a6bdea9974cf.bfl
+*INCLUDE, INPUT=PayloadCommunications_9c0e82fc_6ba7_43c9_ba71_a6bdea9974cf.hf
+*INCLUDE, INPUT=PayloadCommunications_9c0e82fc_6ba7_43c9_ba71_a6bdea9974cf.bc
+
+
+*DFLUX
+**INCLUDE, INPUT=PowerBattery_978e1011_778c_48ae_a366_09a283bf0a91.dfl
+*INCLUDE, INPUT=PowerBattery_978e1011_778c_48ae_a366_09a283bf0a91.bfl
+*INCLUDE, INPUT=PowerBattery_978e1011_778c_48ae_a366_09a283bf0a91.hf
+*INCLUDE, INPUT=PowerBattery_978e1011_778c_48ae_a366_09a283bf0a91.bc
+
+*INCLUDE, INPUT=Amp.inp
+
+*RADIATE
+*INCLUDE, INPUT=BaseplateXZ_af0a4136_dbc7_441f_9a64_cde9bb47b3b2.rad
+*INCLUDE, INPUT=BaseplateXY_6997d1a8_8859_462d_b50f_1b4ce04208ff.rad
+*INCLUDE, INPUT=BaseplateYZ_2ff7921c_8971_4de7_93ee_115cdf80eff7.rad
+*INCLUDE, INPUT=PayloadScience_d5384e56_711c_4361_b31c_1dde0d3b4784.rad
+*INCLUDE, INPUT=PayloadCommunications_9c0e82fc_6ba7_43c9_ba71_a6bdea9974cf.rad
+*INCLUDE, INPUT=PowerBattery_978e1011_778c_48ae_a366_09a283bf0a91.rad
+
+*NODE FILE
+NT
+*EL File
+HFL
+*END STEP

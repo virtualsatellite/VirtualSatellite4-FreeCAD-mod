@@ -116,23 +116,28 @@ def overlap_objects(object1, object2, path):
             slaveObjects = slaveContacts.readlines()
             for i, masterObject in enumerate(masterObjects):
 
-                def sanitizeName(obj):
-                    raw_name = obj.replace("\n", "").split(",")[0]
-                    object_name = raw_name.split("_")[0]
-                    object_uuid = "___".join(raw_name.split("_")[1:])
-                    return object_name + "_" + object_uuid
-
                 expectedMasterName = sanitizeName(masterObject)
                 expectedSlaveName = sanitizeName(slaveObjects[i])
                 if (expectedMasterName == object2.Label and expectedSlaveName == object1.Label):
                     prev_label = object1.Label
                     object1.Label = prev_label + "_vanilla"
-                    Part.show(object1.Shape.cut(object2.Shape), prev_label + "_temp")
+                    Part.show(object1.Shape.cut(object2.Shape), prev_label)
                     Log("Slave "+object1.Label+" was cut successfully at the overlap.\n")
                 else:
                     Log("Nothing was cut this time at: " + expectedMasterName + " " + expectedSlaveName + "\n")
 
     return True
+
+
+def sanitizeName(obj):
+    raw_name = obj.replace("\n", "").split(",")[0]
+    object_name = raw_name.split("_")[0]
+    object_uuid = "___".join(raw_name.split("_")[1:])
+    return object_name + "_" + object_uuid
+
+
+def desanitizeName(name):
+    return name.replace("___", "_")
 
 
 def reset():
