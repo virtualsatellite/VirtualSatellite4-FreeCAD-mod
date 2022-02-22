@@ -50,10 +50,12 @@ def process_model(path):
     checkFile(path + "Solar_Intensity.csv")
     checkFile(path + "Earth_Vector.csv")
     checkFile(path + "meshSizes.txt")
+    checkFile(path + "validateContactsMaster.txt")
+    checkFile(path + "validateContactsSlave.txt")
 
     reset()
     open(path + "Amp.inp", 'w')
-    Log("Amp.inp cleared")
+    Log("Amp.inp cleared\n")
 
     with open(path + "main.inp") as mainFile:
         main = mainFile.readlines()
@@ -61,16 +63,19 @@ def process_model(path):
 
         if any("*INCLUDE, INPUT=Amp.inp" in line for line in list(main)):
             includeOrbitRadiation = True
-            Log("Amp.inp to be generated")
+            Log("Amp.inp to be generated\n")
         else:
             includeOrbitRadiation = False
 
     sunData = getSunData(path, "Sun_Vector.csv", "Solar_Intensity.csv")
     earthData = getEarthData(path, "Earth_Vector.csv")
+
     make_contact_faces(path)
     contactFaces = findAllContacts(path)
     hideAllFaces()
+
     createMeshAndGroupsAndInputFile(path, contactFaces, includeOrbitRadiation, sunData, earthData)
+
     writeContactToInput(path, contactFaces)
     applyVolumeFlux(path)
     # TODO: reset()?
@@ -84,7 +89,8 @@ def checkFile(file):
 
 def findAllContacts(path):
     """
-    This function finds all (area) contacts and writes the involved parts and faces into a list
+    This function finds all (area) contacts and writes the involved parts and faces into a list.
+    Found contacts are validated using validateContactsMaster.txt and validateContactsSlave.txt
     """
     masterContactFaces = []
     slaveContactFaces = []
@@ -133,11 +139,11 @@ def findAllContacts(path):
                                 # Check if tolerance is exceeded
                                 if distance <= 0.01:
                                     Log("Contact detected between Face " + str(k+1) + " of " + object1.Label
-                                        + " and Face " + str(l+1) + " of " + object2.Label + ".")
+                                        + " and Face " + str(l+1) + " of " + object2.Label + ".\n")
                                     # Validate if contact is actually defined in VirSat
                                     confirmation, index, meshSizeMaster, meshSizeSlave = validateContact(path, object1, object2)
                                     if confirmation is True:
-                                        Log("A contact between the bodies is validated by the Virtual Satellite model!")
+                                        Log("A contact between the bodies is validated by the Virtual Satellite model!\n")
                                         # Add validated contact to contact list
                                         masterContactFaces.append([object1.Label, k+1])
                                         slaveContactFaces.append([object2.Label, l+1])
@@ -145,10 +151,10 @@ def findAllContacts(path):
                                         slaveContactMeshSize.append(meshSizeSlave)
                                         contactNumber.append(index+1)
                                     else:
-                                        Log("A contact between the bodies is NOT defined in the Virtual Satellite model!")
+                                        Log("A contact between the bodies is NOT defined in the Virtual Satellite model!\n")
                                 else:
                                     Log("No Contact detected between Face " + str(k+1) + " of " + object1.Label +
-                                        " and Face " + str(l+1) + " of " + object2.Label + ".")
+                                        " and Face " + str(l+1) + " of " + object2.Label + ".\n")
                             # Check for (partly) angular faces
                             elif len(sec.Edges) > 1 and len(face1.Wires) == 1 and len(face2.Wires) == 1:
                                 if len(face1.Vertexes) == len(face2.Vertexes):
@@ -161,11 +167,11 @@ def findAllContacts(path):
                                                 numberOfCommonVertexes += 1
                                     if len(face1.Vertexes) == numberOfCommonVertexes:
                                         Log("Contact detected between Face " + str(k+1) + " of " + object1.Label +
-                                            " and Face " + str(l+1) + " of " + object2.Label + ".")
+                                            " and Face " + str(l+1) + " of " + object2.Label + ".\n")
                                         # Validate if contact is actually defined in VirSat
                                         confirmation, index, meshSizeMaster, meshSizeSlave = validateContact(path, object1, object2)
                                         if confirmation is True:
-                                            Log("A contact between the bodies is validated by the Virtual Satellite model!")
+                                            Log("A contact between the bodies is validated by the Virtual Satellite model!\n")
                                             # Add validated contact to contact list
                                             masterContactFaces.append([object1.Label, k+1])
                                             slaveContactFaces.append([object2.Label, l+1])
@@ -174,11 +180,11 @@ def findAllContacts(path):
                                             contactNumber.append(index+1)
                             else:
                                 Log("No Contact detected between Face " + str(k+1) + " of " + object1.Label +
-                                    " and Face " + str(l+1) + " of " + object2.Label + ".")
+                                    " and Face " + str(l+1) + " of " + object2.Label + ".\n")
                 else:
-                    Log(object2.Label+" has not the right shape.")
+                    Log(object2.Label+" has not the right shape.\n")
         else:
-            Log(object1.Label+" has not the right shape.")
+            Log(object1.Label+" has not the right shape.\n")
     return (masterContactFaces, slaveContactFaces, contactNumber, (masterContactMeshSize, slaveContactMeshSize))
 
 # ===========================
@@ -190,6 +196,7 @@ def createMeshAndGroupsAndInputFile(path, contactFaces, includeOrbitRadiation, s
     """
     Function for creating mesh, mesh groups and the input file out of the first two
     """
+    # TODO: requires files!
     # Saves the number of nodes that are already defined to keep node set consistent throughout all elements
     nrOfGivenNodes = 0
     # Saves the number of elements that are already defined to keep element set consist throughout all elements
@@ -251,13 +258,13 @@ def createMeshAndGroupsAndInputFile(path, contactFaces, includeOrbitRadiation, s
                 femmesh_object.GroupsOfNodes = True
 
             elif obj.Label in predefinedMeshList:
-                Log("Object " + obj.Label + " has a predefined mesh that is used.")
+                Log("Object " + obj.Label + " has a predefined mesh that is used.\n")
                 femmesh_object = App.ActiveDocument.getObject(obj.Label+"_Mesh")
                 femmesh_object.Part = obj
 
             # Export mesh to input file
             exportobj = App.ActiveDocument.getObject(obj.Label+"_Mesh")
-            exportobj.FemMesh.writeABAQUS(path+obj.Label+".inp", 1, True)
+            exportobj.FemMesh.writeABAQUS(path+desanitizeName(obj.Label)+".inp", 1, True)
 
             # Calculation of orientation of mesh faces and assignment of solar radiation loads
             if includeOrbitRadiation is True:
@@ -267,7 +274,7 @@ def createMeshAndGroupsAndInputFile(path, contactFaces, includeOrbitRadiation, s
             # Change node and element numbers to make the sets consistent
             makeInputConsecutive(
                 nrOfGivenNodes, femmesh_object.FemMesh.NodeCount, nrOfGivenElements,
-                femmesh_object.FemMesh.VolumeCount, path + "" + obj.Label + ".inp")
+                femmesh_object.FemMesh.VolumeCount, path + desanitizeName(obj.Label) + ".inp")
             # Add a node set for every single component to assign volume flux to
             addNodesetForObject(path, obj, nrOfGivenNodes, femmesh_object.FemMesh.NodeCount)
             # Add an element set for every single component to assign material to
@@ -277,11 +284,11 @@ def createMeshAndGroupsAndInputFile(path, contactFaces, includeOrbitRadiation, s
             elementNumberDifference = nrOfGivenElements - femmesh_object.FemMesh.Volumes[0] + 1
 
             Log("For " + obj.Label + " the difference between generated element number and " +
-                "reassigned element number is: "+str(elementNumberDifference))
+                "reassigned element number is: "+str(elementNumberDifference) + "\n")
 
             for i in range(0, len(contactFaces[0])):
                 if contactFaces[0][i][0] == obj.Label:
-                    with open(path + "" + obj.Label + ".inp", 'a') as geoFile:
+                    with open(path + desanitizeName(obj.Label) + ".inp", 'a') as geoFile:
                         facesOnContactFace = femmesh_object.FemMesh.getccxVolumesByFace(
                             femmesh_object.Part.Shape.Faces[contactFaces[0][i][1]-1])
                         geoFile.write("\n*SURFACE, NAME=" + "Master_Contact_" + contactFaces[0][i][0].partition('_')[0]
@@ -291,7 +298,7 @@ def createMeshAndGroupsAndInputFile(path, contactFaces, includeOrbitRadiation, s
                                           ", S" + str(facesOnContactFace[j][1]) + "\n")
 
                 if contactFaces[1][i][0] == obj.Label:
-                    with open(path + "" + obj.Label + ".inp", 'a') as geoFile:
+                    with open(path + desanitizeName(obj.Label) + ".inp", 'a') as geoFile:
                         facesOnContactFace = femmesh_object.FemMesh.getccxVolumesByFace(
                             femmesh_object.Part.Shape.Faces[contactFaces[1][i][1]-1])
                         geoFile.write("\n*SURFACE, NAME="+"Slave_Contact_"+contactFaces[1][i][0].partition('_')[0]
@@ -307,13 +314,13 @@ def createMeshAndGroupsAndInputFile(path, contactFaces, includeOrbitRadiation, s
             # adjust element and node number parameters for next iteration
             nrOfGivenNodes += femmesh_object.FemMesh.NodeCount
             nrOfGivenElements += femmesh_object.FemMesh.VolumeCount
-            Log("Total assigned Nodes: "+str(nrOfGivenNodes))
+            Log("Total assigned Nodes: "+str(nrOfGivenNodes)+"\n")
 
         else:
-            Log(obj.Label + " is of type" + obj.TypeId + " and not Part::Feature")
-    Log("Mesh and Mesh Group generation completed.")
-    Log(currentNumberOfMeshFaces)
-    Log(howManyVectorComponentsWereChanged)
+            Log(obj.Label + " is of type" + obj.TypeId + " and not Part::Feature\n")
+    Log("Mesh and Mesh Group generation completed.\n")
+    Log(str(currentNumberOfMeshFaces)+"\n")
+    Log(str(howManyVectorComponentsWereChanged)+"\n")
 
 
 def hideAllFaces():
@@ -333,7 +340,7 @@ def hideAllFaces():
                     colorTuple[i] = tuple(colorTupleInTuple)
                 guiObject.DiffuseColor = tuple(colorTuple)
             except Exception:
-                Log("Object " + obj.Label + " has no GUI representation.")
+                Log("Object " + obj.Label + " has no GUI representation."+"\n")
 
 
 def showAllFaces():
@@ -353,7 +360,7 @@ def showAllFaces():
                     colorTuple[i] = tuple(colorTupleInTuple)
                 obj.DiffuseColor = tuple(colorTuple)
             except Exception:
-                Log("Object " + obj.Label + " has no GUI representation.")
+                Log("Object " + obj.Label + " has no GUI representation."+"\n")
 
 # =======================
 # FUNCTIONS FOR CONTACTS
@@ -376,8 +383,8 @@ def validateContact(path, object1, object2):
         # Iterate through the number of components in the files from VirSat
         for i in range(0, len(masterObjects)):
             # For every component pair in the file: check if the same combination exists in FreeCAD
-            if (comb1 == masterObjects[i].replace("\n", "").split(",")[0] + slaveObjects[i].replace("\n", "").split(",")[0]
-                    or comb2 == masterObjects[i].replace("\n", "").split(",")[0]+slaveObjects[i].replace("\n", "").split(",")[0]):
+            if (comb1 == sanitizeName(masterObjects[i]) + sanitizeName(slaveObjects[i])
+                    or comb2 == sanitizeName(masterObjects[i]) + sanitizeName(slaveObjects[i])):
                 # If so set validation parameter to true
                 validation = True
 
@@ -422,7 +429,7 @@ def getSunData(path, filenameVec, filenameInt):
                     str(vectorList[i]).replace('\n', '').replace('\\n', '').split(",")[3])
                 intensity = str(intensities[i]).replace('\n', '').replace('\\n', '').split(",")[1]
                 sunData.append((vector, intensity))
-    Log(sunData)
+    Log(str(sunData)+"\n")
     return sunData
 
 
@@ -437,7 +444,7 @@ def getEarthData(path, filenameVec):
                     str(vectorList[i]).replace('\n', '').replace('\\n', '').split(",")[3])
             reflectionAngle = str(vectorList[i]).replace('\n', '').replace('\\n', '').split(",")[4]
             earthData.append((vector, reflectionAngle))
-    Log(earthData)
+    Log(str(earthData)+"\n")
     return earthData
 
 
@@ -544,6 +551,7 @@ def makeInputConsecutive(nodesGiven, nodeCount, elementsGiven, elementCount, fil
     Changes the node and element numbers of the single meshes such that they are consecutive and not assigned multiple times
     """
 
+    # TODO: requirest inp files???
     pathnew = filepath
 
     # Sets the sector (lines) in the input file where nodes are defined
@@ -560,7 +568,8 @@ def makeInputConsecutive(nodesGiven, nodeCount, elementsGiven, elementCount, fil
         with open(pathnew, 'w') as output:
             # Cycle through file lines (backwards, for elements to be handled first.
             # "for" loop in node area takes advantage of the already interpreted line)
-            for ln in range(len(text), 0, -1):
+            # TODO: added -1 here because text(len(text)) is index out of range
+            for ln in range(len(text)-1, 0, -1):
                 # After the element definition area, node groups are created -> all values + nodesGiven
                 # (remember element groups are added AFTER this function is called -> no risk of mistaking elements and nodes)
                 if ln > elementDefinitionArea[1]:
@@ -588,7 +597,7 @@ def addNodesetForObject(path, obj, nrOfGivenNodes, nrOfNodes):
     """
     For the given object with the number of already existing nodes and the number of nodes in the object, add a nodeset with all nodes of the obj
     """
-    with open(path + obj.Label + ".inp", 'a') as output:
+    with open(path + desanitizeName(obj.Label) + ".inp", 'a') as output:
         output.write("\n*NSET,NSET="+obj.Label.partition("_")[0]+", GENERATE\n")
         output.write(str(nrOfGivenNodes+1)+","+str(nrOfGivenNodes+nrOfNodes)+"\n")
 
@@ -598,7 +607,7 @@ def addElementsetForObject(path, obj, nrOfGivenElements, nrOfElements):
     For the given object with the number of already existing elements and the number of elements in the object,
     add a element set with all elements of the object
     """
-    with open(path + obj.Label + ".inp", 'a') as output:
+    with open(path + desanitizeName(obj.Label) + ".inp", 'a') as output:
         output.write("\n*ELSET,ELSET="+obj.Label.partition("_")[0]+", GENERATE\n")
         output.write(str(nrOfGivenElements+1)+","+str(nrOfGivenElements+nrOfElements)+"\n")
 
@@ -617,9 +626,10 @@ def applyVolumeFlux(path):
 
 
 def applyHeatFluxBoundaryConditions(path, femobject, elementNumberDifference):
-    with open(path+femobject.Part.Label+".ehf", 'r') as bcFileIn:
+    # TODO: require ehf and hf
+    with open(path+desanitizeName(femobject.Part.Label)+".ehf", 'r') as bcFileIn:
         content = bcFileIn.readlines()
-        with open(path+femobject.Part.Label+".hf", 'w') as bcFileOut:
+        with open(path+desanitizeName(femobject.Part.Label)+".hf", 'w') as bcFileOut:
             if len(content) > 0:
                 for i in range(0, len(content)):
                     faceNumber = int(str(content[i]).replace('\n', '').replace('\\n', '').split(",")[0])
@@ -631,9 +641,10 @@ def applyHeatFluxBoundaryConditions(path, femobject, elementNumberDifference):
 
 
 def applyTemperatureBoundaryConditions(path, femobject, nrOfGivenNodes):
-    with open(path+femobject.Part.Label+".bcf", 'r') as bcFileIn:
+    # TODO: require bcf and bc
+    with open(path+desanitizeName(femobject.Part.Label)+".bcf", 'r') as bcFileIn:
         content = bcFileIn.readlines()
-        with open(path+femobject.Part.Label+".bc", 'w') as bcFileOut:
+        with open(path+desanitizeName(femobject.Part.Label)+".bc", 'w') as bcFileOut:
             if len(content) > 0:
                 for i in range(0, len(content)):
                     lineLength = len(str(content[i]).replace('\n', '').replace('\\n', '').split(","))
@@ -655,8 +666,9 @@ def setFaceEmissivities(path, femmesh_object, elementNumberDifference):
     """
     Should be executed AFTER makeContactFaces() and meshing!
     """
+    # TODO: requires file
     # Open radiation file in 'read' mode (with part face emissivity values from VirSat)
-    with open(path+femmesh_object.Part.Label+".rd", 'r') as readRad:
+    with open(path+desanitizeName(femmesh_object.Part.Label)+".rd", 'r') as readRad:
         radInfo = readRad.readlines()
         radFaces = []
         radValues = []
