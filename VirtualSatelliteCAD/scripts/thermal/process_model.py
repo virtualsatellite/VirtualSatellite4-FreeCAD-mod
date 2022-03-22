@@ -79,9 +79,9 @@ def process_model(path):
 
 
 def checkFile(file):
-        if not os.path.isfile(file):
-            Err(file + " does not exists")
-            return False
+    if not os.path.isfile(file):
+        Err(file + " does not exists")
+        return False
 
 
 def findAllContacts(path):
@@ -113,9 +113,9 @@ def findAllContacts(path):
 
                         face1 = object1.Shape.Faces[k]
                         # Iterate through all faces of object2
-                        for l in range(0, len(object2.Shape.Faces)):
+                        for idx in range(0, len(object2.Shape.Faces)):
 
-                            face2 = object2.Shape.Faces[l]
+                            face2 = object2.Shape.Faces[idx]
                             # Initialize distance between elements
                             distance = 0.0
                             sec = face1.section(face2)
@@ -136,14 +136,14 @@ def findAllContacts(path):
                                 # Check if tolerance is exceeded
                                 if distance <= 0.01:
                                     Log("Contact detected between Face " + str(k+1) + " of " + object1.Label
-                                        + " and Face " + str(l+1) + " of " + object2.Label + ".\n")
+                                        + " and Face " + str(idx+1) + " of " + object2.Label + ".\n")
                                     # Validate if contact is actually defined in VirSat
                                     confirmation, index, meshSizeMaster, meshSizeSlave = validateContact(path, object1, object2)
                                     if confirmation is True:
                                         Log("A contact between the bodies is validated by the Virtual Satellite model!\n")
                                         # Add validated contact to contact list
                                         masterContactFaces.append([object1.Label, k+1])
-                                        slaveContactFaces.append([object2.Label, l+1])
+                                        slaveContactFaces.append([object2.Label, idx+1])
                                         masterContactMeshSize.append(meshSizeMaster)
                                         slaveContactMeshSize.append(meshSizeSlave)
                                         contactNumber.append(index+1)
@@ -151,7 +151,7 @@ def findAllContacts(path):
                                         Log("A contact between the bodies is NOT defined in the Virtual Satellite model!\n")
                                 else:
                                     Log("No Contact detected between Face " + str(k+1) + " of " + object1.Label +
-                                        " and Face " + str(l+1) + " of " + object2.Label + ".\n")
+                                        " and Face " + str(idx+1) + " of " + object2.Label + ".\n")
                             # Check for (partly) angular faces
                             elif len(sec.Edges) > 1 and len(face1.Wires) == 1 and len(face2.Wires) == 1:
                                 if len(face1.Vertexes) == len(face2.Vertexes):
@@ -164,20 +164,20 @@ def findAllContacts(path):
                                                 numberOfCommonVertexes += 1
                                     if len(face1.Vertexes) == numberOfCommonVertexes:
                                         Log("Contact detected between Face " + str(k+1) + " of " + object1.Label +
-                                            " and Face " + str(l+1) + " of " + object2.Label + ".\n")
+                                            " and Face " + str(idx+1) + " of " + object2.Label + ".\n")
                                         # Validate if contact is actually defined in VirSat
                                         confirmation, index, meshSizeMaster, meshSizeSlave = validateContact(path, object1, object2)
                                         if confirmation is True:
                                             Log("A contact between the bodies is validated by the Virtual Satellite model!\n")
                                             # Add validated contact to contact list
                                             masterContactFaces.append([object1.Label, k+1])
-                                            slaveContactFaces.append([object2.Label, l+1])
+                                            slaveContactFaces.append([object2.Label, idx+1])
                                             masterContactMeshSize.append(meshSizeMaster)
                                             slaveContactMeshSize.append(meshSizeSlave)
                                             contactNumber.append(index+1)
                             else:
                                 Log("No Contact detected between Face " + str(k+1) + " of " + object1.Label +
-                                    " and Face " + str(l+1) + " of " + object2.Label + ".\n")
+                                    " and Face " + str(idx+1) + " of " + object2.Label + ".\n")
                 else:
                     Log(object2.Label+" has not the right shape.\n")
         else:

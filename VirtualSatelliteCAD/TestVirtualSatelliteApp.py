@@ -45,4 +45,4 @@ from test.plugins.VirtualSatelliteRestPlugin.test_importer import TestImporter #
 from test.plugins.VirtualSatelliteRestPlugin.test_exporter import TestExorter # NOQA
 from test.freecad.test_name_converter import TestNameConverter # NOQA
 from test.scripts.thermal.test_prepare_model import TestPrepareModel # NOQA
-from test.scripts.thermal.test_process_model import TestProcesseModel # NOQA
+from test.scripts.thermal.test_process_model import TestProcessModel # NOQA
