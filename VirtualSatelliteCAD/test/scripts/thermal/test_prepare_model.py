@@ -85,9 +85,9 @@ class TestPrepareModel(AWorkingDirectoryTest):
         self.assertFalse(success)
 
         # Copy the test resources in the test working directory
-        master_test_resource_path = Environment.get_test_resource_path("validateContactsMaster.txt")
+        master_test_resource_path = Environment.get_test_resource_path(os.path.join("Thermal", "validateContactsMaster.txt"))
         shutil.copy(master_test_resource_path, self._WORKING_DIRECTORY)
-        slaves_test_resource_path = Environment.get_test_resource_path("validateContactsSlave.txt")
+        slaves_test_resource_path = Environment.get_test_resource_path(os.path.join("Thermal", "validateContactsSlave.txt"))
         shutil.copy(slaves_test_resource_path, self._WORKING_DIRECTORY)
 
         objectCountBefore = len(active_document.app_active_document.Objects)

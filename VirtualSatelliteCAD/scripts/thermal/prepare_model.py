@@ -40,6 +40,7 @@ import os
 App = FreeCAD
 Log = FreeCAD.Console.PrintLog
 Err = FreeCAD.Console.PrintError
+# newObject = None
 
 
 def make_contact_faces(path):
@@ -56,16 +57,20 @@ def make_contact_faces(path):
         return obj.TypeId not in ['Fem::FemMeshObjectPython', 'Spreadsheet::Sheet'] and obj.Label != "BooleanFragments"
 
     # Iterate over all combinations of 2 objects in the active document
-    for object1 in App.ActiveDocument.Objects:
-        if is_mesh_or_spreadsheet(object1):
-            objectList.append(object1)
+    activeObjects = App.ActiveDocument.Objects
+    for object1 in activeObjects:
+        if is_mesh_or_spreadsheet(object1) and "_vanilla" not in object1.Label:
+            newObject = object1
 
-            for object2 in App.ActiveDocument.Objects:
-                if is_mesh_or_spreadsheet(object2):
+            for object2 in activeObjects:
+                if is_mesh_or_spreadsheet(object2) and "_vanilla" not in object2.Label:
 
-                    success = overlap_objects(object1, object2, path)
+                    success, createdObj = overlap_objects(object1, object2, path)
                     if not success:
                         return False
+                    if createdObj is not None:
+                        newObject = createdObj
+            objectList.append(newObject)
 
     # Initialize the boolean fragment object
     booleanFragments = BOPTools.SplitFeatures.makeBooleanFragments(name='BooleanFragments')
@@ -99,6 +104,7 @@ def overlap_objects(object1, object2, path):
 
     Log("Trying to overlap objects: " + object1.Label + ", " + object2.Label + "\n")
     com = object1.Shape.common(object2.Shape)
+    newObject = None
     if object1.Label != object2.Label and com.Volume > 0:
         Log("Overlap between "+object1.Label+" and "+object2.Label+" detected.\n")
 
@@ -106,10 +112,10 @@ def overlap_objects(object1, object2, path):
         slaveFile = path + "validateContactsSlave.txt"
         if not os.path.isfile(masterFile):
             Err(masterFile + " does not exists")
-            return False
+            return False, newObject
         if not os.path.isfile(slaveFile):
             Err(slaveFile + " does not exists")
-            return False
+            return False, newObject
 
         with open(masterFile) as masterContacts, open(slaveFile) as slaveContacts:
             masterObjects = masterContacts.readlines()
@@ -121,12 +127,16 @@ def overlap_objects(object1, object2, path):
                 if (expectedMasterName == object2.Label and expectedSlaveName == object1.Label):
                     prev_label = object1.Label
                     object1.Label = prev_label + "_vanilla"
-                    Part.show(object1.Shape.cut(object2.Shape), prev_label)
+                    Part.show(object1.Shape.cut(object2.Shape), prev_label+"_temp")
+                    newObject = App.ActiveDocument.getObject(prev_label+"_temp")
+                    # TODO
+                    Log("New Object")
+                    Log(newObject.Label)
                     Log("Slave "+object1.Label+" was cut successfully at the overlap.\n")
                 else:
                     Log("Nothing was cut this time at: " + expectedMasterName + " " + expectedSlaveName + "\n")
 
-    return True
+    return True, newObject
 
 
 def sanitizeName(obj):

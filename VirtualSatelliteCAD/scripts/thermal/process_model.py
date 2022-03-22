@@ -43,8 +43,6 @@ def process_model(path):
     """
     Processes the thermal information
     """
-    # TODO:
-    # Check required files exist in path
     checkFile(path + "main.inp")
     checkFile(path + "Sun_Vector.csv")
     checkFile(path + "Solar_Intensity.csv")
@@ -78,7 +76,6 @@ def process_model(path):
 
     writeContactToInput(path, contactFaces)
     applyVolumeFlux(path)
-    # TODO: reset()?
 
 
 def checkFile(file):
@@ -196,7 +193,9 @@ def createMeshAndGroupsAndInputFile(path, contactFaces, includeOrbitRadiation, s
     """
     Function for creating mesh, mesh groups and the input file out of the first two
     """
-    # TODO: requires files!
+    # TODO
+    checkFile(path + "meshSizes.txt")
+
     # Saves the number of nodes that are already defined to keep node set consistent throughout all elements
     nrOfGivenNodes = 0
     # Saves the number of elements that are already defined to keep element set consist throughout all elements
@@ -204,7 +203,6 @@ def createMeshAndGroupsAndInputFile(path, contactFaces, includeOrbitRadiation, s
     currentNumberOfMeshFaces = 0
     # List to store all small mesh faces that belong to a certain body face
     facesOnContactFace = []
-    howManyVectorComponentsWereChanged = 0
     predefinedMeshList = []
 
     with open(path + "meshSizes.txt", 'r') as meshSizesInput:
@@ -217,18 +215,23 @@ def createMeshAndGroupsAndInputFile(path, contactFaces, includeOrbitRadiation, s
             objectNames.append(sanitizeName(content[i].replace("\n", "").split(",")[0]))
 
     for obj in App.ActiveDocument.Objects:
+        Log(obj.TypeId)
         if obj.TypeId == 'Fem::FemMeshObjectPython':
             predefinedMeshList.append(obj.Label.replace("001", ""))
             femmesh_object = ObjectsFem.makeMeshGmsh(App.ActiveDocument, obj.Label.replace("001", "") + "_Mesh")
             femmesh_object.Part = obj.Part
             femmesh_object.FemMesh = obj.FemMesh
             App.ActiveDocument.removeObject(obj.Name)
+    Log("Meshlist")
+    Log(predefinedMeshList)
 
     for obj in App.ActiveDocument.Objects:
         # Make sure chosen obj is not a mesh or spreadsheet obj
         if (obj.TypeId == 'Part::Feature' and obj.TypeId != 'Fem::FemMeshObjectPython'
                 and "_old" not in obj.Label and "_vanilla" not in obj.Label):
             if obj.Label not in predefinedMeshList:
+                Log("Not in Meshlist")
+                Log(obj.Label)
                 # Set characteristic mesh length [mm]
                 characteristicMeshLengthMax = meshSizes[objectNames.index(obj.Label)]
                 femmesh_object = ObjectsFem.makeMeshGmsh(App.ActiveDocument, obj.Label+"_Mesh")
@@ -281,6 +284,7 @@ def createMeshAndGroupsAndInputFile(path, contactFaces, includeOrbitRadiation, s
             addElementsetForObject(path, obj, nrOfGivenElements, femmesh_object.FemMesh.VolumeCount)
 
             # Difference between original element number and new element number
+            Log("Volumes " + str(femmesh_object.FemMesh.Volumes))
             elementNumberDifference = nrOfGivenElements - femmesh_object.FemMesh.Volumes[0] + 1
 
             Log("For " + obj.Label + " the difference between generated element number and " +
@@ -320,7 +324,6 @@ def createMeshAndGroupsAndInputFile(path, contactFaces, includeOrbitRadiation, s
             Log(obj.Label + " is of type" + obj.TypeId + " and not Part::Feature\n")
     Log("Mesh and Mesh Group generation completed.\n")
     Log(str(currentNumberOfMeshFaces)+"\n")
-    Log(str(howManyVectorComponentsWereChanged)+"\n")
 
 
 def hideAllFaces():
@@ -338,7 +341,7 @@ def hideAllFaces():
                     colorTupleInTuple = list(colorTuple[i])
                     colorTupleInTuple[3] = 1.0
                     colorTuple[i] = tuple(colorTupleInTuple)
-                guiObject.DiffuseColor = tuple(colorTuple)
+                guiObject.ViewObject.DiffuseColor = tuple(colorTuple)
             except Exception:
                 Log("Object " + obj.Label + " has no GUI representation."+"\n")
 
@@ -358,7 +361,7 @@ def showAllFaces():
                     colorTupleInTuple = list(colorTuple[i])
                     colorTupleInTuple[3] = 0.0
                     colorTuple[i] = tuple(colorTupleInTuple)
-                obj.DiffuseColor = tuple(colorTuple)
+                obj.ViewObject.DiffuseColor = tuple(colorTuple)
             except Exception:
                 Log("Object " + obj.Label + " has no GUI representation."+"\n")
 
@@ -551,7 +554,6 @@ def makeInputConsecutive(nodesGiven, nodeCount, elementsGiven, elementCount, fil
     Changes the node and element numbers of the single meshes such that they are consecutive and not assigned multiple times
     """
 
-    # TODO: requirest inp files???
     pathnew = filepath
 
     # Sets the sector (lines) in the input file where nodes are defined
@@ -568,7 +570,6 @@ def makeInputConsecutive(nodesGiven, nodeCount, elementsGiven, elementCount, fil
         with open(pathnew, 'w') as output:
             # Cycle through file lines (backwards, for elements to be handled first.
             # "for" loop in node area takes advantage of the already interpreted line)
-            # TODO: added -1 here because text(len(text)) is index out of range
             for ln in range(len(text)-1, 0, -1):
                 # After the element definition area, node groups are created -> all values + nodesGiven
                 # (remember element groups are added AFTER this function is called -> no risk of mistaking elements and nodes)
@@ -615,7 +616,9 @@ def addElementsetForObject(path, obj, nrOfGivenElements, nrOfElements):
 def applyVolumeFlux(path):
     for obj in App.ActiveDocument.Objects:
         if obj.TypeId == 'Fem::FemMeshObjectPython':
-            with open(path+obj.Label.replace("_Mesh", "") + ".bfl", 'r') as file:
+            name = path+desanitizeName(obj.Label.replace("_Mesh", "")) + ".bfl"
+            checkFile(name)
+            with open(name, 'r') as file:
                 content = file.readlines()
                 if len(content[0].split(",")) < 2:
                     volFluxTotal = float(content[0])
@@ -626,10 +629,14 @@ def applyVolumeFlux(path):
 
 
 def applyHeatFluxBoundaryConditions(path, femobject, elementNumberDifference):
-    # TODO: require ehf and hf
-    with open(path+desanitizeName(femobject.Part.Label)+".ehf", 'r') as bcFileIn:
+
+    name = path+desanitizeName(femobject.Part.Label)+".ehf"
+    checkFile(name)
+    with open(name, 'r') as bcFileIn:
         content = bcFileIn.readlines()
-        with open(path+desanitizeName(femobject.Part.Label)+".hf", 'w') as bcFileOut:
+        name = path+desanitizeName(femobject.Part.Label)+".ehf"
+        checkFile(name)
+        with open(name, 'w') as bcFileOut:
             if len(content) > 0:
                 for i in range(0, len(content)):
                     faceNumber = int(str(content[i]).replace('\n', '').replace('\\n', '').split(",")[0])
@@ -641,10 +648,13 @@ def applyHeatFluxBoundaryConditions(path, femobject, elementNumberDifference):
 
 
 def applyTemperatureBoundaryConditions(path, femobject, nrOfGivenNodes):
-    # TODO: require bcf and bc
-    with open(path+desanitizeName(femobject.Part.Label)+".bcf", 'r') as bcFileIn:
+    name = path+desanitizeName(femobject.Part.Label)+".bcf"
+    checkFile(name)
+    with open(name, 'r') as bcFileIn:
         content = bcFileIn.readlines()
-        with open(path+desanitizeName(femobject.Part.Label)+".bc", 'w') as bcFileOut:
+        name = path+desanitizeName(femobject.Part.Label)+".bc"
+        checkFile(name)
+        with open(name, 'w') as bcFileOut:
             if len(content) > 0:
                 for i in range(0, len(content)):
                     lineLength = len(str(content[i]).replace('\n', '').replace('\\n', '').split(","))
@@ -666,14 +676,16 @@ def setFaceEmissivities(path, femmesh_object, elementNumberDifference):
     """
     Should be executed AFTER makeContactFaces() and meshing!
     """
-    # TODO: requires file
-    # Open radiation file in 'read' mode (with part face emissivity values from VirSat)
-    with open(path+desanitizeName(femmesh_object.Part.Label)+".rd", 'r') as readRad:
+    name = path+desanitizeName(femmesh_object.Part.Label)+".rd"
+    checkFile(name)
+    with open(name, 'r') as readRad:
         radInfo = readRad.readlines()
         radFaces = []
         radValues = []
         temp = 3.0
-        with open(path + femmesh_object.Part.Label + ".rad", 'w') as writeRad:
+        name = path + femmesh_object.Part.Label + ".rad"
+        checkFile(name)
+        with open(name, 'w') as writeRad:
             # For all face infos contained in rad file, write face number and emissivity to lists
             for i in range(1, len(radInfo)):
                 radFaces.append(int(str(radInfo[i]).replace('\n', '').replace('\\n', '').split(",")[0]))

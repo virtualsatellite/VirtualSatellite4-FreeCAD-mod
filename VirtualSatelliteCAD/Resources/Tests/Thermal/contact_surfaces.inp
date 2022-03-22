@@ -1,0 +1,24 @@
+
+
+*CONTACT PAIR,INTERACTION=SI1,TYPE=SURFACE TO SURFACE
+Master_Contact_BaseplateXZ_TO_BaseplateXY,Slave_Contact_BaseplateXY_TO_BaseplateXZ
+
+
+*CONTACT PAIR,INTERACTION=SI2,TYPE=SURFACE TO SURFACE
+Master_Contact_BaseplateXZ_TO_BaseplateYZ,Slave_Contact_BaseplateYZ_TO_BaseplateXZ
+
+
+*CONTACT PAIR,INTERACTION=SI4,TYPE=SURFACE TO SURFACE
+Master_Contact_BaseplateXZ_TO_PowerBattery,Slave_Contact_PowerBattery_TO_BaseplateXZ
+
+
+*CONTACT PAIR,INTERACTION=SI3,TYPE=SURFACE TO SURFACE
+Master_Contact_BaseplateXY_TO_BaseplateYZ,Slave_Contact_BaseplateYZ_TO_BaseplateXY
+
+
+*CONTACT PAIR,INTERACTION=SI5,TYPE=SURFACE TO SURFACE
+Master_Contact_BaseplateXY_TO_PayloadScience,Slave_Contact_PayloadScience_TO_BaseplateXY
+
+
+*CONTACT PAIR,INTERACTION=SI6,TYPE=SURFACE TO SURFACE
+Master_Contact_BaseplateYZ_TO_PayloadCommunications,Slave_Contact_PayloadCommunications_TO_BaseplateYZ
