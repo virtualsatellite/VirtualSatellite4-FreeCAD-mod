@@ -56,11 +56,13 @@ class VirtualSatelliteWorkbench(Workbench):  # NOQA @UndefinedVariable
         from commands.command_import import CommandImport
         from commands.command_export import CommandExport
         from commands.command_about import CommandAbout
+        from commands.command_thermal import CommandThermal
         from commands.command_definitions import COMMAND_ID_EXPORT_2_VIRTUAL_SATELLITE
         from commands.command_definitions import COMMAND_ID_IMPORT_2_FREECAD
         from commands.command_definitions import COMMAND_ID_ABOUT
+        from commands.command_definitions import COMMAND_ID_THERMAL
 
-        toolbarCommands = [COMMAND_ID_IMPORT_2_FREECAD, COMMAND_ID_EXPORT_2_VIRTUAL_SATELLITE]
+        toolbarCommands = [COMMAND_ID_IMPORT_2_FREECAD, COMMAND_ID_EXPORT_2_VIRTUAL_SATELLITE, COMMAND_ID_THERMAL]
         menuCommands = [COMMAND_ID_IMPORT_2_FREECAD, COMMAND_ID_EXPORT_2_VIRTUAL_SATELLITE, COMMAND_ID_ABOUT]
 
         displayName = 'VirtualSatelliteMod'
@@ -70,6 +72,7 @@ class VirtualSatelliteWorkbench(Workbench):  # NOQA @UndefinedVariable
         Gui.addCommand(COMMAND_ID_EXPORT_2_VIRTUAL_SATELLITE, CommandExport(self))  # NOQA @UndefinedVariable
         Gui.addCommand(COMMAND_ID_IMPORT_2_FREECAD, CommandImport(self))  # NOQA @UndefinedVariable
         Gui.addCommand(COMMAND_ID_ABOUT, CommandAbout())  # NOQA @UndefinedVariable
+        Gui.addCommand(COMMAND_ID_THERMAL, CommandThermal())  # NOQA @UndefinedVariable
 
     def GetClassName(self):
         # Required method by FreeCAD framework
