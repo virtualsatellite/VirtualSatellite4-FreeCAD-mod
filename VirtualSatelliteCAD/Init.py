@@ -27,6 +27,24 @@ import FreeCAD
 import os
 import sys
 
+Log = FreeCAD.Console.PrintLog
+
+# Code for trying to activate the pydevd
+PYDEVD_DIRECTORY = os.environ.get('PYDEVD_DIRECTORY')
+Log('Found a directory for the pydevd packages in the environment:' + PYDEVD_DIRECTORY)
+
+if PYDEVD_DIRECTORY is None:
+    PYDEVD_DIRECTORY = ""
+
+Log('Check if the pydevd directory is an OS directory.')
+if os.path.isdir(PYDEVD_DIRECTORY):
+    sys.path.append(PYDEVD_DIRECTORY)
+    Log('Import pydevd and try to connect to the pydevd server.')
+    import pydevd
+    pydevd.settrace()
+
+
+
 MOD_DIR = os.path.join(FreeCAD.ConfigGet("UserAppData"), "Mod")
 APPDATA_DIR = os.path.join(MOD_DIR, "VirtualSatelliteCAD")
 
@@ -35,7 +53,6 @@ APPDATA_DIR = os.path.join(MOD_DIR, "VirtualSatelliteCAD")
 freecad_user_home = FreeCAD.getUserAppDataDir()
 freecad_user_mod = freecad_user_home + "Mod"
 
-Log = FreeCAD.Console.PrintLog
 
 Log("See if the directory " + freecad_user_mod + "exists...")
 

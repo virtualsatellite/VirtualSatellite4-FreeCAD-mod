@@ -2,3 +2,4 @@
 /FreeCadSat.json
 **/__pycache__
 FreeCAD/**/*
+pydevd
