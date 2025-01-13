@@ -88,7 +88,7 @@ class JsonProductAssembly(AJsonProduct):
             return None
 
     def parse_to_json(self, isRoot=False):
-        if(isRoot):
+        if (isRoot):
             json_dict = {
                 JSON_ELEMENT_NAME: self.name,
                 JSON_ELEMENT_UUID: self.uuid
@@ -99,11 +99,11 @@ class JsonProductAssembly(AJsonProduct):
         children_dicts = []
         for child in self.children:
 
-            if(isRoot):
+            if (isRoot):
                 children_dicts.append(child.parse_to_json())
             else:
                 # ignore part of product assembly
-                if(not child.get_unique_name() == self.get_unique_name()):
+                if (not child.get_unique_name() == self.get_unique_name()):
                     children_dicts.append(child.parse_to_json())
 
         json_dict[JSON_ELEMNT_CHILDREN] = children_dicts
@@ -125,7 +125,7 @@ class JsonProductAssembly(AJsonProduct):
 
         if self.is_part_reference():
             name = _get_combined_name_uuid(self.part_name, self.part_uuid)
-            if(name in old_product_names):
+            if (name in old_product_names):
                 # update
                 update_count += 1
                 super().write_to_freecad(active_document, create=False)
@@ -138,7 +138,7 @@ class JsonProductAssembly(AJsonProduct):
         # part or a product
         for child in self.children:
             name = child.get_unique_name()
-            if(name in old_product_names):
+            if (name in old_product_names):
                 # update
                 update_count += 1
                 child.write_to_freecad(active_document, create=False)
@@ -154,7 +154,7 @@ class JsonProductAssembly(AJsonProduct):
             active_document.app_active_document.removeObject(old_product[1].Name)
 
         # only if there were updates instead of creates
-        if(update_count > 0):
+        if (update_count > 0):
             # update already read in parts
             updateImportedParts(active_document.app_active_document)
 
@@ -178,7 +178,7 @@ class JsonProductAssembly(AJsonProduct):
             # open the document for this child
             child_document = ActiveDocument(working_output_directory).open_set_and_get_document(child_file_name)
 
-            if(PRODUCT_IDENTIFIER in name):
+            if (PRODUCT_IDENTIFIER in name):
                 Log(f"Read ProductAssembly '{label}'\n")
                 child = JsonProductAssembly()
             else:
@@ -203,10 +203,10 @@ class JsonProductAssembly(AJsonProduct):
             name, label = obj.Name, obj.Label
             Log("Object: {}, {}\n".format(name, label))
 
-            if(FREECAD_PART_SHEET_NAME in name):
+            if (FREECAD_PART_SHEET_NAME in name):
                 sheets.append(obj)
                 Log("Object is sheet\n")
-            elif(PRODUCT_IDENTIFIER in name or PART_IDENTIFIER in name):
+            elif (PRODUCT_IDENTIFIER in name or PART_IDENTIFIER in name):
                 products.append(obj)
                 Log("Object is product\n")
 
@@ -214,7 +214,7 @@ class JsonProductAssembly(AJsonProduct):
 
         for product in products:
             for sheet in sheets:
-                if(product.Label in sheet.Label):
+                if (product.Label in sheet.Label):
                     products_with_sheets.append((product, sheet))
 
         Log(f"Found products with sheets: '{[(p.Label, s.Label) for p, s in products_with_sheets]}'\n")

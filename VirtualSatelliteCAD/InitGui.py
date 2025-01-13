@@ -125,5 +125,5 @@ Gui.addPreferencePage(Environment().get_ui_path('preferences.ui'), 'Virtual Sate
 
 # Add custom plugin UI
 for plugin in loader.plugins:
-    if(plugin.hasPreferencesUi):
+    if (plugin.hasPreferencesUi):
         Gui.addPreferencePage(os.path.join(Environment().get_plugin_path(plugin.directory), 'preferences.ui'), 'Virtual Satellite')  # NOQA @UndefinedVariable

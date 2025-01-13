@@ -47,10 +47,10 @@ class JsonProductAssemblyTreeTraverser(object):
         """
 
         # only look for products that have children
-        if(JSON_ELEMNT_CHILDREN in json_object and json_object[JSON_ELEMNT_CHILDREN] != []):
+        if (JSON_ELEMNT_CHILDREN in json_object and json_object[JSON_ELEMNT_CHILDREN] != []):
 
             # if the current depth has no list in the _lst_of_depths, add it
-            if(len(self._lst_of_depths) < depth + 1):
+            if (len(self._lst_of_depths) < depth + 1):
                 self._lst_of_depths.append([])
                 Log(f"Added depth {depth} to _lst_of_depths\n")
 
@@ -80,7 +80,7 @@ class JsonProductAssemblyTreeTraverser(object):
                 active_document.save_and_close_active_document(json_product.get_product_unique_name())
 
         # the last json_product is the root of the assembly, open it again for the UI
-        if(json_product is not None):
+        if (json_product is not None):
             active_document = ActiveDocument(self.working_output_directory).open_set_and_get_document(json_product.get_product_unique_name())
 
         return json_product, active_document
