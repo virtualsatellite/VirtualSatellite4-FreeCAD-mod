@@ -32,7 +32,7 @@ import FreeCADGui
 from json_io.products.json_product_child import JsonProductChild
 from freecad.active_document import ActiveDocument
 from json_io.json_definitions import get_product_name_uuid, PART_IDENTIFIER, PRODUCT_IDENTIFIER
-from test.json_io.test_json_data import TEST_JSON_PRODUCT_WITHOUT_CHILDREN,\
+from test.json_io.test_json_data import TEST_JSON_PRODUCT_WITHOUT_CHILDREN, \
     TEST_JSON_PRODUCT_WITH_ONE_CHILD, BASEPLATE_UNIQ_NAME, BASEPLATEBOTTOM_UNIQ_NAME
 
 

@@ -62,11 +62,11 @@ class TestJsonExporter(AWorkingDirectoryTest):
         self.assertJsonObjectsAlmostEqual(exported_json, json_object, [], "JSON in and out equal each other", static_keys)
 
         for child in exported_json[JSON_PRODUCTS][JSON_ELEMNT_CHILDREN]:
-            if(child[JSON_ELEMENT_NAME] == "BeamStructure"):
+            if (child[JSON_ELEMENT_NAME] == "BeamStructure"):
                 exported_child = child[JSON_ELEMNT_CHILDREN][0]
 
         for child in json_object[JSON_PRODUCTS][JSON_ELEMNT_CHILDREN]:
-            if(child[JSON_ELEMENT_NAME] == "BeamStructure"):
+            if (child[JSON_ELEMENT_NAME] == "BeamStructure"):
                 json_child = child[JSON_ELEMNT_CHILDREN][0]
 
         # check rotation

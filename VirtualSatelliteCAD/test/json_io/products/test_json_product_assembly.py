@@ -31,8 +31,8 @@ import FreeCAD
 import FreeCADGui
 from json_io.products.json_product_assembly import JsonProductAssembly
 from freecad.active_document import ActiveDocument
-from test.json_io.test_json_data import TEST_JSON_PRODUCT_WITH_CHILDREN,\
-    TEST_JSON_PRODUCT_WITHOUT_CHILDREN, TEST_JSON_PRODUCT_WITH_CHILDREN_WITH_CHILD,\
+from test.json_io.test_json_data import TEST_JSON_PRODUCT_WITH_CHILDREN, \
+    TEST_JSON_PRODUCT_WITHOUT_CHILDREN, TEST_JSON_PRODUCT_WITH_CHILDREN_WITH_CHILD, \
     TEST_JSON_PRODUCT_ROOT, BASEPLATEBOTTOM1_UNIQ_NAME, BASEPLATEBOTTOM2_UNIQ_NAME, \
     BASEPLATETOP_UNIQ_NAME, BASEPLATE_UNIQ_NAME
 from json_io.json_definitions import JSON_ELEMNT_CHILDREN, PRODUCT_IDENTIFIER, \

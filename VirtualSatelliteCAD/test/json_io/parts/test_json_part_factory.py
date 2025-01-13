@@ -33,8 +33,8 @@ from json_io.parts.json_part_sphere import JsonPartSphere
 from json_io.parts.json_part_geometry import JsonPartGeometry
 from json_io.parts.json_part_cylinder import JsonPartCylinder
 from json_io.parts.json_part_cone import JsonPartCone
-from test.json_io.test_json_data import TEST_JSON_PART_BOX, TEST_JSON_PART_CONE,\
-    TEST_JSON_PART_CYLINDER, TEST_JSON_PART_SPHERE, TEST_JSON_PART_GEOMETRY,\
+from test.json_io.test_json_data import TEST_JSON_PART_BOX, TEST_JSON_PART_CONE, \
+    TEST_JSON_PART_CYLINDER, TEST_JSON_PART_SPHERE, TEST_JSON_PART_GEOMETRY, \
     TEST_JSON_PART_NONE
 from freecad.active_document import ActiveDocument
 from module.environment import Environment

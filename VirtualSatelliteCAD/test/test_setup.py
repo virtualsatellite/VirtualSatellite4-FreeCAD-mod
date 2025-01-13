@@ -145,7 +145,7 @@ class AWorkingDirectoryTest(unittest.TestCase):
         """
 
         # dead call if the list is empty
-        if(static_keys == []):
+        if (static_keys == []):
             return
 
         if isinstance(obj, dict):
