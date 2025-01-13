@@ -50,7 +50,7 @@ class VirSatRestImporter():
 
             # Find the selected starting sei
             for sei in seis.values():
-                if(sei.uuid == start_sei_uuid):
+                if (sei.uuid == start_sei_uuid):
 
                     # Import starting at the sei
                     products = self.importRecursive(sei, root_seis, seis, visualisations, seis2products, parts)
@@ -74,7 +74,7 @@ class VirSatRestImporter():
 
         # Create product
         isRoot = sei.uuid in root_seis.keys()
-        if(isRoot or foundVisCa is not None):
+        if (isRoot or foundVisCa is not None):
 
             product_dict = {
                 jd.JSON_ELEMENT_NAME: sei.name,
@@ -84,7 +84,7 @@ class VirSatRestImporter():
 
             seis2products[sei.uuid] = product_dict
 
-            if(foundVisCa is not None):
+            if (foundVisCa is not None):
                 # Add pos and rot
                 # For now assume default units
                 product_dict[jd.JSON_ELEMENT_POS_X] = foundVisCa[vc.POSITION_X][vc.VALUE]
@@ -95,7 +95,7 @@ class VirSatRestImporter():
                 product_dict[jd.JSON_ELEMENT_ROT_Z] = foundVisCa[vc.ROTATION_Z][vc.VALUE]
 
                 # None shapes don't have a part
-                if(foundVisCa[vc.SHAPE][vc.VALUE] != jd.JSON_ELEMENT_SHAPE_NONE):
+                if (foundVisCa[vc.SHAPE][vc.VALUE] != jd.JSON_ELEMENT_SHAPE_NONE):
                     # Resolve inheritance -> find the correct part
                     partVis, partSei = self.resolveVisInheritance(foundVisCa, sei, visualisations, seis)
                     part = self.visCa2Part(partVis, partSei)
@@ -103,8 +103,8 @@ class VirSatRestImporter():
                     product_dict[jd.JSON_ELEMENT_PART_NAME] = part[jd.JSON_ELEMENT_NAME]
                     product_dict[jd.JSON_ELEMENT_PART_UUID] = part[jd.JSON_ELEMENT_UUID]
 
-            if(sei.parent is not None):
-                if(sei.parent in seis2products):
+            if (sei.parent is not None):
+                if (sei.parent in seis2products):
                     # The parent should already have been processed
                     parentProduct = seis2products[sei.parent]
                     parentProduct[jd.JSON_ELEMNT_CHILDREN].append(product_dict)
@@ -112,7 +112,7 @@ class VirSatRestImporter():
                     # If a non root sei was selected as starting sei, a parent may not be known (not in the subtree)
                     # Or there is no product because it has no visualization, so try to resolve the parents
                     resolvedParentProduct = self.searchParentWithProduct(sei, seis, seis2products)
-                    if(resolvedParentProduct is not None):
+                    if (resolvedParentProduct is not None):
                         resolvedParentProduct[jd.JSON_ELEMNT_CHILDREN].append(product_dict)
                     else:
                         Wrn('No parent product found for {}\n'.format(sei_id))
@@ -131,7 +131,7 @@ class VirSatRestImporter():
         # Get visualization bean
         foundVisCa = None
         for ca_reference in sei.category_assignments:
-            if(ca_reference.uuid in visualisations.keys()):
+            if (ca_reference.uuid in visualisations.keys()):
                 foundVisCa = visualisations[ca_reference.uuid]
         return foundVisCa
 
@@ -152,7 +152,7 @@ class VirSatRestImporter():
         }
 
         geometryFilePath = visCa[vc.GEOMETRY][vc.VALUE]
-        if(shape == jd.JSON_ELEMENT_SHAPE_GEOMETRY):
+        if (shape == jd.JSON_ELEMENT_SHAPE_GEOMETRY):
             # Download the STL file from the server
             response = self.api_instances[PROPERTIES].get_resource(visCa[vc.GEOMETRY][vc.UUID], self.repo_name, sync=False, _preload_content=False)
             local_path = os.path.join(self.project_directory, nc.toFreeCad(containingSei.uuid) + '.' + geometryFilePath.split('/')[-1])
@@ -167,12 +167,12 @@ class VirSatRestImporter():
         partVis, partSei = visCa, containingSei
 
         # Starting from the lowest sei (current) check if found vis has any overrides
-        while(partVis is not None and not self.overridesAnyPartValue(partVis)):
+        while (partVis is not None and not self.overridesAnyPartValue(partVis)):
             nextPartVis, nextPartSei = None, partSei
 
             # If there were no overrides we can step upwards in the inheritance tree
             # Until we find the next visualisation
-            while(nextPartSei.parent is not None and nextPartVis is None):
+            while (nextPartSei.parent is not None and nextPartVis is None):
                 nextPartSei = seis[nextPartSei.parent]
                 nextPartVis = self.getVisCaForSei(nextPartSei, visualisations)
 
@@ -182,7 +182,7 @@ class VirSatRestImporter():
                 partVis, partSei = nextPartVis, nextPartSei
 
             # Abort if inheritance tree is exhausted
-            if(nextPartSei.parent is None):
+            if (nextPartSei.parent is None):
                 break
 
         return (partVis, partSei)
@@ -190,10 +190,10 @@ class VirSatRestImporter():
     def searchParentWithProduct(self, sei, seis, seis2products):
         nextSei = sei
 
-        while(nextSei.parent is not None):
+        while (nextSei.parent is not None):
             parent_uuid = nextSei.parent
 
-            if(parent_uuid in seis2products):
+            if (parent_uuid in seis2products):
                 return seis2products[parent_uuid]
 
             nextSei = seis[parent_uuid]

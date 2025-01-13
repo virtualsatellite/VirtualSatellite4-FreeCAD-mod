@@ -25,10 +25,10 @@
 #
 import unittest
 from plugins.VirtualSatelliteRestPlugin.tree_crawler import TreeCrawler
-from test.plugins.VirtualSatelliteRestPlugin.api_mocks import get_mock_api,\
-    ROOT_SEI_EMPTY, SEI_EMPTY_RESPONSE,\
-    ROOT_SEI_CHILD_RESPONSE, ROOT_SEI_EMPTY_RESPONSE, COMPLEX_ROOT_SEIS,\
-    SEI_VIS, ROOT_SEI_COMPLEX, CA_VIS_RESPONSE, CA_VIS, ROOT_SEI_CAS,\
+from test.plugins.VirtualSatelliteRestPlugin.api_mocks import get_mock_api, \
+    ROOT_SEI_EMPTY, SEI_EMPTY_RESPONSE, \
+    ROOT_SEI_CHILD_RESPONSE, ROOT_SEI_EMPTY_RESPONSE, COMPLEX_ROOT_SEIS, \
+    SEI_VIS, ROOT_SEI_COMPLEX, CA_VIS_RESPONSE, CA_VIS, ROOT_SEI_CAS, \
     CA_NO_VIS, CA_NO_VIS_RESPONSE, ROOT_SEI_CA, ROOT_SEI_CHILD, SEI_EMPTY
 from plugins.VirtualSatelliteRestPlugin.api_kinds import SEIS, DEFAULT, CAS
 

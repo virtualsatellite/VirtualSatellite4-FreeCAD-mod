@@ -40,7 +40,7 @@ class ApiSwitch():
         # Because combo boxes only save their selected index
         version = API_VERSIONS.get(version_idx, "Unknown Index")
 
-        if(version == "0.0.1"):
+        if (version == "0.0.1"):
             # Configure HTTP basic authorization: basic
             configuration = v0_0_1_client.Configuration()
             api_host = host + "/rest/model/v" + version

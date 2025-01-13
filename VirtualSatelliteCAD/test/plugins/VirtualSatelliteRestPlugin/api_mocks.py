@@ -184,14 +184,14 @@ COMPLEX_ROOT_DICT = {
             jd.JSON_ELEMENT_NAME: "seiVis",
             jd.JSON_ELEMENT_UUID: "seiVis",
             jd.JSON_ELEMNT_CHILDREN: [],
-            jd.JSON_ELEMENT_POS_X:1.0,
-            jd.JSON_ELEMENT_POS_Y:2.0,
-            jd.JSON_ELEMENT_POS_Z:3.0,
-            jd.JSON_ELEMENT_ROT_X:0.25,
-            jd.JSON_ELEMENT_ROT_Y:0.5,
-            jd.JSON_ELEMENT_ROT_Z:0.75,
-            jd.JSON_ELEMENT_PART_NAME:"seiVis",
-            jd.JSON_ELEMENT_PART_UUID:"seiVis"
+            jd.JSON_ELEMENT_POS_X: 1.0,
+            jd.JSON_ELEMENT_POS_Y: 2.0,
+            jd.JSON_ELEMENT_POS_Z: 3.0,
+            jd.JSON_ELEMENT_ROT_X: 0.25,
+            jd.JSON_ELEMENT_ROT_Y: 0.5,
+            jd.JSON_ELEMENT_ROT_Z: 0.75,
+            jd.JSON_ELEMENT_PART_NAME: "seiVis",
+            jd.JSON_ELEMENT_PART_UUID: "seiVis"
          }
       ]
    },

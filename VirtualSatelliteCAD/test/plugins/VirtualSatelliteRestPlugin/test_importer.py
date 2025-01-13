@@ -24,8 +24,8 @@
 # SPDX-License-Identifier: LGPL-3.0-or-later
 #
 from plugins.VirtualSatelliteRestPlugin.importer import VirSatRestImporter
-from test.plugins.VirtualSatelliteRestPlugin.api_mocks import get_mock_api,\
-    COMPLEX_ROOT_SEIS, SEI_VIS, SEI_EMPTY, CA_VIS_RESPONSE, CA_NO_VIS_RESPONSE,\
+from test.plugins.VirtualSatelliteRestPlugin.api_mocks import get_mock_api, \
+    COMPLEX_ROOT_SEIS, SEI_VIS, SEI_EMPTY, CA_VIS_RESPONSE, CA_NO_VIS_RESPONSE, \
     ROOT_SEI_COMPLEX, GEOMETRY_BEAN_RESPONSE, COMPLEX_ROOT_DICT
 from test.test_setup import AWorkingDirectoryTest
 import os

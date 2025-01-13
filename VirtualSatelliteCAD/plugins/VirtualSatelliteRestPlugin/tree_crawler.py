@@ -42,7 +42,7 @@ class TreeCrawler():
         root_seis, seis, cas, visualisations = {}, {}, {}, {}
 
         def recurseChildren(sei, isRoot=False):
-            if(isRoot):
+            if (isRoot):
                 root_seis[sei.uuid] = sei
             seis[sei.uuid] = sei
 
@@ -53,7 +53,7 @@ class TreeCrawler():
                 ca_uuid = data[vc.UUID]
 
                 cas[ca_uuid] = data
-                if(data[vc.TYPE] == TYPE_VIS):
+                if (data[vc.TYPE] == TYPE_VIS):
                     visualisations[ca_uuid] = data
 
             # Recursion
@@ -73,7 +73,7 @@ class TreeCrawler():
         root_seis, seis = {}, {}
 
         def recurseChildren(sei, isRoot=False):
-            if(isRoot):
+            if (isRoot):
                 root_seis[sei[vc.UUID]] = sei
             seis[sei[vc.UUID]] = sei
 

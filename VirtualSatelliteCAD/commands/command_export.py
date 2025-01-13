@@ -47,7 +47,7 @@ class CommandExport:
 
         json_exporter = JsonExporter(file_directory_path + os.sep)
 
-        if(FreeCAD.ActiveDocument is not None):
+        if (FreeCAD.ActiveDocument is not None):
             # Export into the interim format
             document_name = FreeCAD.ActiveDocument.Label
             active_document = ActiveDocument(file_directory_path).open_set_and_get_document(document_name)

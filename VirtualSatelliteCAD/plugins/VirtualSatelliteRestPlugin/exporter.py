@@ -129,8 +129,8 @@ class VirSatRestExporter():
 
     def updateValueAndOverride(self, beanName, newValue, visCa, superCa):
         # Set override if necessary
-        if(superCa is not None):
-            if(newValue != superCa[beanName][vc.VALUE]):
+        if (superCa is not None):
+            if (newValue != superCa[beanName][vc.VALUE]):
                 visCa[beanName][vc.OVERRIDE] = True
             else:
                 visCa[beanName][vc.OVERRIDE] = False
@@ -142,6 +142,6 @@ class VirSatRestExporter():
         # Get visualization bean
         foundVisCa = None
         for ca_reference in sei.category_assignments:
-            if(ca_reference.uuid in visualisations.keys()):
+            if (ca_reference.uuid in visualisations.keys()):
                 foundVisCa = visualisations[ca_reference.uuid]
         return foundVisCa
