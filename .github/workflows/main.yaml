@@ -111,7 +111,7 @@ jobs:
       # Setup Java and xvfb
       # --------------------------------------------      
       - name: Setup - Prepare OS
-        uses: virtualsatellite/ci-actions/ci-setup-action@v2
+        uses: virtualsatellite/ci-actions/ci-setup-action@v8
         with:
            xvfb: -x
            
@@ -157,7 +157,7 @@ jobs:
       # Setup Java and xvfb
       # --------------------------------------------      
       - name: Setup - Prepare OS
-        uses: virtualsatellite/ci-actions/ci-setup-action@v2
+        uses: virtualsatellite/ci-actions/ci-setup-action@v8
         with:
            xvfb: -x
            
@@ -203,14 +203,14 @@ jobs:
       # Perform various setup operations
       # --------------------------------------------
       - name: Setup - Prepare OS
-        uses: virtualsatellite/ci-actions/ci-setup-action@master
+        uses: virtualsatellite/ci-actions/ci-setup-action@v8
 
       # --------------------------------------------
       # Build and Deploy Decision
       # --------------------------------------------
       - name: Build - Build and Deploy Decision
         id: build_decision
-        uses: virtualsatellite/ci-actions/ci-build-decision-action@master
+        uses: virtualsatellite/ci-actions/ci-build-decision-action@v8
 
       # --------------------------------------------
       # Development branch
