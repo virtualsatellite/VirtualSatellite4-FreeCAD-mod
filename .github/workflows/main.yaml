@@ -38,7 +38,7 @@ jobs:
   #---------------------------------------------
   verify:
     name: Verify
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-24.04
     
     steps:
       # --------------------------------------------
@@ -59,7 +59,7 @@ jobs:
   # -----------------------------------------------------
   flake:
     name: Build and Test - FreeCAD Module flake8
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-24.04
     needs: [verify]
 
     steps:
@@ -97,7 +97,7 @@ jobs:
   # -----------------------------------------------------
   moduleTests:
     name: Build and Test - FreeCAD Module Tests
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-24.04
     needs: [verify]
 
     steps:
@@ -143,7 +143,7 @@ jobs:
   # -----------------------------------------------------
   freeCadTests:
     name: Build and Test - FreeCAD All Tests
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-24.04
     needs: [verify]
 
     steps:
@@ -189,7 +189,7 @@ jobs:
   # -----------------------------------------------------
   deploy:
     name: Build, Assemble and Deploy
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-24.04
     needs: [flake, moduleTests, freeCadTests]
     
     steps:
