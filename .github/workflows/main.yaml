@@ -45,7 +45,7 @@ jobs:
       # Checks out a copy of the repository
       # --------------------------------------------
       - name: Setup - Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4.2.2
         
       # --------------------------------------------
       # Run a quick sanity check if all commits are
@@ -67,7 +67,7 @@ jobs:
       # Checks out a copy of the repository
       # --------------------------------------------
       - name: Setup - Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4.2.2
       
       # --------------------------------------------
       # Setup python
@@ -105,7 +105,7 @@ jobs:
       # Checks out a copy of the repository
       # --------------------------------------------
       - name: Setup - Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4.2.2
       
       # --------------------------------------------
       # Setup Java and xvfb
@@ -132,7 +132,7 @@ jobs:
       # --------------------------------------------
       - name: Failure - Upload FreeCAD log
         if: ${{ failure() }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4.6.0
         with:
           name: Module test log
           path: 
@@ -151,7 +151,7 @@ jobs:
       # Checks out a copy of the repository
       # --------------------------------------------
       - name: Setup - Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4.2.2
       
       # --------------------------------------------
       # Setup Java and xvfb
@@ -178,7 +178,7 @@ jobs:
       # --------------------------------------------
       - name: Failure - Upload FreeCAD log
         if: ${{ failure() }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4.6.0
         with:
           name: FreeCAD test log
           path: 
@@ -197,7 +197,7 @@ jobs:
       # Checks out a copy of your repository
       # --------------------------------------------
       - name: Setup - Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4.2.2
 
       # --------------------------------------------
       # Perform various setup operations
