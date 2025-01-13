@@ -2,8 +2,8 @@
 setlocal
 
 REM Set paths
-set "FREECAD_DIR=C:\git\VirtualSatellite4-FreeCAD-mod\FreeCAD"
-set "A2PLUS_DIR=C:\git\VirtualSatellite4-FreeCAD-mod\A2plus"  REM Ensure this directory exists
+set "FREECAD_DIR=%~dp0FreeCAD"
+set "A2PLUS_DIR=%~dp0A2plus"  REM Ensure this directory exists
 mkdir "%A2PLUS_DIR%"   REM Creating Directory if not existing
 set "SEVEN_ZIP_PATH=C:\Program Files\7-Zip\7z.exe"  REM Ensure this path is correct
 set "FREECAD_ARCHIVE=%FREECAD_DIR%\FreeCAD.7z" 
