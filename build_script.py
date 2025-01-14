@@ -49,7 +49,7 @@ def main():
     script_dir = Path(__file__).parent
     freecad_dir = script_dir / "FreeCAD"
     a2plus_dir = script_dir / "A2plus"
-    seven_zip_path = r"C:\Program Files\7-Zip\7z.exe"
+    seven_zip_path = script_dir / "tools" / "7zip" / "7z.exe"
     freecad_archive = freecad_dir / "FreeCAD.7z"
     extracted_freecad_dir = freecad_dir
 
