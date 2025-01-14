@@ -2,7 +2,7 @@ import os
 import shutil
 import subprocess
 import requests
-import zipfile  # Use zipfile for .zip files
+import zipfile
 from pathlib import Path
 
 def ensure_directory(path):
@@ -21,17 +21,21 @@ def download_file(url, destination):
         print(f"Failed to download {url}")
         response.raise_for_status()
 
-def extract_7z(archive_path, extract_to):
-    print(f"Extracting {archive_path} to {extract_to}")
-    # Keep using py7zr for .7z files
-    import py7zr
-    with py7zr.SevenZipFile(archive_path, mode='r') as zf:
-        zf.extractall(path=extract_to)
-    print("Extraction completed.")
+def extract_7z(archive_path, extract_to, seven_zip_path="C:/Program Files/7-Zip/7z.exe"):
+    print(f"Extracting {archive_path} to {extract_to} using 7z.exe")
+    try:
+        # Use 7z.exe for extraction
+        result = subprocess.run([seven_zip_path, "x", str(archive_path), f"-o{extract_to}", "-aoa"], capture_output=True, text=True)
+        if result.returncode != 0:
+            print(f"Extraction failed with 7z.exe: {result.stderr}")
+            raise Exception(f"7z extraction failed for {archive_path}")
+        print("Extraction completed using 7z.exe.")
+    except Exception as e:
+        print(f"Extraction failed with 7z.exe: {e}")
+        raise
 
 def extract_zip(archive_path, extract_to):
     print(f"Extracting {archive_path} to {extract_to}")
-    # Use zipfile for .zip files
     with zipfile.ZipFile(archive_path, 'r') as zip_ref:
         zip_ref.extractall(extract_to)
     print("Extraction completed.")
@@ -50,7 +54,7 @@ def move_contents(src_dir, dest_dir):
         raise Exception("Some files could not be moved.")
 
 def main():
-    # Paths
+    # Paths 
     script_dir = Path(__file__).parent
     freecad_dir = script_dir / "FreeCAD"
     a2plus_dir = script_dir / "A2plus"
@@ -72,7 +76,7 @@ def main():
         else:
             print("FreeCAD archive already exists. Skipping download.")
 
-        # Extract FreeCAD using py7zr
+        # Extract FreeCAD using 7z.exe
         extract_7z(freecad_archive, extracted_freecad_dir)
 
         # Identify the extracted directory
