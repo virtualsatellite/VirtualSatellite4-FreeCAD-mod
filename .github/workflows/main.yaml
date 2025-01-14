@@ -122,6 +122,7 @@ jobs:
         run: |
           chmod +x build.bat  
           ./build.bat
+        runs-on: windows-latest
         
       # --------------------------------------------
       # Run module tests
