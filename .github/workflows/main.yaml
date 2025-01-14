@@ -129,7 +129,7 @@ jobs:
         # --------------------------------------------
         - name: Build with Python script
           run: |
-            python script.py
+            python build_script.py
           shell: bash
 
         # --------------------------------------------
