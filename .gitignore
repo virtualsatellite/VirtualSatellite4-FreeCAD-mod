@@ -2,3 +2,7 @@
 /FreeCadSat.json
 **/__pycache__
 FreeCAD/**/*
+.venv/
+*.pyc
+*.pyo
+A2Plus/**/*
