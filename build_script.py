@@ -2,6 +2,7 @@ import os
 import shutil
 import subprocess
 import requests
+import zipfile  # Use zipfile for .zip files
 from pathlib import Path
 
 def ensure_directory(path):
@@ -20,15 +21,19 @@ def download_file(url, destination):
         print(f"Failed to download {url}")
         response.raise_for_status()
 
-def extract_7z(archive_path, extract_to, seven_zip_path):
+def extract_7z(archive_path, extract_to):
     print(f"Extracting {archive_path} to {extract_to}")
-    result = subprocess.run(
-        [seven_zip_path, "x", archive_path, f"-o{extract_to}", "-aoa"],
-        capture_output=True, text=True
-    )
-    if result.returncode != 0:
-        print(f"Extraction failed: {result.stderr}")
-        raise Exception("7z extraction failed")
+    # Keep using py7zr for .7z files
+    import py7zr
+    with py7zr.SevenZipFile(archive_path, mode='r') as zf:
+        zf.extractall(path=extract_to)
+    print("Extraction completed.")
+
+def extract_zip(archive_path, extract_to):
+    print(f"Extracting {archive_path} to {extract_to}")
+    # Use zipfile for .zip files
+    with zipfile.ZipFile(archive_path, 'r') as zip_ref:
+        zip_ref.extractall(extract_to)
     print("Extraction completed.")
 
 def move_contents(src_dir, dest_dir):
@@ -49,7 +54,6 @@ def main():
     script_dir = Path(__file__).parent
     freecad_dir = script_dir / "FreeCAD"
     a2plus_dir = script_dir / "A2plus"
-    seven_zip_path = script_dir / "tools" / "7zip" / "7z.exe"
     freecad_archive = freecad_dir / "FreeCAD.7z"
     extracted_freecad_dir = freecad_dir
 
@@ -68,8 +72,8 @@ def main():
         else:
             print("FreeCAD archive already exists. Skipping download.")
 
-        # Extract FreeCAD
-        extract_7z(freecad_archive, extracted_freecad_dir, seven_zip_path)
+        # Extract FreeCAD using py7zr
+        extract_7z(freecad_archive, extracted_freecad_dir)
 
         # Identify the extracted directory
         extracted_dirs = list(freecad_dir.glob("FreeCAD_*"))
@@ -101,8 +105,8 @@ def main():
     else:
         print("A2plus archive already exists. Skipping download.")
 
-    # Extract A2plus
-    extract_7z(a2plus_zip, a2plus_dir, seven_zip_path)
+    # Extract A2plus (use extract_zip for .zip files)
+    extract_zip(a2plus_zip, a2plus_dir)
 
     # Install Python dependencies
     print("Installing Python dependencies...")
