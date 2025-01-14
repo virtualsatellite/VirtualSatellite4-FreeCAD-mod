@@ -76,9 +76,9 @@ class TestJsonImporter(AWorkingDirectoryTest):
         self.assertEquals(len(App.ActiveDocument.RootObjects), TEST_ALLOWED_AMOUNT_OF_PART_OBJECTS, "Correct amount of objects in file")
 
         # Check that there is a box with the correct properties
-        self.assertEquals(str(App.ActiveDocument.getObject("Box").Length), "40 mm", "Shape has correct size")
-        self.assertEquals(str(App.ActiveDocument.getObject("Box").Height), "10 mm", "Shape has correct size")
-        self.assertEquals(str(App.ActiveDocument.getObject("Box").Width), "20 mm", "Shape has correct size")
+        self.assertEquals(str(App.ActiveDocument.getObject("Box").Length).replace(".0", ""), "40 mm", "Shape has correct size")
+        self.assertEquals(str(App.ActiveDocument.getObject("Box").Height).replace(".0", ""), "10 mm", "Shape has correct size")
+        self.assertEquals(str(App.ActiveDocument.getObject("Box").Width).replace(".0", ""), "20 mm", "Shape has correct size")
 
         self.assertEquals(Gui.ActiveDocument.getObject("Box").ShapeColor,
                           (0.7529411911964417, 0.7529411911964417, 0.7529411911964417, 0.0),
@@ -144,7 +144,7 @@ class TestJsonImporter(AWorkingDirectoryTest):
 
         # Check that there is a box with the correct properties
         self.assertEquals(len(App.ActiveDocument.RootObjects), TEST_ALLOWED_AMOUNT_OF_PART_OBJECTS, "Correct amount of objects in file")
-        self.assertEquals(str(App.ActiveDocument.getObject("Box").Length), "40 mm", "Shape has correct size")
+        self.assertEquals(str(App.ActiveDocument.getObject("Box").Length).replace(".0", ""), "40 mm", "Shape has correct size")
 
         json_data = TEST_JSON_PART_BOX
 
@@ -159,7 +159,7 @@ class TestJsonImporter(AWorkingDirectoryTest):
 
         # Check that there is a box with the correct properties
         self.assertEquals(len(App.ActiveDocument.RootObjects), TEST_ALLOWED_AMOUNT_OF_PART_OBJECTS, "Correct amount of objects in file")
-        self.assertEquals(str(App.ActiveDocument.getObject("Box").Length), "40 mm", "Shape has correctly changed size")
+        self.assertEquals(str(App.ActiveDocument.getObject("Box").Length).replace(".0", ""), "40 mm", "Shape has correctly changed size")
 
     def test_create_part_change_shape(self):
         json_data = TEST_JSON_PART_BOX

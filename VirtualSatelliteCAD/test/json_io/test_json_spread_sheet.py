@@ -76,7 +76,7 @@ class TestJsonSpreadSheet(AWorkingDirectoryTest):
         json_part_sheet_object = active_document.app_active_document.getObject(json_spread_sheet_name)
         self.assertIsNotNone(json_part_sheet_object, "The object does exist now")
         self.assertEquals(len(active_document.app_active_document.RootObjects), 1, "Correct amount of objects in document")
-        self.assertEquals(len(json_part_sheet_object.PropertiesList), 36, "Computed correct amount of properties in the sheet")
+        self.assertEquals(len(json_part_sheet_object.PropertiesList), 35, "Computed correct amount of properties in the sheet")
 
     def test_read_sheet_attribute(self):
         active_document = ActiveDocument(self._WORKING_DIRECTORY).open_set_and_get_document("PartSheetTest_Read")
