@@ -92,15 +92,15 @@ jobs:
       - name: Run - flake8
         run: flake8 ./VirtualSatelliteCAD --count --show-source --statistics --benchmark
 
-    # -----------------------------------------------------
-    # Build and Test - FreeCAD Module Tests
-    # -----------------------------------------------------
-    moduleTests:
-      name: Build and Test - FreeCAD Module Tests
-      runs-on: ubuntu-24.04
-      needs: [verify]
+  # -----------------------------------------------------
+  # Build and Test - FreeCAD Module Tests
+  # -----------------------------------------------------
+  moduleTests:
+    name: Build and Test - FreeCAD Module Tests
+    runs-on: ubuntu-24.04
+    needs: [verify]
 
-      steps:
+    steps:
         # --------------------------------------------
         # Checks out a copy of the repository
         # --------------------------------------------
