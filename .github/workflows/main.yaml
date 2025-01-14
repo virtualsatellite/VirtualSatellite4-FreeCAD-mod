@@ -114,12 +114,14 @@ jobs:
         uses: virtualsatellite/ci-actions/ci-setup-action@v8
         with:
            xvfb: -x
-           
+      
       # --------------------------------------------
-      # Setup Environment via Ant
+      # Setup Environment via build.bat
       # -------------------------------------------- 
-      - name: Build with Ant
-        run: ant SetupEnvironment
+      - name: Build with build.bat
+        run: |
+          chmod +x build.bat  
+          ./build.bat
         
       # --------------------------------------------
       # Run module tests
