@@ -117,22 +117,12 @@ jobs:
             architecture: x64
 
         # --------------------------------------------
-        # Install dependencies
+        # Run Shell Script
         # --------------------------------------------
-        - name: Install dependencies
+        - name: Run environment setup script
           run: |
-            python -m pip install --upgrade pip
-            python -m venv .venv  # Create a virtual environment
-            source .venv/bin/activate  
-            pip install -r requirements.txt  # Install dependencies
-
-        # --------------------------------------------
-        # Run Python script
-        # --------------------------------------------
-        - name: Build with Python script
-          run: |
-            source .venv/bin/activate 
-            python build_script.py
+            chmod +x setup_environment.sh
+            ./setup_environment.sh
           shell: bash
 
         # --------------------------------------------
