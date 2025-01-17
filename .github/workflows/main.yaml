@@ -133,30 +133,14 @@ jobs:
             ./build.sh
           shell: bash
 
-        # --------------------------------------------
-        # Install necessary dependencies (xvfb, etc.)
-        # --------------------------------------------
-        - name: Install xvfb
-          run: sudo apt-get install -y xvfb
+        - name: Install dependencies
+          run: |
+            sudo apt-get update
+            sudo apt-get install -y freecad
 
-        # --------------------------------------------
-        # Ensure AppRun is executable
-        # --------------------------------------------
-        - name: Ensure AppRun is executable
-          run: chmod +x squashfs-root/AppRun
-  
-        # --------------------------------------------
-        # Check the contents of squashfs-root to verify AppRun exists
-        # --------------------------------------------
-        - name: Check contents of squashfs-root
-          run: ls -la squashfs-root
-  
-        # --------------------------------------------
-        # Run Module tests
-        # --------------------------------------------
-        - name: Run FreeCAD tests
-          run: xvfb-run $GITHUB_WORKSPACE/squashfs-root/AppRun -M $GITHUB_WORKSPACE/VirtualSatelliteCAD -t TestVirtualSatelliteApp -l
-
+        - name: Run FreeCAD VirSat Tests
+          run: |
+            python run_freecad.py -M ${GITHUB_WORKSPACE}/VirtualSatelliteCAD -t TestVirtualSatelliteApp -l --log-file ${GITHUB_WORKSPACE}/FreeCAD.log
 
         # --------------------------------------------
         # Upload FreeCAD log
