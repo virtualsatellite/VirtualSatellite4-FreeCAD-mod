@@ -9,13 +9,13 @@ a2plusVersion="0.4.26"
 # OS-dependent variables
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     echo "Setting up environment for Linux..."
-    freeCadRelease="https://github.com/FreeCAD/FreeCAD/releases/download/0.18.3/FreeCAD_0.18-16131-Linux-Conda_Py3Qt5_glibc2.12-x86_64.AppImage"
+    freeCadRelease="https://github.com/FreeCAD/FreeCAD/releases/download/0.21.0/FreeCAD_0.21.0-Linux-x86_64.AppImage"
     freeCadPathLinux="$freeCadPath/squashfs-root/usr"
     freeCadModLinux="$freeCadPathLinux/Mod"
     freeCadPatchDestLinux="$freeCadModLinux/Test/TestApp.py"
-    a2plusPathLinux="$freeCadModLinux/A2plus"
-    a2plusZipLinux="$freeCadModLinux/a2plus.zip"
-    a2plusUnzippedLinux="$freeCadModLinux/A2plus-${a2plusVersion}"
+    a2plusPathLinux="A2plus"
+    a2plusZipLinux="$a2plusPathLinux/a2plus.zip"
+    a2plusUnzippedLinux="$a2plusPathLinux/A2plus-${a2plusVersion}"
 elif [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]]; then
     echo "Setting up environment for Windows..."
     freeCadRelease="https://github.com/FreeCAD/FreeCAD/releases/download/0.18.3/FreeCAD-0.18.16131.3129ae4-WIN-x64-portable.7z"
@@ -45,26 +45,35 @@ if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]]; then
     fi
 fi
 
-# Download FreeCAD if not already downloaded
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    # Check if FreeCAD directory exists, if not, create it
+    if [[ ! -d "$freeCadPath" ]]; then
+        echo "Directory $freeCadPath does not exist. Creating it..."
+        mkdir -p "$freeCadPath"
+        echo "Directory $freeCadPath created."
+    fi
+    
+    # Check if FreeCAD AppImage is already downloaded
     echo "Checking if FreeCAD for Linux is already downloaded..."
-    if [[ ! -f "$freeCadPath/AppImage" ]]; then
-        echo "Downloading FreeCAD for Linux..."
-        wget -O "$freeCadPath/AppImage" "$freeCadRelease"
-        chmod +x "$freeCadPath/AppImage"
-        echo "FreeCAD AppImage downloaded."
+     if ! find "$freeCadPath" -maxdepth 1 -type f -name "*.AppImage" | grep -q .; then
+        echo "No .AppImage file found. Downloading FreeCAD for Linux..."
+        wget -O "$freeCadPath/FreeCAD.AppImage" "$freeCadRelease"
+        chmod +x "$freeCadPath/FreeCAD.AppImage"
+        echo "FreeCAD AppImage downloaded and made executable."
     else
-        echo "FreeCAD AppImage already exists. Skipping download."
+        echo "An .AppImage file already exists. Skipping download."
     fi
 
-    # Extract FreeCAD AppImage if not already extracted
+
     if [[ ! -d "$freeCadPathLinux" ]]; then
         echo "Extracting FreeCAD AppImage..."
-        ./"$freeCadPath/AppImage" --appimage-extract
+        "$freeCadPath/FreeCAD.AppImage" --appimage-extract  # Use full path to AppImage
+        mv "squashfs-root" "$freeCadPath"  # Move extracted contents into the desired directory
         echo "FreeCAD extracted successfully."
     else
         echo "FreeCAD already extracted. Skipping extraction."
     fi
+
 
 elif [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]]; then
     echo "Checking if FreeCAD for Windows is already downloaded and extracted..."
@@ -107,24 +116,57 @@ if [[ ! -d "$freeCadModWindows" && "$OSTYPE" == "msys" ]]; then
     exit 1
 fi
 
-# Check if A2plus is already downloaded
-echo "Checking if A2plus is already downloaded..."
-if [[ ! -f "$a2plusZipWindows" ]]; then
-    echo "Downloading A2plus for Windows..."
-    curl -L -o "$a2plusZipWindows" "$a2plusRepo/archive/v${a2plusVersion}.zip"
-    echo "A2plus downloaded."
-else
-    echo "A2plus already downloaded. Skipping download."
+# Linux-specific A2plus download and extraction
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    # Ensure A2plus directory exists
+    if [[ ! -d "$a2plusPathLinux" ]]; then
+        echo "Directory $a2plusPathLinux does not exist. Creating it..."
+        mkdir -p "$a2plusPathLinux"
+        echo "Directory $a2plusPathLinux created."
+    fi
+
+    # Check if A2plus is already downloaded
+    echo "Checking if A2plus is already downloaded for Linux..."
+    if [[ ! -f "$a2plusZipLinux" ]]; then
+        echo "Downloading A2plus for Linux..."
+        curl -L -o "$a2plusZipLinux" "${a2plusRepo}/archive/v${a2plusVersion}.zip"
+        echo "A2plus downloaded."
+    else
+        echo "A2plus already downloaded. Skipping download."
+    fi
+
+
+    # Extract A2plus if not already extracted
+    if [[ ! -d "$a2plusUnzippedLinux" ]]; then
+        echo "Extracting A2plus for Linux..."
+        unzip -o "$a2plusZipLinux" -d "$a2plusPathLinux"  # Extract directly into the desired directory
+        echo "A2plus extracted successfully."
+    else
+        echo "A2plus already extracted. Skipping extraction."
+    fi
 fi
 
 
-# Extract A2plus if not already extracted
-if [[ ! -d "$a2plusUnzippedWindows" ]]; then
-    echo "Extracting A2plus..."
-    unzip -o "$a2plusZipWindows" -d "$a2plusPathWindows"  # Extract directly into the desired directory
-    echo "A2plus extracted successfully."
-else
-    echo "A2plus already extracted. Skipping extraction."
+# Windows-specific A2plus download and extraction
+if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]]; then
+    # Check if A2plus is already downloaded
+    echo "Checking if A2plus is already downloaded for Windows..."
+    if [[ ! -f "$a2plusZipWindows" ]]; then
+        echo "Downloading A2plus for Windows..."
+        curl -L -o "$a2plusZipWindows" "$a2plusRepo/archive/v${a2plusVersion}.zip"
+        echo "A2plus downloaded."
+    else
+        echo "A2plus already downloaded. Skipping download."
+    fi
+
+    # Extract A2plus if not already extracted
+    if [[ ! -d "$a2plusUnzippedWindows" ]]; then
+        echo "Extracting A2plus for Windows..."
+        unzip -o "$a2plusZipWindows" -d "$a2plusPathWindows"  # Extract directly into the desired directory
+        echo "A2plus extracted successfully."
+    else
+        echo "A2plus already extracted. Skipping extraction."
+    fi
 fi
 
 # Apply patch
@@ -154,12 +196,12 @@ fi
 # Cleanup
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     echo "Cleaning up Linux..."
-    rm "$freeCadPath/AppImage"
+    rm "$freeCadPath/FreeCAD.AppImage"
     rm "$a2plusZipLinux"
 elif [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]]; then
     echo "Cleaning up Windows..."
     rm "$freeCadPathWindows/FreeCAD.7z"
-    rm "$a2plusZipWindows"
+    rm "$a2plusZipLinux"
 fi
 
 echo "Environment setup completed successfully."
