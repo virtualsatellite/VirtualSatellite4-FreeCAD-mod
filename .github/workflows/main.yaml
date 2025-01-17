@@ -134,10 +134,29 @@ jobs:
           shell: bash
 
         # --------------------------------------------
-        # Run module tests
+        # Install necessary dependencies (xvfb, etc.)
         # --------------------------------------------
-        - name: Run - Module tests
-          run: xvfb-run ./squashfs-root/AppRun -M $GITHUB_WORKSPACE/VirtualSatelliteCAD -t TestVirtualSatelliteApp -l
+        - name: Install xvfb
+          run: sudo apt-get install -y xvfb
+
+        # --------------------------------------------
+        # Ensure AppRun is executable
+        # --------------------------------------------
+        - name: Ensure AppRun is executable
+          run: chmod +x squashfs-root/AppRun
+  
+        # --------------------------------------------
+        # Check the contents of squashfs-root to verify AppRun exists
+        # --------------------------------------------
+        - name: Check contents of squashfs-root
+          run: ls -la squashfs-root
+  
+        # --------------------------------------------
+        # Run Module tests
+        # --------------------------------------------
+        - name: Run FreeCAD tests
+          run: xvfb-run $GITHUB_WORKSPACE/squashfs-root/AppRun -M $GITHUB_WORKSPACE/VirtualSatelliteCAD -t TestVirtualSatelliteApp -l
+
 
         # --------------------------------------------
         # Upload FreeCAD log
