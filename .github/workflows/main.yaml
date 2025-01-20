@@ -136,7 +136,7 @@ jobs:
 
         - name: Run FreeCAD VirSat Tests
           run: |
-            python run_freecad.py -M ${GITHUB_WORKSPACE}/VirtualSatelliteCAD -t TestVirtualSatelliteApp -l --log-file ${GITHUB_WORKSPACE}/FreeCAD.log
+            python run_freecad.py -M ${GITHUB_WORKSPACE}/VirtualSatelliteCAD -t TestVirtualSatelliteApp -l 
 
         # --------------------------------------------
         # Upload FreeCAD log
@@ -172,17 +172,31 @@ jobs:
         with:
            xvfb: -x
            
+
       # --------------------------------------------
-      # Setup Environment via Ant
-      # -------------------------------------------- 
-      - name: Build with Ant
-        run: ant SetupEnvironment
-        
+      # Setup Python
+      # --------------------------------------------
+      - name: Setup - Python
+        uses: actions/setup-python@v5.3.0
+        with:
+          python-version: 3.10.16
+          architecture: x64
+
+      # --------------------------------------------
+      # Run Shell Script
+      # --------------------------------------------
+      - name: Run environment setup script
+        run: |
+          chmod +x build.sh
+          ./build.sh
+        shell: bash
+
       # --------------------------------------------
       # Run FreeCAD tests
       # --------------------------------------------
       - name: Run - FreeCAD tests
-        run: xvfb-run ./squashfs-root/AppRun -M $GITHUB_WORKSPACE -t 0 -l
+        run: python run_freecad.py -M ${GITHUB_WORKSPACE} -t 0 -l
+    
 
       # --------------------------------------------
       # Upload FreeCAD log
