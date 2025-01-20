@@ -3,12 +3,14 @@ import os
 import sys
 
 print(os.getcwd())
+current_dir=os.getcwd()
 # Base path to the FreeCAD executable
-freecad_path = os.path.join(os.getcwd(), "FreeCAD/bin/FreeCAD.exe")
+freecad_dir = os.path.join(current_dir, "FreeCAD/squashfs-root/usr/bin")
+freecad_executable = os.path.join(freecad_dir,"freecad")
 
 # Base arguments (common ones can be set here)
 base_args = [
-    freecad_path,
+   freecad_executable
 ]
 
 # Collect additional arguments from command-line inputs (if provided)
