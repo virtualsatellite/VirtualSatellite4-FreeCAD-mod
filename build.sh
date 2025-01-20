@@ -144,6 +144,16 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     else
         echo "A2plus already extracted. Skipping extraction."
     fi
+
+    # Moving A2PLus Module to FreeCAD Mod if not done
+    if [[ ! -d "$freeCadModLinux"/A2plus ]]; then
+        echo "Moving the A2plus module"
+        mv "$a2plusUnzippedLinux" "$freeCadModLinux"/A2plus
+        echo "A2plus moved successfully."
+    else
+        echo "A2plus already available. Skipping the step."
+    fi
+
 fi
 
 
@@ -167,6 +177,7 @@ if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]]; then
     else
         echo "A2plus already extracted. Skipping extraction."
     fi
+
 fi
 
 # Apply patch
