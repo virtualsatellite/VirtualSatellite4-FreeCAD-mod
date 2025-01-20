@@ -18,9 +18,8 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     a2plusUnzippedLinux="$a2plusPathLinux/A2plus-${a2plusVersion}"
 elif [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]]; then
     echo "Setting up environment for Windows..."
-    freeCadRelease="https://github.com/FreeCAD/FreeCAD/releases/download/0.18.3/FreeCAD-0.18.16131.3129ae4-WIN-x64-portable.7z"
-    freeCadPathWindows="FreeCAD"
-    freeCadModWindows="$freeCadPathWindows/FreeCAD/Mod"
+    freeCadRelease="https://github.com/FreeCAD/FreeCAD/releases/download/0.21.0/FreeCAD_0.21.0-Windows-x86_64.7z"
+    freeCadModWindows="$freeCadPath/Mod"
     freeCadPatchDestWindows="$freeCadModWindows/Test/TestApp.py"
     a2plusPathWindows="A2plus" # path for A2plus
     a2plusZipWindows="$a2plusPathWindows/a2plus.zip"  # Path for A2plus ZIP file
@@ -92,15 +91,16 @@ elif [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]]; then
 
 
     # Extract FreeCAD for Windows if not already extracted
-    if [[ ! -d "$freeCadPath/FreeCAD" ]]; then
+    if [[ ! -d "$freeCadPath/bin" ]]; then
         echo "Extracting FreeCAD for Windows..."
         "C:/Program Files/7-Zip/7z.exe" x "$freeCadPath/FreeCAD.7z" -o"$freeCadPath/FreeCAD"
         echo "FreeCAD extracted successfully."
          # Move all the content from "$freeCadPath/FreeCAD/FreeCAD" to "$freeCadPath/FreeCAD"
-        if [[ -d "$freeCadPath/FreeCAD/FreeCAD" ]]; then
-            echo "Moving extracted files from $freeCadPath/FreeCAD/FreeCAD to $freeCadPath/FreeCAD"
-            mv "$freeCadPath/FreeCAD/FreeCAD/"* "$freeCadPath/FreeCAD/"
-            rm -rf "$freeCadPath/FreeCAD/FreeCAD"  # Clean up empty directory
+        if [[ -d "$freeCadPath/FreeCAD" ]]; then
+            echo "Moving extracted files from $freeCadPath/FreeCAD/* to $freeCadPath"
+            mv "$freeCadPath"/FreeCAD/*/* "$freeCadPath/"
+            sleep 5
+            rm -rf "$freeCadPath/FreeCAD"  # Clean up empty directory
             echo "Files moved successfully."
         else
             echo "Error: Extracted FreeCAD directory not found."
@@ -185,12 +185,12 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     echo "Installing dependencies for Linux..."
     "$freeCadPathLinux/bin/python" -m pip install urllib3
 elif [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]]; then
-    if [[ ! -f "$freeCadPathWindows/FreeCAD/bin/python.exe" ]]; then
+    if [[ ! -f "$freeCadPath/bin/python.exe" ]]; then
         echo "Python executable not found! Check the FreeCAD installation."
         exit 1
     fi
     echo "Installing dependencies for Windows..."
-    "$freeCadPathWindows/FreeCAD/bin/python.exe" -m pip install urllib3
+    "$freeCadPath/bin/python.exe" -m pip install urllib3
 fi
 
 # Cleanup
@@ -200,8 +200,8 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     rm "$a2plusZipLinux"
 elif [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]]; then
     echo "Cleaning up Windows..."
-    rm "$freeCadPathWindows/FreeCAD.7z"
-    rm "$a2plusZipLinux"
+    rm "$freeCadPath/FreeCAD.7z"
+    rm "$a2plusZipWindows"
 fi
 
 echo "Environment setup completed successfully."
