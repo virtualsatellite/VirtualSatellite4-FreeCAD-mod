@@ -99,7 +99,6 @@ elif [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]]; then
         if [[ -d "$freeCadPath/FreeCAD" ]]; then
             echo "Moving extracted files from $freeCadPath/FreeCAD/* to $freeCadPath"
             mv "$freeCadPath"/FreeCAD/*/* "$freeCadPath/"
-            sleep 5
             rm -rf "$freeCadPath/FreeCAD"  # Clean up empty directory
             echo "Files moved successfully."
         else
@@ -176,6 +175,15 @@ if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]]; then
         echo "A2plus extracted successfully."
     else
         echo "A2plus already extracted. Skipping extraction."
+    fi
+
+    # Moving A2PLus Module to FreeCAD Mod if not done
+    if [[ ! -d "$freeCadModWindows"/A2plus ]]; then
+        echo "Moving the A2plus module"
+        mv "$a2plusUnzippedWindows" "$freeCadModWindows"/A2plus
+        echo "A2plus moved successfully."
+    else
+        echo "A2plus already available. Skipping the step."
     fi
 
 fi
