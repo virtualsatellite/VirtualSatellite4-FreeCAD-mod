@@ -148,6 +148,7 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     if [[ ! -d "$freeCadModLinux"/A2plus ]]; then
         echo "Moving the A2plus module"
         mv "$a2plusUnzippedLinux" "$freeCadModLinux"/A2plus
+        cp -r "FreeCAD/squashfs-root/" .
         echo "A2plus moved successfully."
     else
         echo "A2plus already available. Skipping the step."
