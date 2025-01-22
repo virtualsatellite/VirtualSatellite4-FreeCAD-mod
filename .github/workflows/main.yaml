@@ -136,7 +136,7 @@ jobs:
 
         - name: Run FreeCAD VirSat Tests
           run: |
-            xvfb-run ./squashfs-root/AppRun -M ${GITHUB_WORKSPACE}/VirtualSatelliteCAD -t TestVirtualSatelliteApp -l
+            xvfb-run ./squashfs-root/AppRun -M /home/runner/work/VirtualSatellite4-FreeCAD-mod/squashfs-root -t TestVirtualSatelliteApp -l
 
         # --------------------------------------------
         # Upload FreeCAD log
@@ -195,7 +195,7 @@ jobs:
       # Run FreeCAD tests
       # --------------------------------------------
       - name: Run - FreeCAD tests
-        run: python run_freecad.py -M ${GITHUB_WORKSPACE} -t 0 -l
+        run: xvfb-run ./squashfs-root/AppRun -M ${GITHUB_WORKSPACE} -t 0 -l
     
 
       # --------------------------------------------
