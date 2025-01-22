@@ -9,7 +9,7 @@ a2plusVersion="0.4.26"
 # OS-dependent variables
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     echo "Setting up environment for Linux..."
-    freeCadRelease="https://github.com/FreeCAD/FreeCAD/releases/download/0.21.0/FreeCAD_0.21.0-Linux-x86_64.AppImage"
+    freeCadRelease="https://github.com/FreeCAD/FreeCAD/releases/download/0.18.3/FreeCAD_0.18-16131-Linux-Conda_Py3Qt5_glibc2.12-x86_64.AppImage"
     freeCadPathLinux="$freeCadPath/squashfs-root/usr"
     freeCadModLinux="$freeCadPathLinux/Mod"
     freeCadPatchDestLinux="$freeCadModLinux/Test/TestApp.py"
