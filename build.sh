@@ -18,7 +18,7 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     a2plusUnzippedLinux="$a2plusPathLinux/A2plus-${a2plusVersion}"
 elif [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]]; then
     echo "Setting up environment for Windows..."
-    freeCadRelease="https://github.com/FreeCAD/FreeCAD/releases/download/0.21.0/FreeCAD_0.21.0-Windows-x86_64.7z"
+    freeCadRelease="https://github.com/FreeCAD/FreeCAD/releases/download/0.21.2/FreeCAD-0.21.2-Windows-x86_64.7z"
     freeCadModWindows="$freeCadPath/Mod"
     freeCadPatchDestWindows="$freeCadModWindows/Test/TestApp.py"
     a2plusPathWindows="A2plus" # path for A2plus
@@ -98,7 +98,7 @@ elif [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]]; then
          # Move all the content from "$freeCadPath/FreeCAD/FreeCAD" to "$freeCadPath/FreeCAD"
         if [[ -d "$freeCadPath/FreeCAD" ]]; then
             echo "Moving extracted files from $freeCadPath/FreeCAD/* to $freeCadPath"
-            mv "$freeCadPath"/FreeCAD/*/* "$freeCadPath/"
+            cp -rf "$freeCadPath"/FreeCAD/*/* "$freeCadPath/"
             rm -rf "$freeCadPath/FreeCAD"  # Clean up empty directory
             echo "Files moved successfully."
         else
@@ -147,7 +147,7 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     # Moving A2PLus Module to FreeCAD Mod if not done
     if [[ ! -d "$freeCadModLinux"/A2plus ]]; then
         echo "Moving the A2plus module"
-        mv "$a2plusUnzippedLinux" "$freeCadModLinux"/A2plus
+        cp -rf "$a2plusUnzippedLinux" "$freeCadModLinux"/A2plus
         cp -r "FreeCAD/squashfs-root/" .
         echo "A2plus moved successfully."
     else
@@ -181,7 +181,7 @@ if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]]; then
     # Moving A2PLus Module to FreeCAD Mod if not done
     if [[ ! -d "$freeCadModWindows"/A2plus ]]; then
         echo "Moving the A2plus module"
-        mv "$a2plusUnzippedWindows" "$freeCadModWindows"/A2plus
+        cp -rf  "$a2plusUnzippedWindows" "$freeCadModWindows"/A2plus
         echo "A2plus moved successfully."
     else
         echo "A2plus already available. Skipping the step."

@@ -4,7 +4,6 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-
         {
             "name": "Run FreeCAD VirSat Module",
             "type": "debugpy",
@@ -28,12 +27,14 @@
                 "-M",
                 "${workspaceFolder}/VirtualSatelliteCAD",
                 "-t",
-                "0"
+                "0",
+                "--log-file",
+                "${workspaceFolder}/FreeCAD.log"
             ],
             "console": "integratedTerminal"
         },
         {
-            "name": "Run FreeCAD VirSat Tests",
+            "name": "Run FreeCAD Module Tests",
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/run_freecad.py",
@@ -46,7 +47,13 @@
                 "--log-file",
                 "${workspaceFolder}/FreeCAD.log"
             ],
-            "console": "integratedTerminal"
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/FreeCAD/Mod/A2plus;${workspaceFolder}/FreeCAD/bin;${workspaceFolder}/FreeCAD/bin/lib;${workspaceFolder}/FreeCAD/bin/lib/site-packages;${workspaceFolder}/VirtualSatelliteCAD;${workspaceFolder}/FreeCAD/bin/DLLs",
+                "FreeCAD": "${workspaceFolder}/FreeCAD",
+                "FreeCAD_LIB": "${workspaceFolder}/FreeCAD/bin"
+            }
         }
     ]
 }
