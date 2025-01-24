@@ -9,7 +9,7 @@ a2plusVersion="0.4.26"
 # OS-dependent variables
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     echo "Setting up environment for Linux..."
-    freeCadRelease="https://github.com/FreeCAD/FreeCAD/releases/download/0.18.3/FreeCAD_0.18-16131-Linux-Conda_Py3Qt5_glibc2.12-x86_64.AppImage"
+    freeCadRelease="https://github.com/FreeCAD/FreeCAD/releases/download/1.0.0/FreeCAD_1.0.0-conda-Linux-x86_64-py311.AppImage"
     freeCadPathLinux="$freeCadPath/squashfs-root/usr"
     freeCadModLinux="$freeCadPathLinux/Mod"
     freeCadPatchDestLinux="$freeCadModLinux/Test/TestApp.py"
@@ -18,7 +18,7 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     a2plusUnzippedLinux="$a2plusPathLinux/A2plus-${a2plusVersion}"
 elif [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]]; then
     echo "Setting up environment for Windows..."
-    freeCadRelease="https://github.com/FreeCAD/FreeCAD/releases/download/0.21.2/FreeCAD-0.21.2-Windows-x86_64.7z"
+    freeCadRelease="https://github.com/FreeCAD/FreeCAD/releases/download/1.0.0/FreeCAD_1.0.0-conda-Windows-x86_64-py311.7z"
     freeCadModWindows="$freeCadPath/Mod"
     freeCadPatchDestWindows="$freeCadModWindows/Test/TestApp.py"
     a2plusPathWindows="A2plus" # path for A2plus
@@ -176,15 +176,6 @@ if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]]; then
         echo "A2plus extracted successfully."
     else
         echo "A2plus already extracted. Skipping extraction."
-    fi
-
-    # Moving A2PLus Module to FreeCAD Mod if not done
-    if [[ ! -d "$freeCadModWindows"/A2plus ]]; then
-        echo "Moving the A2plus module"
-        cp -rf  "$a2plusUnzippedWindows" "$freeCadModWindows"/A2plus
-        echo "A2plus moved successfully."
-    else
-        echo "A2plus already available. Skipping the step."
     fi
 
 fi
