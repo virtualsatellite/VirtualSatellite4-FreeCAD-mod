@@ -134,9 +134,9 @@ jobs:
           shell: bash
 
 
-        - name: Run FreeCAD VirSat Tests
+        - name: Run FreeCAD VirSat Module Tests
           run: |
-            xvfb-run ./squashfs-root/AppRun -M ${GITHUB_WORKSPACE} -t TestVirtualSatelliteApp -l
+            xvfb-run ./squashfs-root/AppRun -M ${GITHUB_WORKSPACE}/VirtualSatelliteCAD -t TestVirtualSatelliteApp -l
 
         # --------------------------------------------
         # Upload FreeCAD log
@@ -192,7 +192,7 @@ jobs:
         shell: bash
 
       # --------------------------------------------
-      # Run FreeCAD tests
+      # Run FreeCAD All tests
       # --------------------------------------------
       - name: Run - FreeCAD tests
         run: xvfb-run ./squashfs-root/AppRun -M ${GITHUB_WORKSPACE} -t 0 -l
